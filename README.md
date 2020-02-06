@@ -1,2 +1,2 @@
 # dhr-Vandyck.github.io
-developer
+index.html
