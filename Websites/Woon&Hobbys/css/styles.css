@@ -1,0 +1,71 @@
+html {
+    height: 100%;
+    width: 100%;
+    background: rgb(2, 33, 48);
+}
+
+body {
+   margin: 0;
+   color: white;
+   font-size: 15px;
+   font-family: 'Times New Roman', Times, serif;
+}
+nav {
+    margin: 0;
+    width: 100%;
+    background: brown;    
+
+}
+
+
+nav ul {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    margin:0;
+    
+}
+nav ul li {
+    list-style-type: none;
+    width: 20%;
+    margin: 0;
+
+
+}
+nav ul li a {
+    font-size: 20px;
+    text-decoration: none;
+    color: white;
+    
+
+}
+nav ul li a:hover,
+nav ul li a:focus {
+    background: rgb(2, 33, 48);
+}
+
+#Naam {
+    font-size: 55px;
+    color: white;
+    font-family: 'Brush script std medium';
+}
+#Contact {
+    text-align: center;
+    color: white;
+    font-size: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: brown;    
+    font-family: 'Times New Roman', Times, serif;
+}
+main {
+    text-align: center;
+    height: 500px;
+}
+.klik {
+    margin-top: 200px;
+}
+.marge {
+    margin: 100px 40px 0 40px;
+}
