@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="Vandyck Ceddy">
+        <title>Vandyck Ceddy</title>
+        <link rel="icon" href="favicon.png">
+        <link rel="stylesheet" href="css/styles.css">
+        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/20fbb8ee1e.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+      
+
+        <main>
+            
+            <div class="kaart">
+            
+                <a class="websites" href="Websites/Woon&Hobbys/index.html">Websites</a>
+                <a class="angular" href="meal/index.html">Angular</a>
+                <a class="web-pages" href="Web-Pages/Bootstrap/index.html">Web Pages</a>
+                <div class="style voorkant">
+                    <img src="img/avatargrey.png" alt="avatar">
+                    
+                    <div id="header">
+                        <h1>Vandyck Ceddy</h1>
+                        <h2>Mobile App Developer</h2>
+                        <h3>And Adobe Creator</h3>
+                    </div>
+
+                    
+                    <div id="social">         
+                        <a id="link1" href="https://www.linkedin.com/in/ceddy-vandyck-391210199/" target="_blank"><i class="fab fa-linkedin-in"></i> </a>
+                        <a id="link2" href="https://www.facebook.com/ceddy.vandyck" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a id="link3" href="https://www.instagram.com/ceddyvandyck/" target="_blank"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div id="text">
+                        <div id="locatie">
+                            <div class="tab">
+                                <button class="tablinks" onclick="openCity(event, 'Leopoldsburg')"><i class="fas fa-map-marker-alt"></i></button>
+                              </div>
+                              
+                              <div id="Leopoldsburg" class="tabcontent">
+                                <a href="index.html"><i class="far fa-times-circle"></i></a>
+                                <div class="mapouter"><div class="gmap_canvas"><iframe width="400" height="200" id="gmap_canvas" src="https://maps.google.com/maps?q=leopoldsburg&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                                    <div>
+                                    </div></div>
+                                    </div>
+                              </div>
+                            <p class="locatie">Leopoldsburg, belgium</p>
+                        </div>
+                        <p class="skill">HTML<span>//</span>CSS<span>//</span>JAVASCRIPT<span>//</span>ANGULAR</p>
+                        <p class="adobe">Photoshop<span>//</span>Illustrator<span>//</span>InDesign<span>//</span>Pro Premiere</p>
+                    </div>
+                    <button class="contact" onclick="omdraaien()">Contact</button>
+                </div>
+                <div class="style achterkant">
+                    <form action="mailto:dhr.vandyck@gmail.com" method="post" enctype="text/plain">
+                        <label for="name">Name:</label>
+                        <input type="text" name="name"><br>
+                        <label for="email">E-mail:</label>
+                        <input type="text" name="mail"><br>
+                        <label for="questions">Question:</label>
+                        <input type="text" name="comment" size="50"><br><br>
+                        <input type="submit" value="Send">
+                        </form>
+                    <div id="draaien" onclick="omdraaien()">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+    <script>
+        var kaart = document.querySelector('.kaart');
+        function omdraaien(){
+            kaart.classList.toggle('omdraaien');
+        }; 
+    </script>
+    <script>
+        function openCity(evt, cityName) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " active";
+        }
+        </script>
+</html>
