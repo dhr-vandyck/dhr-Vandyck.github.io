@@ -110,13 +110,8 @@ main{
 
  
 .websites,
+angular,
 .web-pages {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    text-decoration: none;
     width: 100px;
     height: 40px;
     background-color: #E94B3CFF;
@@ -125,12 +120,6 @@ main{
     border: none;
     font-weight: bold;
     font-size: .8em;
-}
-.websites {
-    margin: 30px 0 0 20px;
-}
-.web-pages {
-    margin: 30px 0 0 330px;
 }
 
 
