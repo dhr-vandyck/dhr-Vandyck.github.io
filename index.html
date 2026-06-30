@@ -57,14 +57,13 @@
         .chat-input-group { display: flex; gap: 10px; }
         .chat-input-group input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; }
         .chat-input-group button { padding: 12px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; background-color: var(--primary); color: white; }
-        #initBtn { background-color: var(--success); color: white; padding: 12px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
         button:disabled, input:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">Ceddy Vandyck test 4</div>
+        <div class="logo">Ceddy Vandyck test 5</div>
         <ul>
             <li><a href="#" class="active">Home & AI</a></li>
             <li><a href="games.html">Mijn Games</a></li>
@@ -88,13 +87,13 @@
         <div class="chat-container">
             <div class="chat-header">
                 <h3>Interactieve AI Assistent</h3>
-                <div id="statusBox" class="status-msg">Klik op 'Activeer AI' om het model in te laden...</div>
+                <div id="statusBox" class="status-msg">AI start automatisch op...</div>
             </div>
             <div id="chatBox" class="chat-box"></div>
             <div class="chat-input-group">
                 <input type="text" id="userInput" placeholder="Stel een vraag..." disabled>
+                <!-- Knop om te versturen -->
                 <button id="sendBtn" onclick="askBrowserAI()" disabled>Verstuur</button>
-                <button id="initBtn" onclick="initializeAI()">Activeer AI</button>
             </div>
         </div>
     </div>
@@ -103,14 +102,12 @@
         let engine;
         const selectedModel = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC"; 
 
-        async function initializeAI() {
+        // NIEUW: De AI start direct vanzelf op zodra de pagina inlaadt
+        async function autoInitializeAI() {
             const statusBox = document.getElementById('statusBox');
-            const initBtn = document.getElementById('initBtn');
-            initBtn.disabled = true;
             statusBox.innerText = "AI-engine opstarten...";
 
             try {
-                // De engine wordt nu direct uit het ingebakken script gehaald!
                 engine = await webllm.CreateMLCEngine(selectedModel, {
                     initProgressCallback: (report) => { statusBox.innerText = report.text; }
                 });
@@ -119,13 +116,14 @@
                 statusBox.innerText = "AI actief! Gevoed door jouw lokale CPU/GPU.";
                 document.getElementById('userInput').disabled = false;
                 document.getElementById('sendBtn').disabled = false;
-                initBtn.style.display = 'none';
             } catch (error) {
                 statusBox.style.color = "#ef4444";
                 statusBox.innerText = "Fout bij laden: " + error.message;
-                initBtn.disabled = false;
             }
         }
+
+        // Koppel de automatische start aan het laden van de pagina
+        window.onload = autoInitializeAI;
 
         async function askBrowserAI() {
             const inputField = document.getElementById('userInput');
@@ -141,11 +139,10 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // Roept de ingebakken WebLLM chat-completions simulator aan
                 const reply = await engine.chatCompletionsCreate({
                     messages: [{ role: "user", content: prompt }]
                 });
-                chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${reply.choices[0].message.content}</div>`;
+                chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${reply.choices.message.content}</div>`;
             } catch (error) {
                 chatBox.innerHTML += `<div class="msg ai-msg" style="color:#ef4444;"><b>Fout:</b> Genereren mislukt.</div>`;
             }
