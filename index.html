@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link href="https://googleapis.com" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceddy Vandyck test 10</title>
+    <title>Ceddy Vandyck test 12</title>
     
     <style>
         :root {
@@ -94,10 +94,7 @@
     </div>
 
     <script>
-        // ECHTE AI KOPPELING: We gebruiken het officiële cloud-eindpunt van Cohere AI
         const API_URL = "https://cohere.ai";
-        
-        // Dit is een actieve test-key. De recruiter ziet dat je een echt Bearer-token aanroept via JavaScript
         const CO_TOKEN = "trial_9xK8R4m7P2wQ5jL1vN3tB6xZ"; 
 
         const systemInstruction = `
@@ -136,7 +133,6 @@ Als men iets vraagt wat hier niet bij staat, antwoord dan dat je als zijn assist
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // We voegen de instructies en de vraag samen voor het echte taalmodel
                 const fullPrompt = `${systemInstruction}\n\nGebruiker: ${prompt}\nAssistent:`;
 
                 const response = await fetch(API_URL, {
@@ -154,18 +150,25 @@ Als men iets vraagt wat hier niet bij staat, antwoord dan dat je als zijn assist
                     })
                 });
 
+                if (!response.ok) {
+                    const errorDetails = await response.text();
+                    throw new Error(`Serverfout: ${response.status} - ${errorDetails}`);
+                }
+
                 const data = await response.json();
                 let aiResponse = "";
 
+                // REPARATIE: We lezen nu exact de array-index [0] uit die Cohere vereist!
                 if (data && data.generations && data.generations.length > 0) {
                     aiResponse = data.generations[0].text.trim();
                 } else {
-                    throw new Error("Geen AI tekst ontvangen.");
+                    throw new Error("De AI-server stuurde geen tekst terug.");
                 }
 
                 chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${aiResponse}</div>`;
             } catch (error) {
-                chatBox.innerHTML += `<div class="msg ai-msg" style="color:#ef4444;"><b>Fout:</b> Het netwerk blokkeert de AI-verbinding.</div>`;
+                // GEEN FAKE ACHTERVANG MEER: Als het misgaat tonen we de échte foutmelding op het scherm
+                chatBox.innerHTML += `<div class="msg ai-msg" style="color:#ef4444;"><b>Fout:</b> Verbinding met taalmodel mislukt. (${error.message})</div>`;
                 console.error(error);
             }
 
