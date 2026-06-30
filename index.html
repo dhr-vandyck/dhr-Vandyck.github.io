@@ -2,226 +2,216 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link href="https://googleapis.com" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceddy Vandyck - Portfolio & AI Assistent</title>
-    
+    <title>Mijn AI Assistent</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --success: #10b981;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding-bottom: 60px; }
-
-        nav {
-            background-color: var(--card-bg); padding: 15px 30px; display: flex;
-            justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;
-            position: sticky; top: 0; z-index: 100;
+        body {
+            background-color: #121214;
+            color: #e1e1e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
         }
-        nav .logo { font-weight: 600; font-size: 1.2rem; color: var(--primary); }
-        nav ul { display: flex; list-style: none; gap: 20px; }
-        nav ul a { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; }
-        nav ul a:hover, nav ul .active { color: var(--text-main); }
 
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            background-color: #1a1a1e;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #29292e;
+        }
 
-        .intro-section { display: flex; flex-direction: column; justify-content: center; }
-        h1 { font-size: 2.5rem; font-weight: 600; margin-bottom: 15px; color: var(--primary); }
-        p { color: var(--text-muted); margin-bottom: 25px; }
+        .chat-header {
+            background-color: #04d361;
+            color: #0a0a0c;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-        .subscribe-form { display: flex; gap: 10px; }
-        .subscribe-form input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: var(--card-bg); color: white; }
-        .subscribe-form button { padding: 12px 20px; background-color: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .chat-header .status-dot {
+            width: 100%;
+            max-width: 10px;
+            height: 10px;
+            background-color: #0a0a0c;
+            border-radius: 50%;
+        }
 
-        .chat-container { background-color: var(--card-bg); border-radius: 12px; padding: 24px; border: 1px solid #334155; display: flex; flex-direction: column; height: 480px; }
-        .chat-header { margin-bottom: 15px; }
-        .status-msg { font-size: 0.85rem; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
-        .chat-box { flex: 1; overflow-y: auto; border: 1px solid #334155; border-radius: 8px; padding: 15px; background-color: #0f172a; margin-bottom: 15px; }
-        
-        .msg { margin-bottom: 12px; padding: 10px 14px; border-radius: 8px; max-width: 85%; font-size: 0.95rem; }
-        .user-msg { background-color: var(--primary); color: white; margin-left: auto; }
-        .ai-msg { background-color: #1e293b; color: var(--text-main); border: 1px solid #334155; }
+        .messages-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-        .chat-input-group { display: flex; gap: 10px; }
-        .chat-input-group input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; }
-        .chat-input-group button { padding: 12px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; background-color: var(--primary); color: white; }
-        button:disabled, input:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* Scrollbar styling */
+        .messages-box::-webkit-scrollbar {
+            width: 6px;
+        }
+        .messages-box::-webkit-scrollbar-thumb {
+            background-color: #29292e;
+            border-radius: 3px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .message.user {
+            background-color: #29292e;
+            color: #e1e1e6;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .message.ai {
+            background-color: #202024;
+            color: #e1e1e6;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border-left: 3px solid #04d361;
+        }
+
+        .message.loading {
+            background-color: transparent;
+            color: #8d8d99;
+            align-self: flex-start;
+            font-style: italic;
+            padding: 0 10px;
+        }
+
+        .input-area {
+            padding: 15px 20px;
+            background-color: #202024;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #29292e;
+        }
+
+        .input-area input {
+            flex: 1;
+            background-color: #121214;
+            border: 1px solid #29292e;
+            padding: 12px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-area input:focus {
+            border-color: #04d361;
+        }
+
+        .input-area button {
+            background-color: #04d361;
+            color: #0a0a0c;
+            border: none;
+            padding: 0 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .input-area button:hover {
+            background-color: #00b34d;
+        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">Ceddy Vandyck</div>
-        <ul>
-            <li><a href="#" class="active">Home & AI</a></li>
-            <li><a href="games.html">Mijn Games</a></li>
-            <li><a href="cv.html">Online CV</a></li>
-        </ul>
-    </nav>
-
-    <div class="container">
-        <div class="intro-section">
-            <h1>Hallo, ik ben Ceddy</h1>
-            <p>
-                Welkom op mijn portfolio. Aan de rechterkant zie je een live demonstratie van een <b>Echte AI Assistent</b> 
-                die via een cloud-API met Google Gemini communiceert. Vraag gerust naar mijn hobby's of projecten!
-            </p>
-            <form class="subscribe-form">
-                <input type="email" name="EMAIL" placeholder="Vul je e-mailadres in..." required>
-                <button type="submit">Houd me op de hoogte</button>
-            </form>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="status-dot"></div>
+            <span>Mijn AI Assistent</span>
+        </div>
+        
+        <div class="messages-box" id="messagesBox">
+            <div class="message ai">Hallo! Ik ben jouw AI-assistent. Hoe kan ik je vandaag helpen?</div>
         </div>
 
-        <div class="chat-container">
-            <div class="chat-header">
-                <h3>Interactieve AI Assistent</h3>
-                <div id="statusBox" class="status-msg">Verbinding maken met Google Gemini API...</div>
-            </div>
-            <div id="chatBox" class="chat-box"></div>
-            <div class="chat-input-group">
-                <input type="text" id="userInput" placeholder="Stel een vraag..." disabled>
-                <button id="sendBtn" onclick="askBrowserAI()" disabled>Verstuur</button>
-            </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Typ een bericht..." onkeydown="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()">Verzend</button>
         </div>
     </div>
 
-    <div id="chatbox" style="border: 1px solid #ccc; padding: 15px; max-width: 400px; border-radius: 8px;">
-  <div id="messages" style="height: 300px; overflow-y: auto; margin-bottom: 10px; border-bottom: 1px solid #eee;"></div>
-  <input type="text" id="userInput" placeholder="Typ een bericht..." style="width: 70%; padding: 5px;">
-  <button onclick="sendMessage()" style="width: 25%; padding: 5px;">Verzenden</button>
-</div>
-
-<script>
-  let conversationHistory = [];
-
-  async function sendMessage() {
-    const input = document.getElementById('userInput');
-    const messageText = input.value.trim();
-    if (!messageText) return;
-
-    // 1. Toon jouw bericht in het scherm
-    const messagesDiv = document.getElementById('messages');
-    messagesDiv.innerHTML += `<p><b>Jij:</b> ${messageText}</p>`;
-    conversationHistory.push({ role: "user", content: messageText });
-    input.value = '';
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-    // 2. Toon een laad-berichtje
-    messagesDiv.innerHTML += `<p id="loading"><i>AI is aan het nadenken...</i></p>`;
-
-    try {
-      // 3. Maak verbinding met jouw Vercel backend
-      const response = await fetch('https://vercel.app', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conversationHistory })
-      });
-
-      const data = await response.json();
-      
-      // Verwijder het laad-berichtje
-      document.getElementById('loading').remove();
-
-      // 4. Toon het antwoord van de AI
-      const aiReply = data.choices[0].message.content;
-      messagesDiv.innerHTML += `<p><b>AI:</b> ${aiReply}</p>`;
-      conversationHistory.push({ role: "assistant", content: aiReply });
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-    } catch (error) {
-      document.getElementById('loading').remove();
-      messagesDiv.innerHTML += `<p style="color:red;"><b>Fout:</b> Kon geen verbinding maken met de AI.</p>`;
-      console.error(error);
-    }
-  }
-</script>
-
-
     <script>
-        // Jouw unieke Google Gemini API Key is hier succesvol ingevuld!
-        const GEMINI_KEY = "AQ.Ab8RN6Kjm4AKh-OmG0AfQ27JDApYQhIj2_Hy-wYkyuo9aB9w8w"; 
-        
-        const API_URL = `https://googleapis.com{GEMINI_KEY}`;
+        let conversationHistory = [];
 
-        const systemInstruction = `
-Je bent de persoonlijke AI-assistent op de website van developer Ceddy Vandyck.
-Richtlijnen:
-- Antwoord ALTIJD in het Nederlands.
-- Wees kort, beleefd en professioneel.
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const messageText = input.value.trim();
+            if (!messageText) return;
 
-Feiten over Ceddy om te gebruiken:
-- Ceddy Vandyck is een proactieve webdeveloper die zijn eigen HTML-games ontwerpt en bouwt.
-- Hij heeft dit portfolio gebouwd met een live AI-cloudkoppeling om zijn vaardigheden te tonen.
-- Zijn hobby's zijn programmeren, webdevelopment, frameworks ontdekken en kleinschalige HTML-spelletjes maken.
+            const messagesBox = document.getElementById('messagesBox');
+            
+            // 1. Toon gebruikersbericht
+            messagesBox.innerHTML += `<div class="message user">${messageText}</div>`;
+            conversationHistory.push({ role: "user", content: messageText });
+            input.value = '';
+            messagesBox.scrollTop = messagesBox.scrollHeight;
 
-Als men iets vraagt wat hier niet bij staat, antwoord dan dat je als zijn assistent alleen professionele informatie over Ceddy's portfolio, games en vaardigheden kunt delen.
-`.trim();
-
-        window.onload = function() {
-            const statusBox = document.getElementById('statusBox');
-            statusBox.style.color = "var(--success)";
-            statusBox.innerText = "Echte Google Gemini AI actief!";
-            document.getElementById('userInput').disabled = false;
-            document.getElementById('sendBtn').disabled = false;
-        };
-
-        async function askBrowserAI() {
-            const inputField = document.getElementById('userInput');
-            const chatBox = document.getElementById('chatBox');
-            const sendBtn = document.getElementById('sendBtn');
-            const prompt = inputField.value;
-            if (!prompt) return;
-
-            chatBox.innerHTML += `<div class="msg user-msg"><b>Jij:</b> ${prompt}</div>`;
-            inputField.value = '';
-            inputField.disabled = true;
-            sendBtn.disabled = true;
-            chatBox.scrollTop = chatBox.scrollHeight;
+            // 2. Toon laad-animatie
+            messagesBox.innerHTML += `<div class="message loading" id="loading">AI is aan het nadenken...</div>`;
+            messagesBox.scrollTop = messagesBox.scrollHeight;
 
             try {
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        systemInstruction: { parts: [{ text: systemInstruction }] },
-                        generationConfig: { maxOutputTokens: 150, temperature: 0.3 }
-                    })
+                // 3. Verzoek naar Vercel backend
+                const response = await fetch('https://vercel.app', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: conversationHistory })
                 });
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Google API Status ${response.status}: ${errorText}`);
-                }
-
                 const data = await response.json();
-                let aiResponse = "";
+                
+                // Verwijder laad-animatie
+                document.getElementById('loading').remove();
 
-                // Geoptimaliseerde controle voor de API response-structuur
-                if (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-                    aiResponse = data.candidates[0].content.parts[0].text.trim();
-                } else {
-                    throw new Error("Geen tekst gegenereerd.");
-                }
+                // 4. Toon AI antwoord
+                const aiReply = data.choices[0].message.content;
+                messagesBox.innerHTML += `<div class="message ai">${aiReply}</div>`;
+                conversationHistory.push({ role: "assistant", content: aiReply });
+                messagesBox.scrollTop = messagesBox.scrollHeight;
 
-                chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${aiResponse}</div>`;
             } catch (error) {
-                chatBox.innerHTML += `<div class="msg ai-msg" style="color:#ef4444;"><b>Fout:</b> Verbinding met taalmodel mislukt. (${error.message})</div>`;
+                const loadingElement = document.getElementById('loading');
+                if (loadingElement) loadingElement.remove();
+                
+                messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #f75a68;"><b>Fout:</b> Er kon geen verbinding worden gemaakt met de AI-server.</div>`;
                 console.error(error);
+                messagesBox.scrollTop = messagesBox.scrollHeight;
             }
-
-            inputField.disabled = false;
-            sendBtn.disabled = false;
-            chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
+
 </body>
 </html>
