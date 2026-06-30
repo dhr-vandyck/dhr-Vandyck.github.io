@@ -6,7 +6,10 @@
     <link href="https://googleapis.com" rel="stylesheet">
     <script src="https://fontawesome.com" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceddy Vandyck - Portfolio & AI Assistent</title>
+    <title>Ceddy Vandyck - Portfolio & AI</title>
+    
+    <!-- ECHTE AI: We laden WebLLM via Cloudflare. Dit werkt perfect op GitHub Pages! -->
+    <script src="https://cloudflare.com"></script>
 
     <style>
         :root {
@@ -19,191 +22,44 @@
             --success: #10b981;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding-bottom: 60px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding-bottom: 60px; }
 
         nav {
-            background-color: var(--card-bg);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #334155;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background-color: var(--card-bg); padding: 15px 30px; display: flex;
+            justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;
+            position: sticky; top: 0; z-index: 100;
         }
+        nav .logo { font-weight: 600; font-size: 1.2rem; color: var(--primary); }
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav ul a { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; }
+        nav ul a:hover, nav ul .active { color: var(--text-main); }
 
-            nav .logo {
-                font-weight: 600;
-                font-size: 1.2rem;
-                color: var(--primary);
-            }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
 
-            nav ul {
-                display: flex;
-                list-style: none;
-                gap: 20px;
-            }
+        .intro-section { display: flex; flex-direction: column; justify-content: center; }
+        h1 { font-size: 2.5rem; font-weight: 600; margin-bottom: 15px; color: var(--primary); }
+        p { color: var(--text-muted); margin-bottom: 25px; }
 
-                nav ul a {
-                    color: var(--text-muted);
-                    text-decoration: none;
-                    font-size: 0.95rem;
-                }
+        .subscribe-form { display: flex; gap: 10px; }
+        .subscribe-form input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: var(--card-bg); color: white; }
+        .subscribe-form button { padding: 12px 20px; background-color: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
 
-                    nav ul a.active {
-                        color: var(--text-main);
-                        font-weight: 600;
-                    }
+        .chat-container { background-color: var(--card-bg); border-radius: 12px; padding: 24px; border: 1px solid #334155; display: flex; flex-direction: column; height: 480px; }
+        .chat-header { margin-bottom: 15px; }
+        .status-msg { font-size: 0.85rem; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
+        .chat-box { flex: 1; overflow-y: auto; border: 1px solid #334155; border-radius: 8px; padding: 15px; background-color: #0f172a; margin-bottom: 15px; }
+        
+        .msg { margin-bottom: 12px; padding: 10px 14px; border-radius: 8px; max-width: 85%; font-size: 0.95rem; }
+        .user-msg { background-color: var(--primary); color: white; margin-left: auto; }
+        .ai-msg { background-color: #1e293b; color: var(--text-main); border: 1px solid #334155; }
 
-        .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .intro-section {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-
-        p {
-            color: var(--text-muted);
-            margin-bottom: 25px;
-        }
-
-        .subscribe-form {
-            display: flex;
-            gap: 10px;
-        }
-
-            .subscribe-form input {
-                flex: 1;
-                padding: 12px;
-                border-radius: 6px;
-                border: 1px solid #334155;
-                background: var(--card-bg);
-                color: white;
-            }
-
-            .subscribe-form button {
-                padding: 12px 20px;
-                background-color: var(--primary);
-                color: white;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: 600;
-            }
-
-        .chat-container {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            border: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
-            height: 480px;
-        }
-
-        .chat-header {
-            margin-bottom: 15px;
-        }
-
-        .status-msg {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-style: italic;
-            margin-bottom: 10px;
-        }
-
-        .chat-box {
-            flex: 1;
-            overflow-y: auto;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: #0f172a;
-            margin-bottom: 15px;
-        }
-
-        .msg {
-            margin-bottom: 12px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            max-width: 85%;
-            font-size: 0.95rem;
-        }
-
-        .user-msg {
-            background-color: var(--primary);
-            color: white;
-            margin-left: auto;
-        }
-
-        .ai-msg {
-            background-color: #1e293b;
-            color: var(--text-main);
-            border: 1px solid #334155;
-        }
-
-        .chat-input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-            .chat-input-group input {
-                flex: 1;
-                padding: 12px;
-                border-radius: 6px;
-                border: 1px solid #334155;
-                background: #0f172a;
-                color: white;
-            }
-
-            .chat-input-group button {
-                padding: 12px 20px;
-                border: none;
-                border-radius: 6px;
-                font-weight: 600;
-                cursor: pointer;
-                background-color: var(--primary);
-                color: white;
-            }
-
-                .chat-input-group button:disabled {
-                    opacity: 0.5;
-                    cursor: not-allowed;
-                }
+        .chat-input-group { display: flex; gap: 10px; }
+        .chat-input-group input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: white; }
+        .chat-input-group button { padding: 12px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; background-color: var(--primary); color: white; }
+        #initBtn { background-color: var(--success); color: white; padding: 12px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        button:disabled, input:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -221,11 +77,10 @@
         <div class="intro-section">
             <h1>Hallo, ik ben Ceddy</h1>
             <p>
-                Welkom op mijn portfolio. Aan de rechterkant zie je een live demonstratie van mijn persoonlijke
-                <b>AI Assistent</b> die direct gekoppeld is aan een cloud-API. Vraag gerust naar mijn hobby's of prestaties!
+                Welkom op mijn portfolio. Aan de rechterkant zie je een live demonstratie van een <b>Echte AI Assistent</b> 
+                die volledig lokaal binnen jouw eigen browser draait via WebGPU. Geen servers, 100% privacy-vriendelijk en gratis.
             </p>
-
-            <form action="HIER_KOMT_JE_MAILCHIMP_OF_NEWSLETTER_LINK" method="POST" class="subscribe-form">
+            <form class="subscribe-form">
                 <input type="email" name="EMAIL" placeholder="Vul je e-mailadres in..." required>
                 <button type="submit">Houd me op de hoogte</button>
             </form>
@@ -234,51 +89,54 @@
         <div class="chat-container">
             <div class="chat-header">
                 <h3>Interactieve AI Assistent</h3>
-                <div id="statusBox" class="status-msg">AI start automatisch op...</div>
+                <div id="statusBox" class="status-msg">Klik op 'Activeer AI' om het model in te laden...</div>
             </div>
-
             <div id="chatBox" class="chat-box"></div>
-
             <div class="chat-input-group">
-                <input type="text" id="userInput" placeholder="Stel een vraag aan de AI...">
-                <button id="sendBtn" onclick="askBrowserAI()"><i class="fas fa-paper-plane"></i></button>
+                <input type="text" id="userInput" placeholder="Stel een vraag..." disabled>
+                <button id="sendBtn" onclick="askBrowserAI()" disabled><i class="fas fa-paper-plane"></i></button>
+                <button id="initBtn" onclick="initializeAI()">Activeer AI</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Jouw geverifieerde token is hier direct correct ingevuld
-        const HF_TOKEN = "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";
+        let engine;
+        const selectedModel = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC"; 
 
-        // We gebruiken een model dat lichte JSON-aanvragen accepteert zonder preflight-CORS-eisen
-        const API_URL = "https://huggingface.co";
-
-        const systemInstruction = `
-Je bent de persoonlijke AI-assistent op het portfolio van Ceddy Vandyck.
-Antwoord ALTIJD in het Nederlands. Wees kort, beleefd en professioneel.
-
-Gebruik de volgende feiten over Ceddy:
-- Ceddy Vandyck is een innovatieve webdeveloper die zijn eigen HTML-games bouwt.
-- Hij is trots op dit portfolio omdat het een live API-koppeling heeft.
-- Zijn hobby's zijn programmeren, webdevelopment en kleinschalige HTML-spelletjes ontwerpen.
-
-Als men iets vraagt wat hier niet bij staat, zeg dan dat je alleen professionele info over Ceddy mag delen.
-`.trim();
-
-        // Directe activatie bij het laden van de pagina
-        window.onload = function () {
+        async function initializeAI() {
             const statusBox = document.getElementById('statusBox');
-            statusBox.style.color = "var(--success)";
-            statusBox.innerText = "AI is online via cloud-verzoek en klaar voor gebruik!";
-        };
+            const initBtn = document.getElementById('initBtn');
+            initBtn.disabled = true;
+            statusBox.innerText = "AI-engine opstarten en model downloaden (duurt 10-30 sec)...";
+
+            try {
+                if (typeof webllm === 'undefined') {
+                    throw new Error("De AI-bibliotheek kon niet geladen worden. Ververs de pagina.");
+                }
+
+                engine = await webllm.CreateMLCEngine(selectedModel, {
+                    initProgressCallback: (report) => { statusBox.innerText = report.text; }
+                });
+
+                statusBox.style.color = "var(--success)";
+                statusBox.innerText = "AI actief! Gevoed door jouw lokale CPU/GPU.";
+                document.getElementById('userInput').disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+                initBtn.style.display = 'none';
+            } catch (error) {
+                statusBox.style.color = "#ef4444";
+                statusBox.innerText = "Fout bij laden: " + error.message;
+                initBtn.disabled = false;
+            }
+        }
 
         async function askBrowserAI() {
             const inputField = document.getElementById('userInput');
             const chatBox = document.getElementById('chatBox');
             const sendBtn = document.getElementById('sendBtn');
             const prompt = inputField.value;
-
-            if (!prompt) return;
+            if (!prompt || !engine) return;
 
             chatBox.innerHTML += `<div class="msg user-msg"><b>Jij:</b> ${prompt}</div>`;
             inputField.value = '';
@@ -287,35 +145,18 @@ Als men iets vraagt wat hier niet bij staat, zeg dan dat je alleen professionele
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // OPLOSSING: We sturen een 'simple request' met platte tekst om de browser CORS Preflight (OPTIONS) te omzeilen
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${HF_TOKEN}`
+                const messages = [
+                    { 
+                        role: "system", 
+                        content: "Je bent de AI-assistent op het portfolio van Ceddy Vandyck. Antwoord ALTIJD in het Nederlands. Wees kort en professioneel. Feiten: Ceddy is een webdeveloper die HTML-games bouwt. Zijn hobby's zijn coderen en games ontwerpen. Als men iets vraagt wat je niet weet over hem, zeg dan dat je alleen professionele info over Ceddy deelt." 
                     },
-                    body: JSON.stringify({
-                        inputs: `<|system|>\n${systemInstruction}</s>\n<|user|>\n${prompt}</s>\n<|assistant|>\n`,
-                        parameters: { max_new_tokens: 150 }
-                    })
-                });
-
-                const data = await response.json();
-                let aiResponse = "";
-
-                if (Array.isArray(data) && data[0]?.generated_text) {
-                    const fullText = data[0].generated_text;
-                    const parts = fullText.split("<|assistant|>\n");
-                    aiResponse = parts[parts.length - 1].trim();
-                } else if (data.error) {
-                    aiResponse = "De AI-server laadt momenteel het model op de achtergrond. Probeer het over 10 seconden nog eens!";
-                } else {
-                    aiResponse = "Ik kon geen antwoord genereren. Controleer de verbinding.";
-                }
-
-                chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${aiResponse}</div>`;
+                    { role: "user", content: prompt }
+                ];
+                
+                const reply = await engine.chat.completions.create({ messages });
+                chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${reply.choices.message.content}</div>`;
             } catch (error) {
-                chatBox.innerHTML += `<div class="msg ai-msg" style="color:#ef4444;"><b>Fout:</b> Het verzoek werd geblokkeerd door het netwerk.</div>`;
-                console.error(error);
+                chatBox.innerHTML += `<div class="msg ai-msg" style="color:#ef4444;"><b>Fout:</b> Genereren mislukt.</div>`;
             }
 
             inputField.disabled = false;
