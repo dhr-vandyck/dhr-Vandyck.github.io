@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceddy Vandyck - Home & AI</title>
+    <title>Test 1 Ceddy Vandyck - Home & AI</title>
     <style>
         * {
             box-sizing: border-box;
@@ -233,7 +233,7 @@
 
     </div>
 
-    <script>
+  <script>
         let conversationHistory = [];
 
         async function sendMessage() {
@@ -251,8 +251,6 @@
             messagesBox.innerHTML += `<div class="message loading" id="loading">AI is aan het nadenken...</div>`;
             messagesBox.scrollTop = messagesBox.scrollHeight;
 
-            // Hier is de slimme truc: we knippen je unieke link in kleine stukjes 
-            // zodat jouw scherm de tekst niet meer kan inkorten!
             const deel1 = "https://ai-backend-";
             const deel2 = "pearl-six.vercel.app";
             const deel3 = "/api/chat";
@@ -270,12 +268,22 @@
                 const loadingElement = document.getElementById('loading');
                 if (loadingElement) loadingElement.remove();
 
+                // 3. Verwerk de backend response (Geoptimaliseerd voor Versie 4)
                 if (data && data.choices && data.choices[0] && data.choices[0].message) {
                     const aiReply = data.choices[0].message.content;
                     messagesBox.innerHTML += `<div class="message ai">${aiReply}</div>`;
                     conversationHistory.push({ role: "assistant", content: aiReply });
+                } else if (data && data.choices && data.choices.message) {
+                    const aiReply = data.choices.message.content;
+                    messagesBox.innerHTML += `<div class="message ai">${aiReply}</div>`;
+                    conversationHistory.push({ role: "assistant", content: aiReply });
+                } else if (data && data.error) {
+                    // Toon de exacte foutmelding van OpenRouter op je scherm
+                    const errorMsg = typeof data.error === 'object' ? JSON.stringify(data.error) : data.error;
+                    messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>API Fout:</b> ${errorMsg}</div>`;
                 } else {
-                    messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> De structuur van het AI-antwoord is onjuist.</div>`;
+                    // Als het formaat compleet vreemd is, dumpen we de ruwe data om het te kunnen lezen
+                    messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Data JSON:</b> ${JSON.stringify(data)}</div>`;
                 }
                 messagesBox.scrollTop = messagesBox.scrollHeight;
 
@@ -288,7 +296,8 @@
                 messagesBox.scrollTop = messagesBox.scrollHeight;
             }
         }
-    </script>
+</script>
+
 
 </body>
 </html>
