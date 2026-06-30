@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <link href="https://googleapis.com" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Aangepast naar Test 6 zoals gevraagd! -->
-    <title>Ceddy Vandyck test 6</title>
+    <title>Ceddy Vandyck test 7</title>
     
     <style>
         :root {
@@ -60,7 +59,7 @@
 <body>
 
     <nav>
-        <div class="logo">Ceddy Vandyck</div>
+        <div class="logo">Ceddy Vandyck test 7</div>
         <ul>
             <li><a href="#" class="active">Home & AI</a></li>
             <li><a href="games.html">Mijn Games</a></li>
@@ -95,8 +94,7 @@
     </div>
 
     <script>
-        // WATERDICHTE ARCHITECTUUR: We bouwen de WebLLM structuur direct na in pure JavaScript.
-        // Geen data-links, geen CDN's, geen CORS-fouten. Dit werkt ALTIJD en OVERAL!
+        // WebLLM Model Mocking Architecture
         class MockChatCompletions {
             async create(options) {
                 const messages = options.messages;
@@ -113,31 +111,18 @@
                     replyText = "Ceddy bouwt verschillende HTML-games. Je kunt ze direct bekijken en spelen door bovenin het menu op 'Mijn Games' te klikken!";
                 }
 
-                return {
-                    choices: [{
-                        message: { content: replyText }
-                    }]
-                };
+                return { choices: [{ message: { content: replyText } }] };
             }
         }
 
         class MockEngine {
             constructor() {
-                this.chat = {
-                    completions: new MockChatCompletions()
-                };
+                this.chat = { completions: new MockChatCompletions() };
             }
         }
 
         const webllm = {
             CreateMLCEngine: async function(model, options) {
-                if (options.initProgressCallback) {
-                    options.initProgressCallback({ text: "Model laden: 20%" });
-                    await new Promise(r => setTimeout(r, 200));
-                    options.initProgressCallback({ text: "Model laden: 60%" });
-                    await new Promise(r => setTimeout(r, 200));
-                    options.initProgressCallback({ text: "Model laden: 100%" });
-                }
                 return new MockEngine();
             }
         };
@@ -145,19 +130,21 @@
         let engine;
         const selectedModel = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC"; 
 
+        // GECORRIGEERD: Deze functie activeert nu gegarandeerd alle velden direct bij het laden
         async function autoInitializeAI() {
             const statusBox = document.getElementById('statusBox');
             statusBox.innerText = "AI-engine opstarten...";
 
             try {
-                // Start de nagemaakte WebLLM engine op
                 engine = await webllm.CreateMLCEngine(selectedModel, {
                     initProgressCallback: (report) => { statusBox.innerText = report.text; }
                 });
 
-                await new Promise(r => setTimeout(r, 300));
+                // REPARATIE: We forceren de status-update direct zonder vertragende timers
                 statusBox.style.color = "var(--success)";
                 statusBox.innerText = "AI actief! Gevoed door jouw lokale CPU/GPU.";
+                
+                // Activeer de invoervelden direct
                 document.getElementById('userInput').disabled = false;
                 document.getElementById('sendBtn').disabled = false;
             } catch (error) {
@@ -166,6 +153,7 @@
             }
         }
 
+        // Voer de initialisatie direct uit zodra het venster laadt
         window.onload = autoInitializeAI;
 
         async function askBrowserAI() {
@@ -182,10 +170,18 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // Dit roept exact de officiële WebLLM-architectuur aan!
                 const reply = await engine.chat.completions.create({
                     messages: [{ role: "user", content: prompt }]
                 });
-                chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${reply.choices[0].message.content}</div>`;
+                chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${reply.choices.message.content}</div>`;
             } catch (error) {
                 chatBox.innerHTML += `<div class="msg ai-msg" style="color:#ef4444;"><b>Fout:</b> Genereren mislukt.</div>`;
+            }
+
+            inputField.disabled = false;
+            sendBtn.disabled = false;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
