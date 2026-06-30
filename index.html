@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link href="https://googleapis.com" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceddy Vandyck test 12</title>
+    <title>Ceddy Vandyck - Portfolio & AI Assistent</title>
     
     <style>
         :root {
@@ -72,7 +72,7 @@
             <h1>Hallo, ik ben Ceddy</h1>
             <p>
                 Welkom op mijn portfolio. Aan de rechterkant zie je een live demonstratie van een <b>Echte AI Assistent</b> 
-                die via een cloud-API met een geavanceerd taalmodel communiceert. Vraag gerust naar mijn hobby's of projecten!
+                die via een cloud-API met Google Gemini communiceert. Vraag gerust naar mijn hobby's of projecten!
             </p>
             <form class="subscribe-form">
                 <input type="email" name="EMAIL" placeholder="Vul je e-mailadres in..." required>
@@ -83,7 +83,7 @@
         <div class="chat-container">
             <div class="chat-header">
                 <h3>Interactieve AI Assistent</h3>
-                <div id="statusBox" class="status-msg">Verbinding maken met AI-cloud...</div>
+                <div id="statusBox" class="status-msg">Verbinding maken met Google Gemini API...</div>
             </div>
             <div id="chatBox" class="chat-box"></div>
             <div class="chat-input-group">
@@ -94,8 +94,10 @@
     </div>
 
     <script>
-        const API_URL = "https://cohere.ai";
-        const CO_TOKEN = "trial_9xK8R4m7P2wQ5jL1vN3tB6xZ"; 
+        // Jouw unieke Google Gemini API Key is hier succesvol ingevuld!
+        const GEMINI_KEY = "AQ.Ab8RN6Kjm4AKh-OmG0AfQ27JDApYQhIj2_Hy-wYkyuo9aB9w8w"; 
+        
+        const API_URL = `https://googleapis.com{GEMINI_KEY}`;
 
         const systemInstruction = `
 Je bent de persoonlijke AI-assistent op de website van developer Ceddy Vandyck.
@@ -114,7 +116,7 @@ Als men iets vraagt wat hier niet bij staat, antwoord dan dat je als zijn assist
         window.onload = function() {
             const statusBox = document.getElementById('statusBox');
             statusBox.style.color = "var(--success)";
-            statusBox.innerText = "Echte AI cloud-verbinding actief!";
+            statusBox.innerText = "Echte Google Gemini AI actief!";
             document.getElementById('userInput').disabled = false;
             document.getElementById('sendBtn').disabled = false;
         };
@@ -133,41 +135,33 @@ Als men iets vraagt wat hier niet bij staat, antwoord dan dat je als zijn assist
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                const fullPrompt = `${systemInstruction}\n\nGebruiker: ${prompt}\nAssistent:`;
-
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: { 
-                        "Authorization": `Bearer ${CO_TOKEN}`,
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        model: "command-r",
-                        prompt: fullPrompt,
-                        max_tokens: 100,
-                        temperature: 0.3,
-                        stop_sequences: ["Gebruiker:", "\n"]
+                        contents: [{ parts: [{ text: prompt }] }],
+                        systemInstruction: { parts: [{ text: systemInstruction }] },
+                        generationConfig: { maxOutputTokens: 150, temperature: 0.3 }
                     })
                 });
 
                 if (!response.ok) {
-                    const errorDetails = await response.text();
-                    throw new Error(`Serverfout: ${response.status} - ${errorDetails}`);
+                    const errorText = await response.text();
+                    throw new Error(`Google API Status ${response.status}: ${errorText}`);
                 }
 
                 const data = await response.json();
                 let aiResponse = "";
 
-                // REPARATIE: We lezen nu exact de array-index [0] uit die Cohere vereist!
-                if (data && data.generations && data.generations.length > 0) {
-                    aiResponse = data.generations[0].text.trim();
+                // Geoptimaliseerde controle voor de API response-structuur
+                if (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+                    aiResponse = data.candidates[0].content.parts[0].text.trim();
                 } else {
-                    throw new Error("De AI-server stuurde geen tekst terug.");
+                    throw new Error("Geen tekst gegenereerd.");
                 }
 
                 chatBox.innerHTML += `<div class="msg ai-msg"><b>AI:</b> ${aiResponse}</div>`;
             } catch (error) {
-                // GEEN FAKE ACHTERVANG MEER: Als het misgaat tonen we de échte foutmelding op het scherm
                 chatBox.innerHTML += `<div class="msg ai-msg" style="color:#ef4444;"><b>Fout:</b> Verbinding met taalmodel mislukt. (${error.message})</div>`;
                 console.error(error);
             }
