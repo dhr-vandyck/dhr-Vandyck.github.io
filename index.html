@@ -88,12 +88,14 @@
             margin-bottom: 20px;
         }
 
+        /* De container is nu iets hoger en verbergt de buitenste scrollbalk */
         .chat-container {
-            height: 540px;
+            height: 570px;
             background-color: var(--card-bg);
             border-radius: 12px;
-            padding: 10px;
+            padding: 5px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
     </style>
 </head>
@@ -116,21 +118,17 @@
             <p>Dankzij het ingebouwde RAG-systeem heeft deze widget directe toegang tot mijn documentatie. Vraag de AI gerust naar mijn hobby's, vaardigheden of game-projecten om te zien hoe snel hij leert!</p>
         </div>
 
-        <!-- Rechter Paneel: Veilige container voor de chatbot -->
-        <div class="chat-container" id="chatbotVak">
-            <!-- JavaScript plakt hier dadelijk de perfecte link in -->
-        </div>
+        <!-- Rechter Paneel: Chatbox zonder buitenste scrollbalk -->
+        <div class="chat-container" id="chatbotVak"></div>
     </div>
 
     <script>
-        // We bouwen de officiële, lange embed-link van jouw Space op in 3 veilige stukken
-        const linkDeel1 = "https://huggingface.co/";
+        const linkDeel1 = "https://huggingface.co";
         const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
         const linkDeel3 = "/embed";
         
         const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
 
-        // Plak de iframe strak en zonder dropdown-borders in je container
         const containerVak = document.getElementById("chatbotVak");
         containerVak.innerHTML = `
             <iframe 
@@ -138,7 +136,7 @@
                 frameborder="0" 
                 width="100%" 
                 height="100%" 
-                style="border-radius: 8px; background-color: transparent;">
+                style="border-radius: 8px; background-color: transparent; overflow: hidden;">
             </iframe>
         `;
     </script>
