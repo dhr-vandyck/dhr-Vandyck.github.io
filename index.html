@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Versie 8 Ceddy Vandyck - Portfolio</title>
+    <title>Ceddy Vandyck - Portfolio</title>
     <style>
         :root {
             --bg-color: #0b111e;
@@ -209,14 +209,14 @@
         <!-- Linker Paneel: Info -->
         <div class="panel">
             <h1>Welkom op mijn portfolio!</h1>
-            <p>Hier vind je een werkende demonstratie van een <b>Echte AI Assistent</b> die via een cloud-API communiceert met Google Gemma 2 op OpenRouter.</p>
+            <p>Hier vind je een werkende demonstratie van een <b>Echte AI Assistent</b> die via een cloud-API rechtstreeks communiceert met Google Gemma 2 op OpenRouter.</p>
             <p>Vraag gerust naar mijn hobby's of projecten! Later zal deze assistent worden uitgebreid met een vector-database om documenten rechtstreeks te kunnen doorzoeken.</p>
         </div>
 
         <!-- Rechter Paneel: Chatbot Widget -->
         <div class="panel chat-container">
             <h3 class="panel-title" id="chatTitle">
-                <span class="status-dot"></span>Gemma 2 Assistent - Versie 9
+                <span class="status-dot"></span>Gemma Direct - Versie 10
             </h3>
             
             <div class="messages-box" id="messagesBox">
@@ -254,16 +254,23 @@
             messagesBox.innerHTML += `<div class="message loading" id="loading">AI is aan het nadenken...</div>`;
             messagesBox.scrollTop = messagesBox.scrollHeight;
 
-            const deel1 = "https://";
-            const deel2 = "ai-backend-brain-ish.vercel.app";
-            const deel3 = "/chat";
-            const volledigeUrl = deel1 + deel2 + deel3;
+            // Directe verbinding met OpenRouter API
+            const volledigeUrl = "https://openrouter.ai";
+            const mijnSleutel = "HIER_JOUW_OPENROUTER_API_KEY_PLAKKEN"; // <--- VERVANG DIT DOOR JE SK-OR-V1-... SLEUTEL!
 
             try {
                 const response = await fetch(volledigeUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: conversationHistory })
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${mijnSleutel}`,
+                        'HTTP-Referer': 'https://github.io',
+                        'X-Title': 'Ceddy Portfolio'
+                    },
+                    body: JSON.stringify({ 
+                        model: "google/gemma-2-9b-it:free",
+                        messages: conversationHistory 
+                    })
                 });
 
                 const data = await response.json();
@@ -271,6 +278,7 @@
                 const loadingElement = document.getElementById('loading');
                 if (loadingElement) loadingElement.remove();
 
+                // Verwerk het directe antwoord van OpenRouter
                 if (data && data.choices && data.choices[0] && data.choices[0].message) {
                     const aiReply = data.choices[0].message.content;
                     messagesBox.innerHTML += `<div class="message ai">${aiReply}</div>`;
@@ -279,7 +287,7 @@
                     const errorMsg = typeof data.error === 'object' ? JSON.stringify(data.error) : data.error;
                     messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>API Fout:</b> ${errorMsg}</div>`;
                 } else {
-                    messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> Onbekende datastructuur ontvangen: ${JSON.stringify(data)}</div>`;
+                    messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> Onverwachte datastructuur ontvangen: ${JSON.stringify(data)}</div>`;
                 }
                 messagesBox.scrollTop = messagesBox.scrollHeight;
 
@@ -287,7 +295,7 @@
                 const loadingElement = document.getElementById('loading');
                 if (loadingElement) loadingElement.remove();
                 
-                messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> Kon geen verbinding maken met de AI-server. (${error.message})</div>`;
+                messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> Kon geen verbinding maken met OpenRouter. (${error.message})</div>`;
                 console.error(error);
                 messagesBox.scrollTop = messagesBox.scrollHeight;
             }
