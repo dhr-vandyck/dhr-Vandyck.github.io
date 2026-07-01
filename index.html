@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test 5 Ceddy Vandyck - Home & AI</title>
+    <title>test test Ceddy Vandyck - Portfolio</title>
     <style>
+        :root {
+            --bg-color: #0b111e;
+            --card-bg: #161f30;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -13,228 +24,220 @@
         }
 
         body {
-            background-color: #0b111e;
-            color: #e1e1e6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
             padding: 20px;
         }
 
-        .navbar {
-            width: 100%;
-            max-width: 1000px;
+        header {
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #1f293d;
-            margin-bottom: 40px;
+            padding: 10px 0;
+            border-bottom: 1px solid #1e293b;
         }
 
-        .navbar h1 {
-            color: #38bdf8;
-            font-size: 1.5rem;
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
         }
 
-        .nav-links a {
-            color: #94a3b8;
+        nav a {
+            color: var(--text-muted);
             text-decoration: none;
             margin-left: 20px;
-            font-weight: 500;
+            transition: color 0.3s;
         }
 
-        .nav-links a:hover, .nav-links a.active {
-            color: #fff;
+        nav a:hover {
+            color: var(--text-color);
         }
 
-        .main-container {
-            width: 100%;
-            max-width: 1000px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: 100%;
+            grid-template-columns: 1fr 1fr;
             gap: 30px;
         }
 
-        @media (min-width: 768px) {
-            .main-container {
-                grid-template-columns: 1fr 1fr;
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
             }
         }
 
-        .info-panel {
-            background-color: #111827;
-            padding: 30px;
+        .panel {
+            background-color: var(--card-bg);
             border-radius: 12px;
-            border: 1px solid #1f293d;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .info-panel h2 {
-            color: #fff;
-            font-size: 1.8rem;
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
         }
 
-        .info-panel p {
-            color: #94a3b8;
-            line-height: 1.6;
+        p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
         }
 
         .chat-container {
-            width: 100%;
-            height: 500px;
-            background-color: #111827;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            border: 1px solid #1f293d;
+            height: 450px;
         }
 
-        .chat-header {
-            background-color: #1f293d;
-            color: #fff;
-            padding: 15px 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
+        .panel-title {
+            font-size: 18px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #374151;
         }
 
-        .chat-header .status-dot {
+        .status-dot {
             width: 10px;
             height: 10px;
-            background-color: #10b981;
+            background-color: var(--success);
             border-radius: 50%;
+            margin-right: 10px;
+            display: inline-block;
         }
 
         .messages-box {
-            flex: 1;
-            padding: 20px;
+            flex-grow: 1;
             overflow-y: auto;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: rgba(11, 17, 30, 0.5);
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            background-color: #0f172a;
+            gap: 12px;
+        }
+
+        .messages-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages-box::-webkit-scrollbar-thumb {
+            background-color: #334155;
+            border-radius: 3px;
         }
 
         .message {
-            max-width: 85%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: 8px;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-
-        .message.user {
-            background-color: #3b82f6;
-            color: #fff;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
+            max-width: 85%;
+            word-wrap: break-word;
         }
 
         .message.ai {
             background-color: #1e293b;
-            color: #e2e8f0;
             align-self: flex-start;
-            border-bottom-left-radius: 2px;
-            border-left: 3px solid #38bdf8;
+            border-left: 4px solid var(--primary);
+        }
+
+        .message.user {
+            background-color: var(--primary);
+            color: white;
+            align-self: flex-end;
         }
 
         .message.loading {
-            background-color: transparent;
-            color: #64748b;
+            background-color: #1e293b;
             align-self: flex-start;
+            color: var(--text-muted);
             font-style: italic;
-            padding: 0 10px;
         }
 
-        .input-area {
-            padding: 15px 20px;
-            background-color: #111827;
+        .input-group {
             display: flex;
             gap: 10px;
-            border-top: 1px solid #1f293d;
         }
 
-        .input-area input {
-            flex: 1;
-            background-color: #0f172a;
-            border: 1px solid #1f293d;
+        input[type="text"] {
+            flex-grow: 1;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
             padding: 12px;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 0.95rem;
+            color: var(--text-color);
             outline: none;
+            transition: border-color 0.3s;
         }
 
-        .input-area input:focus {
-            border-color: #38bdf8;
+        input[type="text"]:focus {
+            border-color: var(--primary);
         }
 
-        .input-area button {
-            background-color: #3b82f6;
-            color: #fff;
+        button {
+            background-color: var(--primary);
+            color: white;
             border: none;
-            padding: 0 20px;
-            border-radius: 6px;
+            border-radius: 8px;
+            padding: 0 24px;
             font-weight: bold;
-            font-size: 0.95rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.3s;
         }
 
-        .input-area button:hover {
-            background-color: #2563eb;
+        button:hover {
+            background-color: var(--primary-hover);
         }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <h1>Ceddy Vandyck</h1>
-        <div class="nav-links">
-            <a href="#" class="active">Home & AI</a>
+    <header>
+        <div class="logo">Ceddy Vandyck</div>
+        <nav>
+            <a href="#">Home & AI</a>
             <a href="#">Mijn Games</a>
             <a href="#">Online CV</a>
-        </div>
-    </div>
+        </nav>
+    </header>
 
-    <div class="main-container">
-        
-        <div class="info-panel">
-            <h2>Welkom op mijn portfolio!</h2>
-            <p>Hier vind je een werkende demonstratie van een <strong>Echte AI Assistent</strong> die via een cloud-API communiceert met Llama 3 op OpenRouter.</p>
+    <div class="container">
+        <!-- Linker Paneel: Info -->
+        <div class="panel">
+            <h1>Welkom op mijn portfolio!</h1>
+            <p>Hier vind je een werkende demonstratie van een <b>Echte AI Assistent</b> die via een cloud-API communiceert met Google Gemma 2 op OpenRouter.</p>
             <p>Vraag gerust naar mijn hobby's of projecten! Later zal deze assistent worden uitgebreid met een vector-database om documenten rechtstreeks te kunnen doorzoeken.</p>
         </div>
 
-        <div class="chat-container">
-            <div class="chat-header">
-                <div class="status-dot"></div>
-                <span>Llama 3 Assistent</span>
-            </div>
+        <!-- Rechter Paneel: Chatbot Widget -->
+        <div class="panel chat-container">
+            <h3 class="panel-title" id="chatTitle">
+                <span class="status-dot"></span>Gemma 2 Assistent - Versie 6
+            </h3>
             
             <div class="messages-box" id="messagesBox">
                 <div class="message ai">Hallo! Ik ben jouw AI-assistent. Hoe kan ik je vandaag helpen?</div>
             </div>
 
-            <div class="input-area">
-                <input type="text" id="userInput" placeholder="Typ een bericht..." onkeydown="if(event.key === 'Enter') sendMessage()">
+            <div class="input-group">
+                <input type="text" id="userInput" placeholder="Typ een bericht..." onkeypress="handleKeyPress(event)">
                 <button onclick="sendMessage()">Verzenden</button>
             </div>
         </div>
-
     </div>
 
-  <script>
+    <script>
         let conversationHistory = [];
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
 
         async function sendMessage() {
             const input = document.getElementById('userInput');
@@ -252,8 +255,8 @@
             messagesBox.scrollTop = messagesBox.scrollHeight;
 
             const deel1 = "https://";
-        const deel2 = "ai-backend-pearl-six.vercel.app";
-        const deel3 = "/api/chat";
+            const deel2 = "ai-backend-brain-ish.vercel.app";
+            const deel3 = "/api/chat";
             const volledigeUrl = deel1 + deel2 + deel3;
 
             try {
@@ -268,22 +271,15 @@
                 const loadingElement = document.getElementById('loading');
                 if (loadingElement) loadingElement.remove();
 
-                // 3. Verwerk de backend response (Geoptimaliseerd voor Versie 4)
                 if (data && data.choices && data.choices[0] && data.choices[0].message) {
                     const aiReply = data.choices[0].message.content;
                     messagesBox.innerHTML += `<div class="message ai">${aiReply}</div>`;
                     conversationHistory.push({ role: "assistant", content: aiReply });
-                } else if (data && data.choices && data.choices.message) {
-                    const aiReply = data.choices.message.content;
-                    messagesBox.innerHTML += `<div class="message ai">${aiReply}</div>`;
-                    conversationHistory.push({ role: "assistant", content: aiReply });
                 } else if (data && data.error) {
-                    // Toon de exacte foutmelding van OpenRouter op je scherm
                     const errorMsg = typeof data.error === 'object' ? JSON.stringify(data.error) : data.error;
                     messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>API Fout:</b> ${errorMsg}</div>`;
                 } else {
-                    // Als het formaat compleet vreemd is, dumpen we de ruwe data om het te kunnen lezen
-                    messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Data JSON:</b> ${JSON.stringify(data)}</div>`;
+                    messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> Onbekende datastructuur ontvangen: ${JSON.stringify(data)}</div>`;
                 }
                 messagesBox.scrollTop = messagesBox.scrollHeight;
 
@@ -291,13 +287,11 @@
                 const loadingElement = document.getElementById('loading');
                 if (loadingElement) loadingElement.remove();
                 
-                messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> Kon geen verbinding maken met de AI-server.</div>`;
+                messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> Kon geen verbinding maken met de AI-server. (${error.message})</div>`;
                 console.error(error);
                 messagesBox.scrollTop = messagesBox.scrollHeight;
             }
         }
-</script>
-
-
+    </script>
 </body>
 </html>
