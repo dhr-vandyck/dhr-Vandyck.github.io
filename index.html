@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceddy Vandyck - Portfolio</title>
-    <!-- Dit script zorgt ervoor dat Gradio direct op je pagina kan draaien zonder iframe-venster -->
+    <!-- Officiële Gradio script voor directe integratie op je site -->
     <script type="module" src="https://amazonaws.com"></script>
     <style>
         :root {
@@ -91,18 +91,17 @@
         }
 
         .chat-container {
-            min-height: 520px;
-            padding: 0;
-            overflow: hidden;
+            min-height: 540px;
+            background-color: var(--card-bg);
             border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        /* Hiermee zorgen we dat het Gradio-vlak naadloos aansluit in jouw paneel */
         gradio-app {
             width: 100% !important;
             height: 100% !important;
-            border: none !important;
-            background-color: transparent !important;
+            display: block;
         }
     </style>
 </head>
@@ -125,9 +124,10 @@
             <p>Dankzij het ingebouwde RAG-systeem heeft deze widget directe toegang tot mijn documentatie. Vraag de AI gerust naar mijn hobby's, vaardigheden of game-projecten om te zien hoe snel hij leert!</p>
         </div>
 
-        <!-- Rechter Paneel: Directe Gradio Integratie zonder iframe-venster -->
+        <!-- Rechter Paneel: Volledig Geïntegreerde Chatbox -->
         <div class="chat-container">
-            <gradio-app src="https://hf.space" eager="true" initial_height="520px"></gradio-app>
+            <!-- De link is nu volledig in kleine letters gezet voor maximale compatibiliteit -->
+            <gradio-app src="https://hf.space" eager="true"></gradio-app>
         </div>
     </div>
 
