@@ -89,108 +89,10 @@
         }
 
         .chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 450px;
-        }
-
-        .panel-title {
-            font-size: 18px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background-color: var(--success);
-            border-radius: 50%;
-            margin-right: 10px;
-            display: inline-block;
-        }
-
-        .messages-box {
-            flex-grow: 1;
-            overflow-y: auto;
-            border: 1px solid #1e293b;
-            border-radius: 8px;
+            height: 520px;
             padding: 15px;
-            margin-bottom: 15px;
-            background-color: rgba(11, 17, 30, 0.5);
             display: flex;
             flex-direction: column;
-            gap: 12px;
-        }
-
-        .messages-box::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .messages-box::-webkit-scrollbar-thumb {
-            background-color: #334155;
-            border-radius: 3px;
-        }
-
-        .message {
-            padding: 10px 14px;
-            border-radius: 8px;
-            max-width: 85%;
-            word-wrap: break-word;
-        }
-
-        .message.ai {
-            background-color: #1e293b;
-            align-self: flex-start;
-            border-left: 4px solid var(--primary);
-        }
-
-        .message.user {
-            background-color: var(--primary);
-            color: white;
-            align-self: flex-end;
-        }
-
-        .message.loading {
-            background-color: #1e293b;
-            align-self: flex-start;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        input[type="text"] {
-            flex-grow: 1;
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 12px;
-            color: var(--text-color);
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--primary);
-        }
-
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0 24px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
         }
     </style>
 </head>
@@ -206,96 +108,24 @@
     </header>
 
     <div class="container">
+        <!-- Linker Paneel: Info -->
         <div class="panel">
             <h1>Welkom op mijn portfolio!</h1>
             <p>Hier vind je een werkende demonstratie van een <b>Echte AI Assistent</b> die via een cloud-API rechtstreeks communiceert met Google Gemma 2 op OpenRouter.</p>
             <p>Vraag gerust naar mijn hobby's of projecten! Later zal deze assistent worden uitgebreid met een vector-database om documenten rechtstreeks te kunnen doorzoeken.</p>
         </div>
 
+        <!-- Rechter Paneel: Hugging Face Chatbot -->
         <div class="panel chat-container">
-            <h3 class="panel-title" id="chatTitle">
-                <span class="status-dot"></span>Gemma Direct - Versie 11
-            </h3>
-            
-            <div class="messages-box" id="messagesBox">
-                <div class="message ai">Hallo! Ik ben jouw AI-assistent. Hoe kan ik je vandaag helpen?</div>
-            </div>
-
-            <div class="input-group">
-                <input type="text" id="userInput" placeholder="Typ een bericht..." onkeypress="handleKeyPress(event)">
-                <button onclick="sendMessage()">Verzenden</button>
-            </div>
+            <iframe 
+                src="https://hf.space" 
+                frameborder="0" 
+                width="100%" 
+                height="100%" 
+                style="border-radius: 8px; background-color: transparent;">
+            </iframe>
         </div>
     </div>
 
-    <script>
-        let conversationHistory = [];
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const messageText = input.value.trim();
-            if (!messageText) return;
-
-            const messagesBox = document.getElementById('messagesBox');
-            
-            messagesBox.innerHTML += `<div class="message user">${messageText}</div>`;
-            conversationHistory.push({ role: "user", content: messageText });
-            input.value = '';
-            messagesBox.scrollTop = messagesBox.scrollHeight;
-
-            messagesBox.innerHTML += `<div class="message loading" id="loading">AI is aan het nadenken...</div>`;
-            messagesBox.scrollTop = messagesBox.scrollHeight;
-
-            const volledigeUrl = "https://openrouter.ai";
-            const mijnSleutel = "HIER_JOUW_OPENROUTER_API_KEY_PAST_HIER"; 
-
-            try {
-                const response = await fetch(volledigeUrl, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${mijnSleutel}`,
-                        'HTTP-Referer': 'https://github.io',
-                        'X-Title': 'Ceddy Portfolio'
-                    },
-                    body: JSON.stringify({ 
-                        model: "google/gemma-2-9b-it:free",
-                        messages: conversationHistory 
-                    })
-                });
-
-                const data = await response.json();
-                
-                const loadingElement = document.getElementById('loading');
-                if (loadingElement) loadingElement.remove();
-
-                if (data && data.choices && data.choices[0] && data.choices[0].message) {
-                    const aiReply = data.choices[0].message.content;
-                    messagesBox.innerHTML += `<div class="message ai">${aiReply}</div>`;
-                    conversationHistory.push({ role: "assistant", content: aiReply });
-                } else if (data && data.error) {
-                    const errorMsg = typeof data.error === 'object' ? JSON.stringify(data.error) : data.error;
-                    messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>API Fout:</b> ${errorMsg}</div>`;
-                } else {
-                    messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> Onverwachte datastructuur ontvangen: ${JSON.stringify(data)}</div>`;
-                }
-                messagesBox.scrollTop = messagesBox.scrollHeight;
-
-            } catch (error) {
-                const loadingElement = document.getElementById('loading');
-                if (loadingElement) loadingElement.remove();
-                
-                messagesBox.innerHTML += `<div class="message ai" style="border-left-color: #ef4444;"><b>Fout:</b> Kon geen verbinding maken met OpenRouter. (${error.message})</div>`;
-                console.error(error);
-                messagesBox.scrollTop = messagesBox.scrollHeight;
-            }
-        }
-    </script>
 </body>
 </html>
