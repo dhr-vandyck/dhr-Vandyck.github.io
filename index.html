@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testje 2 Ceddy Vandyck - Portfolio</title>
+    <title>Ceddy Vandyck - Portfolio</title>
     <style>
         :root {
             --bg-color: #0b111e;
@@ -89,10 +89,11 @@
         }
 
         .chat-container {
-            height: 520px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
+            height: 540px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -115,25 +116,25 @@
             <p>Dankzij het ingebouwde RAG-systeem heeft deze widget directe toegang tot mijn documentatie. Vraag de AI gerust naar mijn hobby's, vaardigheden of game-projecten om te zien hoe snel hij leert!</p>
         </div>
 
-        <!-- Rechter Paneel: Hugging Face Gradio Interface -->
-        <div class="panel chat-container" id="iframeWrapper">
-            <!-- Het JavaScript hieronder plakt de opgesplitste link hier live in -->
+        <!-- Rechter Paneel: Veilige container voor de chatbot -->
+        <div class="chat-container" id="chatbotVak">
+            <!-- JavaScript plakt hier dadelijk de perfecte link in -->
         </div>
     </div>
 
     <script>
-        const deel1 = "https://huggingface.co/";
-        const deel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
-        const deel3 = "/embed";
-
+        // We bouwen de officiële, lange embed-link van jouw Space op in 3 veilige stukken
+        const linkDeel1 = "https://huggingface.co";
+        const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
+        const linkDeel3 = "/embed";
         
-        const volledigeHfUrl = deel1 + deel2 + deel3;
+        const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
 
-        // Bouw de iframe op en stop hem in de chat-container
-        const wrapper = document.getElementById("iframeWrapper");
-        wrapper.innerHTML = `
+        // Plak de iframe strak en zonder dropdown-borders in je container
+        const containerVak = document.getElementById("chatbotVak");
+        containerVak.innerHTML = `
             <iframe 
-                src="${volledigeHfUrl}" 
+                src="${completeUrl}" 
                 frameborder="0" 
                 width="100%" 
                 height="100%" 
