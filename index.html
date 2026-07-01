@@ -206,17 +206,15 @@
     </header>
 
     <div class="container">
-        <!-- Linker Paneel: Info -->
         <div class="panel">
             <h1>Welkom op mijn portfolio!</h1>
             <p>Hier vind je een werkende demonstratie van een <b>Echte AI Assistent</b> die via een cloud-API rechtstreeks communiceert met Google Gemma 2 op OpenRouter.</p>
             <p>Vraag gerust naar mijn hobby's of projecten! Later zal deze assistent worden uitgebreid met een vector-database om documenten rechtstreeks te kunnen doorzoeken.</p>
         </div>
 
-        <!-- Rechter Paneel: Chatbot Widget -->
         <div class="panel chat-container">
             <h3 class="panel-title" id="chatTitle">
-                <span class="status-dot"></span>Gemma Direct - Versie 10
+                <span class="status-dot"></span>Gemma Direct - Versie 11
             </h3>
             
             <div class="messages-box" id="messagesBox">
@@ -254,9 +252,8 @@
             messagesBox.innerHTML += `<div class="message loading" id="loading">AI is aan het nadenken...</div>`;
             messagesBox.scrollTop = messagesBox.scrollHeight;
 
-            // Directe verbinding met OpenRouter API
             const volledigeUrl = "https://openrouter.ai";
-            const mijnSleutel = "HIER_JOUW_OPENROUTER_API_KEY_PLAKKEN"; // <--- VERVANG DIT DOOR JE SK-OR-V1-... SLEUTEL!
+            const mijnSleutel = "HIER_JOUW_OPENROUTER_API_KEY_PAST_HIER"; 
 
             try {
                 const response = await fetch(volledigeUrl, {
@@ -278,7 +275,6 @@
                 const loadingElement = document.getElementById('loading');
                 if (loadingElement) loadingElement.remove();
 
-                // Verwerk het directe antwoord van OpenRouter
                 if (data && data.choices && data.choices[0] && data.choices[0].message) {
                     const aiReply = data.choices[0].message.content;
                     messagesBox.innerHTML += `<div class="message ai">${aiReply}</div>`;
