@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceddy Vandyck - Portfolio</title>
+    <!-- Dit officiële script zorgt ervoor dat de Gradio-tag direct werkt in je browser -->
+    <script type="module" src="https://amazonaws.com"></script>
     <style>
         :root {
             --bg-color: #0b111e;
@@ -59,17 +61,20 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            display: block; /* Haalt de twee kolommen weg */
         }
 
-        /* De chatbox is nu gecentreerd en lekker breed */
+        /* Geen vaste hoogte meer nodig! De web-component past zich mooi aan */
         .chat-container {
-
             background-color: var(--card-bg);
             border-radius: 12px;
-            padding: 5px;
+            padding: 15px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        }
+
+        /* Zorgt dat Gradio perfect versmelt met jouw achtergrondkleur */
+        gradio-app {
+            background-color: transparent !important;
+            border: none !important;
         }
     </style>
 </head>
@@ -85,27 +90,11 @@
     </header>
 
     <div class="container">
-        <!-- Alleen de prachtige, brede chatbox overgebleven -->
-        <div class="chat-container" id="chatbotVak"></div>
+        <!-- De chatbot laadt nu direct als HTML-element zonder iframe! -->
+        <div class="chat-container">
+            <gradio-app src="https://hf.space" eager="true"></gradio-app>
+        </div>
     </div>
 
-    <script>
-        const linkDeel1 = "https://huggingface.co/"; 
-        const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
-        const linkDeel3 = "/embed";
-        
-        const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
-
-        const containerVak = document.getElementById("chatbotVak");
-        containerVak.innerHTML = `
-            <iframe 
-                src="${completeUrl}" 
-                frameborder="0" 
-                width="100%" 
-                height="100%" 
-                style="border-radius: 8px; background-color: transparent; overflow: hidden;">
-            </iframe>
-        `;
-    </script>
 </body>
 </html>
