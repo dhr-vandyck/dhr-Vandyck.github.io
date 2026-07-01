@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1 Ceddy Vandyck - Portfolio</title>
+    <title>Testje Ceddy Vandyck - Portfolio</title>
     <style>
         :root {
             --bg-color: #0b111e;
@@ -101,7 +101,7 @@
     <header>
         <div class="logo">Ceddy Vandyck</div>
         <nav>
-            <a href="#">Home & AI</a>
+            <a href="#">Home & AI (Gradio)</a>
             <a href="#">Mijn Games</a>
             <a href="#">Online CV</a>
         </nav>
@@ -111,21 +111,35 @@
         <!-- Linker Paneel: Info -->
         <div class="panel">
             <h1>Welkom op mijn portfolio!</h1>
-            <p>Hier vind je een werkende demonstratie van een <b>Echte AI Assistent</b> die via een cloud-API rechtstreeks communiceert met Google Gemma 2 op OpenRouter.</p>
-            <p>Vraag gerust naar mijn hobby's of projecten! Later zal deze assistent worden uitgebreid met een vector-database om documenten rechtstreeks te kunnen doorzoeken.</p>
+            <p>Hier vind je een werkende demonstratie van de <b>Ceddy's AI Portfolio Assistent</b>. Deze applicatie draait volledig via Hugging Face Spaces op een stabiele Python-omgeving.</p>
+            <p>Dankzij het ingebouwde RAG-systeem heeft deze widget directe toegang tot mijn documentatie. Vraag de AI gerust naar mijn hobby's, vaardigheden of game-projecten om te zien hoe snel hij leert!</p>
         </div>
 
-        <!-- Rechter Paneel: Hugging Face Chatbot -->
-        <div class="panel chat-container">
-            <iframe 
-src="https://huggingface.co"
-    frameborder="0" 
-    width="100%" 
-    height="100%" 
-    style="border-radius: 8px; background-color: transparent;">
-</iframe>
+        <!-- Rechter Paneel: Hugging Face Gradio Interface -->
+        <div class="panel chat-container" id="iframeWrapper">
+            <!-- Het JavaScript hieronder plakt de opgesplitste link hier live in -->
         </div>
     </div>
 
+    <script>
+        // We splitsen de link op in 3 veilige stukken om afkappen te voorkomen
+        const deel1 = "https://huggingface.co";
+        const deel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
+        const deel3 = "/embed";
+        
+        const volledigeHfUrl = deel1 + deel2 + deel3;
+
+        // Bouw de iframe op en stop hem in de chat-container
+        const wrapper = document.getElementById("iframeWrapper");
+        wrapper.innerHTML = `
+            <iframe 
+                src="${volledigeHfUrl}" 
+                frameborder="0" 
+                width="100%" 
+                height="100%" 
+                style="border-radius: 8px; background-color: transparent;">
+            </iframe>
+        `;
+    </script>
 </body>
 </html>
