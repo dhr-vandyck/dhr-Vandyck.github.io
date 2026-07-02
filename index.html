@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceddy Vandyck - Portfolio</title>
-    
+    <link rel="icon" href="../../favicon.png">
     <style>
         :root {
             --bg-color: #0b111e;
@@ -60,8 +60,11 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            display: block;
+            display: block; /* Haalt de twee kolommen weg */
         }
+
+        /* De chatbox is nu gecentreerd en lekker breed */
+
 
         .chat-container {
             height: 80vh;
@@ -69,14 +72,21 @@
             border-radius: 12px;
             padding: 5px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            overflow: hidden; /* Dit snijdt alles af wat buiten de box valt */
             position: relative;
         }
 
+        /* Dit trucje zorgt ervoor dat de iframe onderaan 40 pixels groter is, 
+           waardoor de Gradio-balk precies achter de rand van je container verdwijnt! */
         .chat-container iframe {
             height: calc(100% + 40px) !important;
             margin-bottom: -40px;
         }
+
+
+
+
+        
     </style>
 </head>
 <body>
@@ -86,7 +96,6 @@
         <nav>
             <a href="#">Home & AI (Gradio)</a>
             <a href="Web-Pages/Bootstrap/index.html">Bootstrap Webpage Demo</a>
-            <a href="newsletter.html">Nieuwsbrief</a>
             <!-- 
             <a href="#">Mijn Games</a>
             <a href="#">Online CV</a>
@@ -95,23 +104,27 @@
     </header>
 
     <div class="container">
+        <!-- Alleen de prachtige, brede chatbox overgebleven -->
+        <div class="chat-container" id="chatbotVak"></div>
+    </div>
+
+    <script>
+        const linkDeel1 = "https://huggingface.co/"; 
+        const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
+        const linkDeel3 = "/embed";
         
-    <div class="container">
-        <!-- Jouw Chatbot Container met een directe, onbreekbare link -->
-        <div class="chat-container" id="chatbotVak">
+        const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
+
+        const containerVak = document.getElementById("chatbotVak");
+        containerVak.innerHTML = `
             <iframe 
-                src="https://hf.space" 
+                src="${completeUrl}" 
                 frameborder="0" 
                 width="100%" 
                 height="100%" 
                 style="border-radius: 8px; background-color: transparent; overflow: hidden;">
             </iframe>
-        </div>
-    </div>
-
-    <!-- Het JavaScript-gedeelte onderaan is nu helemaal leeg en kan niks meer slopen! -->
-    <script>
-        // JavaScript is hier niet meer nodig voor het iframe
+        `;
     </script>
 </body>
 </html>
