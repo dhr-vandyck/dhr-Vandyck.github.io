@@ -107,6 +107,31 @@
         <!-- Alleen de prachtige, brede chatbox overgebleven -->
         <div class="chat-container" id="chatbotVak"></div>
     </div>
+        <!-- Start Nieuwsbrief Inschrijfvak -->
+        <div class="newsletter-box mt-4" style="background-color: #111827; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); max-width: 600px; margin: 30px auto; border: 1px solid #1f2937;">
+            <h4 style="color: #ffffff; margin-bottom: 10px; font-family: 'Lato', sans-serif;">Blijf op de hoogte 🚀</h4>
+            <p style="color: #9ca3af; font-size: 0.9em; margin-bottom: 15px;">
+                Meld je aan voor mijn nieuwsbrief over nieuwe AI-updates en game-projecten.
+            </p>
+            
+            <form id="newsForm" style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="email" id="newsEmail" placeholder="Jouw e-mailadres" required 
+                           style="flex: 1; min-width: 200px; padding: 12px; border-radius: 6px; border: 1px solid #374151; background-color: #030712; color: #ffffff; font-size: 0.95em;">
+                    <button type="submit" style="padding: 12px 24px; border-radius: 6px; border: none; background-color: #2563eb; color: white; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                        Inschrijven
+                    </button>
+                </div>
+                
+                <!-- Wettelijk verplicht GDPR-vinkje -->
+                <label style="display: flex; align-items: flex-start; gap: 8px; color: #9ca3af; font-size: 0.85em; cursor: pointer; text-align: left;">
+                    <input type="checkbox" required style="margin-top: 3px;">
+                    <span>Ik ga ermee akkoord dat Ceddy's AI-assistent mij updates stuurt. Ik kan me op elk moment weer uitschrijven.</span>
+                </label>
+            </form>
+            <p id="formMessage" style="margin-top: 15px; font-size: 0.95em; display: none; font-weight: bold;"></p>
+        </div>
+        <!-- Einde Nieuwsbrief Inschrijfvak -->
 
     <script>
         const linkDeel1 = "https://huggingface.co/"; 
