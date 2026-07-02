@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceddy Vandyck - Portfolio</title>
+    
     <style>
         :root {
             --bg-color: #0b111e;
@@ -59,11 +60,8 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            display: block; /* Haalt de twee kolommen weg */
+            display: block;
         }
-
-        /* De chatbox is nu gecentreerd en lekker breed */
-
 
         .chat-container {
             height: 80vh;
@@ -71,21 +69,14 @@
             border-radius: 12px;
             padding: 5px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden; /* Dit snijdt alles af wat buiten de box valt */
+            overflow: hidden;
             position: relative;
         }
 
-        /* Dit trucje zorgt ervoor dat de iframe onderaan 40 pixels groter is, 
-           waardoor de Gradio-balk precies achter de rand van je container verdwijnt! */
         .chat-container iframe {
             height: calc(100% + 40px) !important;
             margin-bottom: -40px;
         }
-
-
-
-
-        
     </style>
 </head>
 <body>
@@ -94,33 +85,21 @@
         <div class="logo">Ceddy Vandyck</div>
         <nav>
             <a href="#">Home & AI (Gradio)</a>
+            <a href="Web-Pages/Bootstrap/index.html">Bootstrap Webpage Demo</a>
+            <a href="newsletter.html">Nieuwsbrief</a>
+            <!-- 
             <a href="#">Mijn Games</a>
             <a href="#">Online CV</a>
+            -->
         </nav>
     </header>
 
     <div class="container">
-        <!-- Alleen de prachtige, brede chatbox overgebleven -->
-        <div class="chat-container" id="chatbotVak"></div>
-    </div>
-
-    <script>
-        const linkDeel1 = "https://huggingface.co/"; 
-        const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
-        const linkDeel3 = "/embed";
         
-        const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
+        <!-- 1. Jouw Chatbot Container (Link hersteld naar jouw exacte AI Space) -->
+        <div class="chat-container">
+            <iframe src="https://hf.space" width="100%" height="100%" frameborder="0" allowtransparency="true"></iframe>
+        </div>
 
-        const containerVak = document.getElementById("chatbotVak");
-        containerVak.innerHTML = `
-            <iframe 
-                src="${completeUrl}" 
-                frameborder="0" 
-                width="100%" 
-                height="100%" 
-                style="border-radius: 8px; background-color: transparent; overflow: hidden;">
-            </iframe>
-        `;
-    </script>
 </body>
 </html>
