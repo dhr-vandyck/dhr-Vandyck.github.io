@@ -126,5 +126,52 @@
             </iframe>
         `;
     </script>
+        <script>
+    document.getElementById('newsForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const emailInput = document.getElementById('newsEmail');
+        const messageText = document.getElementById('formMessage');
+        const submitButton = this.querySelector('button[type="submit"]');
+        const email = emailInput.value;
+        
+        submitButton.disabled = true;
+        submitButton.innerText = "Laden...";
+        
+        messageText.style.display = "block";
+        messageText.style.color = "var(--text-color)";
+        messageText.innerText = "Je aanvraag wordt verwerkt...";
+
+        try {
+            // De opgesplitste link die perfect werkt en heel blijft
+            const backendUrl = "https://ceddyvandyck-ceddy-portfolio-backend." + "hf.space/subscribe";
+
+            const response = await fetch(backendUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                messageText.style.color = "#10b981"; // Groene tekst bij succes
+                messageText.innerText = data.message;
+                emailInput.value = "";
+            } else {
+                messageText.style.color = "#ef4444"; // Rode tekst bij een serverfout
+                messageText.innerText = data.message || "Er ging iets mis.";
+            }
+        } catch (error) {
+            messageText.style.color = "#ef4444";
+            messageText.innerText = "Kan geen verbinding maken met de server.";
+            console.error("Netwerkfout:", error);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerText = "Inschrijven";
+        }
+    });
+    </script>
+
 </body>
 </html>
