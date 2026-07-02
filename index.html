@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceddy Vandyck - Portfolio</title>
-    
     <style>
         :root {
             --bg-color: #0b111e;
@@ -60,8 +59,11 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            display: block;
+            display: block; /* Haalt de twee kolommen weg */
         }
+
+        /* De chatbox is nu gecentreerd en lekker breed */
+
 
         .chat-container {
             height: 80vh;
@@ -69,14 +71,21 @@
             border-radius: 12px;
             padding: 5px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            overflow: hidden; /* Dit snijdt alles af wat buiten de box valt */
             position: relative;
         }
 
+        /* Dit trucje zorgt ervoor dat de iframe onderaan 40 pixels groter is, 
+           waardoor de Gradio-balk precies achter de rand van je container verdwijnt! */
         .chat-container iframe {
             height: calc(100% + 40px) !important;
             margin-bottom: -40px;
         }
+
+
+
+
+        
     </style>
 </head>
 <body>
@@ -85,97 +94,33 @@
         <div class="logo">Ceddy Vandyck</div>
         <nav>
             <a href="#">Home & AI (Gradio)</a>
-            <a href="Web-Pages/Bootstrap/index.html">Bootstrap Webpage Demo</a>
-            <!-- 
             <a href="#">Mijn Games</a>
             <a href="#">Online CV</a>
-            -->
         </nav>
     </header>
 
     <div class="container">
-        
-        <!-- 1. Jouw Chatbot Container (Link hersteld naar jouw exacte AI Space) -->
-        <div class="chat-container">
-            <iframe src="https://hf.space" width="100%" height="100%" frameborder="0" allowtransparency="true"></iframe>
-        </div>
-
-        <!-- 2. Het Nieuwsbrief Inschrijfvak -->
-        <div class="newsletter-box" style="background-color: var(--card-bg); border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 1000px; margin: 30px auto 0 auto; border: 1px solid #1e293b;">
-            <h4 style="color: var(--text-color); margin-bottom: 10px; font-size: 20px;">Blijf op de hoogte 🚀</h4>
-            <p style="color: var(--text-muted); font-size: 0.95em; margin-bottom: 15px;">
-                Meld je aan voor mijn nieuwsbrief over nieuwe AI-updates en game-projecten.
-            </p>
-            
-            <form id="newsForm" style="display: flex; flex-direction: column; gap: 12px;">
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <input type="email" id="newsEmail" placeholder="Jouw e-mailadres" required 
-                           style="flex: 1; min-width: 200px; padding: 12px; border-radius: 6px; border: 1px solid #374151; background-color: #0b111e; color: var(--text-color); font-size: 0.95em;">
-                    <button type="submit" style="padding: 12px 24px; border-radius: 6px; border: none; background-color: var(--primary); color: white; font-weight: bold; cursor: pointer; transition: background 0.2s;">
-                        Inschrijven
-                    </button>
-                </div>
-                
-                <!-- Wettelijk verplicht GDPR-vinkje -->
-                <label style="display: flex; align-items: flex-start; gap: 8px; color: var(--text-muted); font-size: 0.85em; cursor: pointer; text-align: left;">
-                    <input type="checkbox" required style="margin-top: 3px;">
-                    <span>Ik ga ermee akkoord dat Ceddy's AI-assistent mij updates stuurt. Ik kan me op elk moment weer uitschrijven.</span>
-                </label>
-            </form>
-            <p id="formMessage" style="margin-top: 15px; font-size: 0.95em; display: none; font-weight: bold;"></p>
-        </div>
-
+        <!-- Alleen de prachtige, brede chatbox overgebleven -->
+        <div class="chat-container" id="chatbotVak"></div>
     </div>
 
-    <!-- ==================== SCRIPTS ==================== -->
-    
-    <!-- HET NIEUWSBRIEF JAVASCRIPT -->
     <script>
-    document.getElementById('newsForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+        const linkDeel1 = "https://huggingface.co/"; 
+        const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
+        const linkDeel3 = "/embed";
         
-        const emailInput = document.getElementById('newsEmail');
-        const messageText = document.getElementById('formMessage');
-        const submitButton = this.querySelector('button[type="submit"]');
-        const email = emailInput.value;
-        
-        submitButton.disabled = true;
-        submitButton.innerText = "Laden...";
-        
-        messageText.style.display = "block";
-        messageText.style.color = "var(--text-color)";
-        messageText.innerText = "Je aanvraag wordt verwerkt...";
+        const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
 
-        try {
-            // De opgesplitste link om Hugging Face filters te omzeilen
-            const backendUrl = "https://ceddyvandyck-ceddy-portfolio-backend." + "hf.space/subscribe";
-
-            const response = await fetch(backendUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                messageText.style.color = "var(--success)";
-                messageText.innerText = data.message;
-                emailInput.value = "";
-            } else {
-                messageText.style.color = "#ef4444";
-                messageText.innerText = data.message || "Er ging iets mis.";
-            }
-        } catch (error) {
-            messageText.style.color = "#ef4444";
-            messageText.innerText = "Kan geen verbinding maken met de server.";
-            console.error("Netwerkfout:", error);
-        } finally {
-            submitButton.disabled = false;
-            submitButton.innerText = "Inschrijven";
-        }
-    });
+        const containerVak = document.getElementById("chatbotVak");
+        containerVak.innerHTML = `
+            <iframe 
+                src="${completeUrl}" 
+                frameborder="0" 
+                width="100%" 
+                height="100%" 
+                style="border-radius: 8px; background-color: transparent; overflow: hidden;">
+            </iframe>
+        `;
     </script>
-
 </body>
 </html>
