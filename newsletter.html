@@ -4,161 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceddy Vandyck - Nieuwsbrief</title>
-     <link rel="icon" href="../../favicon.png">
-    <style>
-        :root {
-            --bg-color: #0b111e;
-            --card-bg: #161f30;
-            --text-color: #e2e8f0;
-            --text-muted: #94a3b8;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --success: #10b981;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        header {
-            max-width: 1000px;
-            margin: 0 auto 30px auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        nav a {
-            color: var(--text-muted);
-            text-decoration: none;
-            margin-left: 20px;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--text-color);
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-        }
-
-        .box {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid #1e293b;
-        }
-
-        input[type="email"] {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #1e293b;
-            background-color: #0b111e;
-            color: var(--text-color);
-            font-size: 0.95em;
-            margin-bottom: 15px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: none;
-            background-color: var(--primary);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background 0.2s;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .message {
-            margin-top: 15px;
-            font-size: 0.95em;
-            display: none;
-            font-weight: bold;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 8px;
-            max-width: 460px;
-            width: 90%;
-            border: 1px solid #1e293b;
-            color: var(--text-color);
-            text-align: left;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .modal-body {
-            max-height: 220px;
-            overflow-y: auto;
-            font-size: 13.5px;
-            line-height: 1.5;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            padding-right: 5px;
-        }
-
-        .modal-body p {
-            margin-bottom: 12px;
-        }
-
-        .modal-close-btn {
-            background-color: var(--primary);
-            width: 100%;
-            padding: 10px;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-        }
-
-        .modal-close-btn:hover {
-            background-color: var(--primary-hover);
-        }
-    </style>
+    <link rel="icon" href="../../favicon.png">
+    <!-- Koppel hier jouw nieuwe aparte CSS-bestand (pas de naam eventueel aan) -->
+    <link rel="stylesheet" href="styleNewsletter.css">
 </head>
 <body>
 
@@ -166,15 +14,15 @@
         <div class="logo">Ceddy Vandyck</div>
         <nav>
             <a href="index.html">Home & AI (Gradio)</a>
-            <a href="newsletter.html" style="color: var(--text-color);">Nieuwsbrief</a>
+            <a href="newsletter.html" class="active">Nieuwsbrief</a>
             <a href="Web-Pages/Bootstrap/index.html">Bootstrap Webpage Demo</a>
         </nav>
     </header>
 
     <div class="container">
         <div class="box">
-            <h3 style="margin-bottom: 10px;">Blijf op de hoogte 🚀</h3>
-            <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 20px;">
+            <h3>Blijf op de hoogte 🚀</h3>
+            <p class="description">
                 Meld je aan voor mijn nieuwsbrief over nieuwe AI-updates en game-projecten.<br>
                 Je ontvangt direct een welkomstmail na je aanmelding!
             </p>
@@ -182,11 +30,11 @@
             <form id="newsForm">
                 <input type="email" id="newsEmail" placeholder="Jouw e-mailadres" required>
                 
-                <label style="display: flex; align-items: flex-start; gap: 8px; color: var(--text-muted); font-size: 0.85em; cursor: pointer; margin-bottom: 20px;">
-                    <input type="checkbox" id="privacyCheck" required style="margin-top: 3px;">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="privacyCheck" required>
                     <span>
                         Ik ga ermee akkoord dat Ceddy mij updates stuurt. 
-                        <a href="#" id="openPrivacyBtn" style="color: var(--primary); text-decoration: underline;">Lees de voorwaarden & privacy</a>.
+                        <a href="#" id="openPrivacyBtn">Lees de voorwaarden & privacy</a>.
                     </span>
                 </label>
                 
@@ -196,13 +44,15 @@
             <p id="formMessage" class="message"></p>
         </div>
     </div>
+
+    <!-- Het Pop-up venster (Modal) voor de Privacyvoorwaarden -->
     <div id="privacyModal" class="modal">
         <div class="modal-content">
-            <h4 style="margin-bottom: 15px; color: var(--primary);">Voorwaarden & Privacy 🔒</h4>
+            <h4>Voorwaarden & Privacy 🔒</h4>
             <div class="modal-body">
                 <p><strong>1. Doel van gegevensverwerking:</strong> Je e-mailadres wordt uitsluitend gebruikt om je updates te sturen over mijn nieuwste game-projecten en AI-ontwikkelingen via deze nieuwsbrief.</p>
                 <p><strong>2. Opslag & Beveiliging:</strong> Je gegevens worden veilig opgeslagen in een Supabase database en nooit gedeeld met derden of gebruikt voor commerciële doeleinden.</p>
-                <p><strong>3. Jouw rechten (Uitschrijven):</strong> Je hebt altijd het recht om je gegevens te laten verwijderen. Dit kan direct en volledig geautomatiseerd via de uitschrijflink onderaan elke e-mail.</p>
+                <p><strong>3. Jouw rechten (Uitschrijven):</strong> Je hebt altijd het recht om je gegevens te laten verwijderen. Dit kan direct via de uitschrijflink onderaan elke e-mail.</p>
             </div>
             <button id="closePrivacyBtn" class="modal-close-btn" type="button">Ik heb het gelezen & sluiten</button>
         </div>
@@ -220,10 +70,10 @@
 
     // Als de gebruiker probeert te vinken ZONDER de pop-up via de sluitknop af te ronden
     privacyCheck.addEventListener('click', function(e) {
-        if (!heeftVoorwaardenGelezen) {
-            e.preventDefault(); // Blokkeer het vinkje
+        if (heeftVoorwaardenGelezen === false) {
+            e.preventDefault(); 
             messageText.style.display = "block";
-            messageText.style.color = "#ff9800"; // Oranje waarschuwingskleur
+            messageText.className = "message warning"; 
             messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
         }
     });
@@ -233,20 +83,15 @@
         modal.style.display = 'flex';
     });
 
-    // PAS HIER PAS DE STATUS AAN: Alleen als de sluitknop écht wordt ingedrukt!
     closeBtn.addEventListener('click', function() {
         modal.style.display = 'none';
-        
-        // Nu pas springt hij definitief op true!
         heeftVoorwaardenGelezen = true;
         
-        // Haal de waarschuwing direct weg als die er stond
         if (messageText.innerText.includes("Lees de voorwaarden")) {
             messageText.style.display = "none";
         }
     });
 
-    // Als ze buiten de pop-up klikken, sluit hij wel, maar springt hij NIET op gelezen!
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.style.display = 'none';
@@ -261,10 +106,9 @@
         const submitButton = document.getElementById('submitBtn');
         const email = emailInput.value;
 
-        // Extra controle bij verzenden
-        if (!heeftVoorwaardenGelezen) {
+        if (heeftVoorwaardenGelezen === false) {
             messageText.style.display = "block";
-            messageText.style.color = "#ef4444";
+            messageText.className = "message error";
             messageText.innerText = "Fout: Je moet de voorwaarden geopend hebben om je te kunnen inschrijven.";
             return;
         }
@@ -273,11 +117,11 @@
         submitButton.innerText = "Verwerken...";
         
         messageText.style.display = "block";
-        messageText.style.color = "var(--text-color)";
+        messageText.className = "message processing";
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            const backendUrl = "https://ceddyvandyck-ceddy-portfolio-backend." + "hf.space/subscribe";
+            const backendUrl = "https://hf.space";
 
             const response = await fetch(backendUrl, {
                 method: 'POST',
@@ -288,17 +132,17 @@
             const data = await response.json();
 
             if (response.ok) {
-                messageText.style.color = "var(--success)";
+                messageText.className = "message success";
                 messageText.innerText = data.message;
                 emailInput.value = "";
                 privacyCheck.checked = false;
-                heeftVoorwaardenGelezen = false; // Reset voor de volgende bezoeker
+                heeftVoorwaardenGelezen = false; 
             } else {
-                messageText.style.color = "#ef4444";
+                messageText.className = "message error";
                 messageText.innerText = data.message || "Er ging iets mis.";
             }
         } catch (error) {
-            messageText.style.color = "#ef4444";
+            messageText.className = "message error";
             messageText.innerText = "Kan geen verbinding maken met de server.";
         } finally {
             submitButton.disabled = false;
