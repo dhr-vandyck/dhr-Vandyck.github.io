@@ -157,8 +157,9 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            // GECORRIGEERD: De juiste naam van jouw Hugging Face backend Space
-            const backendUrl = "https://ceddyvandyck-backend." + "hf.space/subscribe";
+            // GECORRIGEERD: Dit is de exacte link naar jouw actieve Hugging Face C# backend
+const backendUrl = "https://ceddyvandyck-ceddy-portfolio-backend." + "hf.space/subscribe";
+
 
             const response = await fetch(backendUrl, {
                 method: 'POST',
