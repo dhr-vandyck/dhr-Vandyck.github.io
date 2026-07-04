@@ -122,8 +122,7 @@
             <h3 style="margin-bottom: 10px;">Blijf op de hoogte 🚀</h3>
             <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 20px;">
                 Meld je aan voor mijn nieuwsbrief over nieuwe AI-updates en game-projecten.<br>
-                Dit is momenteel nog in test versie.<br>
-                Er worden nog geen mails verstuurd.
+                Je ontvangt direct een welkomstmail na je aanmelding!
             </p>
             
             <form id="newsForm">
@@ -158,8 +157,8 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            // De opgesplitste link om Hugging Face filters veilig te omzeilen
-            const backendUrl = "https://ceddyvandyck-ceddy-portfolio-backend." + "hf.space/subscribe";
+            // GECORRIGEERD: De juiste naam van jouw Hugging Face backend Space
+            const backendUrl = "https://ceddyvandyck-backend." + "hf.space/subscribe";
 
             const response = await fetch(backendUrl, {
                 method: 'POST',
