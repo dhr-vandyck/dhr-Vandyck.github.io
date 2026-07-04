@@ -21,7 +21,7 @@
 
     <div class="container">
         <div class="box">
-            <h3>Blijf op de hoogte 🚀</h3>
+            <h3>Blijf op de hoogte</h3>
             <p class="description">
                 Meld je aan voor mijn nieuwsbrief over nieuwe AI-updates en game-projecten.<br>
                 Je ontvangt direct een welkomstmail na je aanmelding!
@@ -30,12 +30,16 @@
             <form id="newsForm">
                 <input type="email" id="newsEmail" placeholder="Jouw e-mailadres" required>
                 
+                <!-- AANPASSING: Eerste vinkje voor algemene toestemming (Mag direct aangevinkt worden) -->
+                <label class="checkbox-label">
+                    <input type="checkbox" id="consentCheck" required>
+                    <span>Ik ga ermee akkoord dat Ceddy mij updates stuurt. Ik kan me op elk moment weer uitschrijven.</span>
+                </label>
+
+                <!-- AANPASSING: Tweede vinkje voor voorwaarden (Alleen vinkbaar ná openen en sluiten pop-up!) -->
                 <label class="checkbox-label">
                     <input type="checkbox" id="privacyCheck" required>
-                    <span>
-                        Ik ga ermee akkoord dat Ceddy mij updates stuurt. 
-                        <a href="#" id="openPrivacyBtn">Lees de voorwaarden & privacy</a>.
-                    </span>
+                    <span>Gelezen en goedgekeurd: <a href="#" id="openPrivacyBtn">Lees de voorwaarden & privacy</a>.</span>
                 </label>
                 
                 <button type="submit" id="submitBtn">Inschrijven</button>
@@ -66,9 +70,10 @@
     const openBtn = document.getElementById('openPrivacyBtn');
     const closeBtn = document.getElementById('closePrivacyBtn');
     const privacyCheck = document.getElementById('privacyCheck');
+    const consentCheck = document.getElementById('consentCheck'); // Variabele toegevoegd voor reset
     const messageText = document.getElementById('formMessage');
 
-    // Als de gebruiker probeert te vinken ZONDER de pop-up via de sluitknop af te ronden
+    // AANPASSING: De blokkering en melding werken nu exclusief op het TWEEDE vinkje (privacyCheck)!
     privacyCheck.addEventListener('click', function(e) {
         if (heeftVoorwaardenGelezen === false) {
             e.preventDefault(); 
@@ -120,7 +125,7 @@
         messageText.className = "message processing";
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
-                try {
+        try {
             // De link veilig opgeknipt in 3 logische delen
             const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
             const urlPart2 = "hf.space";
@@ -142,6 +147,7 @@
                 messageText.innerText = data.message;
                 emailInput.value = "";
                 privacyCheck.checked = false;
+                consentCheck.checked = false; // AANPASSING: Reset nu ook de eerste checkbox netjes bij succes
                 heeftVoorwaardenGelezen = false; 
             } else {
                 messageText.className = "message error";
