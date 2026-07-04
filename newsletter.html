@@ -120,8 +120,14 @@
         messageText.className = "message processing";
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
-        try {
-            const backendUrl = "https://hf.space";
+                try {
+            // De link veilig opgeknipt in 3 logische delen
+            const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
+            const urlPart2 = "hf.space";
+            const urlPart3 = "/subscribe";
+
+            // JavaScript plakt de delen hier foutloos aan elkaar
+            const backendUrl = urlPart1 + urlPart2 + urlPart3;
 
             const response = await fetch(backendUrl, {
                 method: 'POST',
