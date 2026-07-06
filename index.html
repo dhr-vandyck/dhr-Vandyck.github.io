@@ -358,151 +358,153 @@
         let isGeladen = false;
 
         // Open de AI-widget en laad het iframe in
-        openBtn.addEventListener("click", function() {
-            chatBox.style.display = "flex";
-            openBtn.style.display = "none"; 
+        if (openBtn) {
+            openBtn.addEventListener("click", function() {
+                if (chatBox) chatBox.style.display = "flex";
+                openBtn.style.display = "none"; 
 
-            if (!isGeladen) {
-                containerVak.innerHTML = `
-                    <iframe 
-                        src="${completeUrl}" 
-                        width="100%" 
-                        height="100%" 
-                        style="border-radius: 0 0 8px 8px; overflow: hidden; border: none; background-color: transparent;">
-                    </iframe>
-                `;
-                isGeladen = true;
-            }
-        });
+                if (!isGeladen && containerVak) {
+                    containerVak.innerHTML = `
+                        <iframe 
+                            src="${completeUrl}" 
+                            width="100%" 
+                            height="100%" 
+                            style="border-radius: 0 0 8px 8px; overflow: hidden; border: none; background-color: transparent;">
+                        </iframe>
+                    `;
+                    isGeladen = true;
+                }
+            });
+        }
 
         // Sluit / Minimaliseer de AI-widget
-        closeBtn.addEventListener("click", function() {
-            chatBox.style.display = "none";
-            openBtn.style.display = "flex"; 
-        });
+        if (closeBtn) {
+            closeBtn.addEventListener("click", function() {
+                if (chatBox) chatBox.style.display = "none";
+                if (openBtn) openBtn.style.display = "flex"; 
+            });
+        }
 
 
-        // --- 2. LOGICA VOOR DE HANDMATIGE CHATBOX ---
-        const sendBtn = document.getElementById('send-chat-btn');
-        const userInput = document.getElementById('user-input');
-        const chatMessages = document.getElementById('chat-messages');
+        // --- 2. LOGICA VOOR DE HANDMATIGE CHATBOX ASSISTENT ---
+        async function sendMessage() {
+            const userAiInput = document.getElementById('aiInput'); 
+            const chatMessagesBox = document.getElementById('chatMessages') || document.querySelector('.chat-helper'); 
+            
+            if (!userAiInput || !userAiInput.value.trim()) return;
 
-        // VERVANG DIT door jouw eigen werkende API endpoint indien nodig
-        const GRADIO_API_URL = "https://hf.space"; 
+            // Sla de getypte tekst op en toon het bericht van de gebruiker
+            const messageToSend = userAiInput.value;
+            appendMessage(messageToSend, 'user');
+            
+            // Maak het invoerveld direct leeg voor de volgende vraag
+            userAiInput.value = "";
 
-  async function sendMessage() {
-    const userInput = document.getElementById('aiInput'); 
-    const chatMessages = document.getElementById('chatMessages') || document.querySelector('.chat-helper'); 
-    
-    if (!userInput.value.trim()) return;
+            // Maak laadstatus aan
+            const loadingId = 'loading-' + Date.now();
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = loadingId;
+            loadingDiv.className = 'message-bubble bot loading';
+            loadingDiv.innerText = 'Typen...';
+            
+            if (chatMessagesBox) {
+                chatMessagesBox.appendChild(loadingDiv);
+                if (chatMessagesBox.scrollTop !== undefined) chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+            }
 
-    // Sla de getypte tekst op en toon het bericht van de gebruiker
-    const messageToSend = userInput.value;
-    appendMessage(messageToSend, 'user');
-    
-    // Maak het invoerveld direct leeg voor de volgende vraag
-    userInput.value = "";
+            try {
+                const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
+                const urlPart2 = "hf.space";
+                const urlPart3 = "/call/predict"; 
 
-    // Maak laadstatus aan
-    const loadingId = 'loading-' + Date.now();
-    const loadingDiv = document.createElement('div');
-    loadingDiv.id = loadingId;
-    loadingDiv.className = 'message-bubble bot loading';
-    loadingDiv.innerText = 'Typen...';
-    chatMessages.appendChild(loadingDiv);
-    if (chatMessages.scrollTop !== undefined) chatMessages.scrollTop = chatMessages.scrollHeight;
+                const backendUrl = urlPart1 + urlPart2 + urlPart3;
 
-    try {
-        const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
-        const urlPart2 = "hf.space";
-        const urlPart3 = "/call/predict"; 
+                // STAP 1: Start de chat-wachtrij op de server
+                const response = await fetch(backendUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: [messageToSend] }) 
+                });
 
-        const backendUrl = urlPart1 + urlPart2 + urlPart3;
+                if (!response.ok) throw new Error("Server reageerde niet goed.");
 
-        // STAP 1: Start de chat-wachtrij op de server
-        const response = await fetch(backendUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: [messageToSend] }) 
-        });
+                const result = await response.json();
+                const eventId = result.event_id; 
 
-        if (!response.ok) throw new Error("Server reageerde niet goed.");
-
-        const result = await response.json();
-        const eventId = result.event_id; 
-
-        // STAP 2: Vraag het daadwerkelijke antwoord op met de event_id
-        const resultUrl = `${backendUrl}/${eventId}`;
-        let botReply = "Er ging iets mis bij het ophalen van het antwoord.";
-        
-        const eventResponse = await fetch(resultUrl);
-        const textData = await eventResponse.text();
-        
-        // Filter de tekstdata die Gradio terugstuurt
-        const lines = textData.split('\n');
-        for (let line of lines) {
-            if (line.startsWith('data:')) {
-                const cleanLine = line.replace('data:', '').trim();
-                if (cleanLine) {
-                    const jsonData = JSON.parse(cleanLine);
-                    if (jsonData && Array.isArray(jsonData) && jsonData[0]) {
-                        botReply = jsonData[0]; 
-                    } else if (jsonData && jsonData.data && jsonData.data[0]) {
-                        botReply = jsonData.data[0];
+                // STAP 2: Vraag het daadwerkelijke antwoord op met de event_id
+                const resultUrl = `${backendUrl}/${eventId}`;
+                let botReply = "Er ging iets mis bij het ophalen van het antwoord.";
+                
+                const eventResponse = await fetch(resultUrl);
+                const textData = await eventResponse.text();
+                
+                // Filter de tekstdata die Gradio terugstuurt
+                const lines = textData.split('\n');
+                for (let line of lines) {
+                    if (line.startsWith('data:')) {
+                        const cleanLine = line.replace('data:', '').trim();
+                        if (cleanLine) {
+                            const jsonData = JSON.parse(cleanLine);
+                            if (jsonData && Array.isArray(jsonData) && jsonData[0]) {
+                                botReply = jsonData[0]; 
+                            } else if (jsonData && jsonData.data && jsonData.data[0]) {
+                                botReply = jsonData.data[0];
+                            }
+                        }
                     }
+                }
+                
+                // Verwijder laadstatus
+                const loadingEl = document.getElementById(loadingId);
+                if (loadingEl) loadingEl.remove();
+
+                // Toon antwoord van de bot
+                appendMessage(botReply, 'bot');
+
+            } catch (error) {
+                console.error("Gradio API Fout:", error);
+                const loadingEl = document.getElementById(loadingId);
+                if (loadingEl) {
+                    loadingEl.innerText = "Er ging iets mis met de verbinding.";
+                    loadingEl.classList.remove('loading');
                 }
             }
         }
-        
-        // Verwijder laadstatus
-        const loadingEl = document.getElementById(loadingId);
-        if (loadingEl) loadingEl.remove();
 
-        // Toon antwoord van de bot
-        appendMessage(botReply, 'bot');
+        // Helper functie om berichten toe te voegen en direct te scrollen
+        function appendMessage(text, sender) {
+            const chatMessagesBox = document.getElementById('chatMessages') || document.querySelector('.chat-helper');
+            if (!chatMessagesBox) return;
 
-    } catch (error) {
-        console.error("Gradio API Fout:", error);
-        const loadingEl = document.getElementById(loadingId);
-        if (loadingEl) {
-            loadingEl.innerText = "Er ging iets mis met de verbinding.";
-            loadingEl.classList.remove('loading');
+            const msgId = 'msg-' + Date.now();
+            const msgDiv = document.createElement('div');
+            msgDiv.id = msgId;
+            msgDiv.className = `message-bubble ${sender}`;
+            msgDiv.innerText = text;
+            chatMessagesBox.appendChild(msgDiv);
+            
+            // Scroll direct naar beneden binnen het chatvenster
+            if (chatMessagesBox.scrollTop !== undefined) {
+                chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+            }
+            
+            return msgId;
         }
-    }
-}
 
-// Helper functie om berichten toe te voegen en direct te scrollen
-function appendMessage(text, sender) {
-    const chatMessages = document.getElementById('chatMessages') || document.querySelector('.chat-helper');
-    const msgId = 'msg-' + Date.now();
-    const msgDiv = document.createElement('div');
-    msgDiv.id = msgId;
-    msgDiv.className = `message-bubble ${sender}`;
-    msgDiv.innerText = text;
-    chatMessages.appendChild(msgDiv);
-    
-    // Scroll direct naar beneden binnen het chatvenster
-    if (chatMessages.scrollTop !== undefined) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    
-    return msgId;
-}
+        // Koppel unieke variabelen aan de knoppen van de assistent
+        const mainSendAiBtn = document.getElementById('sendAiBtn');
+        const mainAiInput = document.getElementById('aiInput');
 
-// Zorg ervoor dat de elementen gekoppeld zijn aan de juiste variabelen
-const sendBtn = document.getElementById('sendAiBtn');
-const userInput = document.getElementById('aiInput');
+        // Event listeners voor het versturen van berichten
+        if (mainSendAiBtn) {
+            mainSendAiBtn.addEventListener('click', sendMessage);
+        }
 
-// Event listeners voor het versturen van berichten
-if (sendBtn) {
-    sendBtn.addEventListener('click', sendMessage);
-}
-
-if (userInput) {
-    userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-}
-</script>
+        if (mainAiInput) {
+            mainAiInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        }
+    </script>
 </body>
 </html>
