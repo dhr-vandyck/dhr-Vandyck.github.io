@@ -395,90 +395,90 @@
         }
 
 
-        // --- 2. LOGICA VOOR DE HANDMATIGE CHATBOX ASSISTENT ---
-        async function sendMessage() {
-            const userAiInput = document.getElementById('aiInput'); 
-            const chatMessagesBox = document.getElementById('chatMessages') || document.querySelector('.chat-helper'); 
-            
-            if (!userAiInput || !userAiInput.value.trim()) return;
 
-            // Sla de getypte tekst op en toon het bericht van de gebruiker
-            const messageToSend = userAiInput.value;
-            appendMessage(messageToSend, 'user');
-            
-            // Maak het invoerveld direct leeg voor de volgende vraag
-            userAiInput.value = "";
 
-            // Maak laadstatus aan
-            const loadingId = 'loading-' + Date.now();
-            const loadingDiv = document.createElement('div');
-            loadingDiv.id = loadingId;
-            loadingDiv.className = 'message-bubble bot loading';
-            loadingDiv.innerText = 'Typen...';
-            
-            if (chatMessagesBox) {
-                chatMessagesBox.appendChild(loadingDiv);
-                if (chatMessagesBox.scrollTop !== undefined) chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
-            }
 
-            try {
-                const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
-                const urlPart2 = "hf.space";
-                const urlPart3 = "/call/predict"; 
 
-                const backendUrl = urlPart1 + urlPart2 + urlPart3;
 
-                // STAP 1: Start de chat-wachtrij op de server
-                const response = await fetch(backendUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ data: [messageToSend] }) 
-                });
+        
 
-                if (!response.ok) throw new Error("Server reageerde niet goed.");
+async function sendMessage() {
+    const userAiInput = document.getElementById('aiInput'); 
+    const chatMessagesBox = document.getElementById('chatMessages') || document.querySelector('.chat-helper'); 
+    
+    if (!userAiInput || !userAiInput.value.trim()) return;
 
-                const result = await response.json();
-                const eventId = result.event_id; 
+    // Sla de getypte tekst op en toon het bericht van de gebruiker
+    const messageToSend = userAiInput.value;
+    appendMessage(messageToSend, 'user');
+    
+    // Maak het invoerveld direct leeg voor de volgende vraag
+    userAiInput.value = "";
 
-                // STAP 2: Vraag het daadwerkelijke antwoord op met de event_id
-                const resultUrl = `${backendUrl}/${eventId}`;
-                let botReply = "Er ging iets mis bij het ophalen van het antwoord.";
-                
-                const eventResponse = await fetch(resultUrl);
-                const textData = await eventResponse.text();
-                
-                // Filter de tekstdata die Gradio terugstuurt
-                const lines = textData.split('\n');
-                for (let line of lines) {
-                    if (line.startsWith('data:')) {
-                        const cleanLine = line.replace('data:', '').trim();
-                        if (cleanLine) {
-                            const jsonData = JSON.parse(cleanLine);
-                            if (jsonData && Array.isArray(jsonData) && jsonData[0]) {
-                                botReply = jsonData[0]; 
-                            } else if (jsonData && jsonData.data && jsonData.data[0]) {
-                                botReply = jsonData.data[0];
-                            }
-                        }
-                    }
-                }
-                
-                // Verwijder laadstatus
-                const loadingEl = document.getElementById(loadingId);
-                if (loadingEl) loadingEl.remove();
+    // Maak laadstatus aan
+    const loadingId = 'loading-' + Date.now();
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = loadingId;
+    loadingDiv.className = 'message-bubble bot loading';
+    loadingDiv.innerText = 'Typen...';
+    
+    if (chatMessagesBox) {
+        chatMessagesBox.appendChild(loadingDiv);
+        if (chatMessagesBox.scrollTop !== undefined) chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+    }
 
-                // Toon antwoord van de bot
-                appendMessage(botReply, 'bot');
+    try {
+        const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
+        const urlPart2 = "hf.space";
+        // GECORRIGEERD: Terug naar het ondersteunde /api/predict endpoint
+        const urlPart3 = "/api/predict"; 
 
-            } catch (error) {
-                console.error("Gradio API Fout:", error);
-                const loadingEl = document.getElementById(loadingId);
-                if (loadingEl) {
-                    loadingEl.innerText = "Er ging iets mis met de verbinding.";
-                    loadingEl.classList.remove('loading');
-                }
-            }
+        const backendUrl = urlPart1 + urlPart2 + urlPart3;
+
+        // Verstuur het verzoek direct naar de Gradio API
+        const response = await fetch(backendUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: [messageToSend] }) 
+        });
+
+        if (!response.ok) throw new Error("Server reageerde niet goed.");
+
+        const result = await response.json();
+        
+        // Verwijder laadstatus
+        const loadingEl = document.getElementById(loadingId);
+        if (loadingEl) loadingEl.remove();
+
+        // GECORRIGEERD: Haal de tekst op uit de array die de API terugstuurt
+        let botReply = "Er ging iets mis bij het ophalen van het antwoord.";
+        if (result && result.data && Array.isArray(result.data) && result.data[0]) {
+            botReply = result.data[0];
+        } else if (result && result.data) {
+            botReply = result.data;
         }
+
+        // Toon antwoord van de bot
+        appendMessage(botReply, 'bot');
+
+    } catch (error) {
+        console.error("Gradio API Fout:", error);
+        const loadingEl = document.getElementById(loadingId);
+        if (loadingEl) {
+            loadingEl.innerText = "Er ging iets mis met de verbinding.";
+            loadingEl.classList.remove('loading');
+        }
+    }
+}
+
+
+
+
+
+
+
+
+        
 
         // Helper functie om berichten toe te voegen en direct te scrollen
         function appendMessage(text, sender) {
