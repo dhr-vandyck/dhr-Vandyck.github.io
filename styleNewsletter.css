@@ -10,7 +10,6 @@
     --error: #ef4444;
 }
 
-/* Basis resets */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -22,11 +21,10 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
-    padding: 20px;
-    padding-top: 90px; /* Ruimte voor je navigatiebalk */
+    padding: 20px 20px 20px 20px;
+    padding-top: 90px;
 }
 
-/* Navigatiebalk van je homepage */
 .navbar {
     position: fixed;
     top: 0;
@@ -60,23 +58,20 @@ body {
     color: var(--primary);
 }
 
-/* De Hoofdcontainer: Nu breder gemaakt (800px) */
 .container {
     max-width: 800px; 
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 30px; /* Ruimte tussen de nieuwsbrief-box en de AI-assistent */
+    gap: 30px;
 }
 
-/* De Nieuwsbrief-box zelf */
 .box {
     background-color: var(--card-bg);
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
     border: 1px solid #1e293b;
-    width: 100%;
 }
 
 .box h3 {
@@ -89,7 +84,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Invoervelden en formulieren */
 input[type="email"] {
     width: 100%;
     padding: 12px;
@@ -99,7 +93,6 @@ input[type="email"] {
     color: var(--text-color);
     font-size: 0.95em;
     margin-bottom: 15px;
-    outline: none;
 }
 
 input[type="email"]:focus {
@@ -122,7 +115,6 @@ input[type="email"]:focus {
 
 .checkbox-label a {
     color: var(--primary);
-    text-decoration: underline;
 }
 
 button[type="submit"], #submitBtn {
@@ -142,7 +134,6 @@ button[type="submit"]:hover, #submitBtn:hover {
     background-color: var(--primary-hover);
 }
 
-/* Bericht status-klassen */
 .message {
     margin-top: 15px;
     font-size: 0.95em;
@@ -154,7 +145,6 @@ button[type="submit"]:hover, #submitBtn:hover {
 .message.warning { color: var(--warning); }
 .message.error { color: var(--error); }
 
-/* Privacy Pop-up Modal CSS (Start ALTIJD onzichtbaar) */
 .modal {
     display: none;
     position: fixed;
@@ -176,7 +166,6 @@ button[type="submit"]:hover, #submitBtn:hover {
     width: 90%;
     border: 1px solid #1e293b;
     color: var(--text-color);
-    text-align: left;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
@@ -215,7 +204,6 @@ button[type="submit"]:hover, #submitBtn:hover {
     background-color: var(--primary-hover);
 }
 
-/* AI Assistent Widget RECHT onder de box */
 .chat-helper.newsletter-ai {
     background-color: var(--card-bg);
     border: 1px solid #1e293b;
@@ -224,7 +212,6 @@ button[type="submit"]:hover, #submitBtn:hover {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: 100%;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
@@ -246,7 +233,6 @@ button[type="submit"]:hover, #submitBtn:hover {
 
 .chat-input-box {
     display: flex;
-    flex: 1;
     background-color: #0b111e;
     border: 1px solid #1e293b;
     border-radius: 8px;
@@ -257,7 +243,6 @@ button[type="submit"]:hover, #submitBtn:hover {
 .chat-input-box input {
     background: none;
     border: none;
-    outline: none;
     color: var(--text-color);
     flex: 1;
     font-size: 0.95rem;
@@ -276,7 +261,6 @@ button[type="submit"]:hover, #submitBtn:hover {
     color: var(--primary-hover);
 }
 
-/* Mobiel vriendelijk maken */
 @media (max-width: 950px) {
     .container {
         max-width: 100%;
