@@ -276,6 +276,41 @@ th {
     font-size: 1.1rem;
 }
 
+/* 1. De Pop-up container (deze krijgt nu de hoofdscrool) */
+.modal-content {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 460px;
+    width: 90%;
+    border: 1px solid #1e293b;
+    color: var(--text-color);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    
+    /* NIEUW: Geef de complete popup een maximale hoogte en laat deze scrollen */
+    max-height: 85vh;          /* Beperkt de hoogte tot 85% van het scherm */
+    overflow-y: auto;          /* Maakt de scrollbalk hier zichtbaar wanneer nodig */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. De AI Assistent Widget (verwijder hier eventuele vaste hoogtes of scrolls) */
+.chat-helper.newsletter-ai {
+    background-color: var(--card-bg);
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    
+    /* ZORGD ERVOOR: Dat deze box geen eigen scrollbalken aanmaakt */
+    overflow: visible;         /* Voorkom dubbele scrollbalken binnenin */
+    height: auto;              /* Laat de box natuurlijk meegroeien met de inhoud */
+}
+
+
 /* Mobiel vriendelijk maken */
 @media (max-width: 950px) {
     .container {
