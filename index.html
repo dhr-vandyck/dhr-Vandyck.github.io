@@ -3,128 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceddy Vandyck - Portfolio</title>
-    <link rel="icon" href="../../favicon.png">
-    <style>
-        :root {
-            --bg-color: #0b111e;
-            --card-bg: #161f30;
-            --text-color: #e2e8f0;
-            --text-muted: #94a3b8;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --success: #10b981;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        header {
-            max-width: 1000px;
-            margin: 0 auto 30px auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        nav a {
-            color: var(--text-muted);
-            text-decoration: none;
-            margin-left: 20px;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--text-color);
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: block; /* Haalt de twee kolommen weg */
-        }
-
-        /* De chatbox is nu gecentreerd en lekker breed */
-
-
-        .chat-container {
-            height: 80vh;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 5px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden; /* Dit snijdt alles af wat buiten de box valt */
-            position: relative;
-        }
-
-        /* Dit trucje zorgt ervoor dat de iframe onderaan 40 pixels groter is, 
-           waardoor de Gradio-balk precies achter de rand van je container verdwijnt! */
-        .chat-container iframe {
-            height: calc(100% + 40px) !important;
-            margin-bottom: -40px;
-        }
-
-
-
-
-        
-    </style>
+    <title>Ceddy.dev | Portfolio</title>
+    <!-- Koppeling naar het externe CSS-bestand -->
+    <link rel="stylesheet" href="styleCV.css">
 </head>
 <body>
 
-    <header>
-        <div class="logo">Ceddy Vandyck</div>
+    <!-- Navigatiebalk bovenin -->
+    <header class="navbar">
+        <div class="logo">&lt;/&gt; Ceddy.dev</div>
         <nav>
-            <a href="newsletter.html">Nieuwsbrief</a>
-            <a href="Web-Pages/Bootstrap/index.html">Bootstrap Webpage Demo</a>
-            <!-- 
-            <a href="#">Mijn Games</a>
-            <a href="#">Online CV</a>
-            -->
+            <a href="#home" class="active">Home</a>
+            <a href="#over-mij">Over mij</a>
+            <a href="#projecten">Projecten</a>
+            <a href="#skills">Skills</a>
+            <a href="#ervaring">Ervaring</a>
+            <a href="#blog">Blog</a>
+            <a href="#contact">Contact</a>
         </nav>
     </header>
 
     <div class="container">
-        <!-- Alleen de prachtige, brede chatbox overgebleven -->
-        <div class="chat-container" id="chatbotVak"></div>
-    </div>
-
-    <script>
-        const linkDeel1 = "https://huggingface.co/"; 
-        const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
-        const linkDeel3 = "/embed";
         
-        const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
+        <!-- Zijbalk met ALLE vaardigheden -->
+        <aside class="sidebar" id="skills">
+            <h3>⚡ Skills</h3>
+            <ul class="skills-list">
+                <li>Mendix</li>
+                <li>JavaScript</li>
+                <li>TypeScript</li>
+                <li>HTML</li>
+                <li>CSS / SCSS</li>
+                <li>React</li>
+                <li>Next.js</li>
+                <li>Node.js</li>
+                <li>Python</li>
+                <li>FastAPI</li>
+                <li>C#</li>
+                <li>.NET</li>
+                <li>SQL</li>
+                <li>PostgreSQL</li>
+                <li>MySQL</li>
+                <li>Docker</li>
+                <li>Kubernetes</li>
+                <li>Git</li>
+                <li>GitHub</li>
+                <li>AWS</li>
+                <li>Azure</li>
+                <li>REST API</li>
+                <li>GraphQL</li>
+                <li>CI/CD</li>
+                <li>Jenkins</li>
+                <li>Linux</li>
+                <li>Agile / Scrum</li>
+                <li>Jira</li>
+                <li>Figma</li>
+                <li>UI/UX Design</li>
+                <li>Postman</li>
+                <li>MongoDB</li>
+                <li>Firebase</li>
+                <li>Tailwind CSS</li>
+                <li>Material UI</li>
+                <li>ChatGPT API</li>
+                <li>LangChain</li>
+                <li>Pandas</li>
+                <li>NumPy</li>
+                <li>BeautifulSoup</li>
+                <li>Selenium</li>
+                <li>Machine Learning</li>
+                <li>Data Analysis</li>
+                <li>Power BI</li>
+            </ul>
+        </aside>
 
-        const containerVak = document.getElementById("chatbotVak");
-        containerVak.innerHTML = `
-            <iframe 
-                src="${completeUrl}" 
-                frameborder="0" 
-                width="100%" 
-                height="100%" 
-                style="border-radius: 8px; background-color: transparent; overflow: hidden;">
-            </iframe>
-        `;
-    </script>
-</body>
+        <!-- Hoofdinhoud -->
+        <main class="main-content" id="home">
+            
+            <!-- Introductie / Hero sectie -->
+            <section class="hero-section">
+                <div class="hero-text">
+                    <h1>Welkom, ik ben Ceddy 👋</h1>
+                    <p>Ik ben een Full Stack Mendix Developer met een passie voor het bouwen van slimme, gebruiksvriendelijke en schaalbare applicaties.</p>
+                    <p>Ik combineer creativiteit met techniek en houd van uitdagingen waarbij ik echt impact kan maken.</p>
+                    <a href="#over-mij" class="btn">Meer over mij 👤</a>
+                </div>
+                <div class="hero-image">
+                    <!-- Placeholder voor de laptop illustratie -->
+                    <div class="mock-laptop">
+                        <div class="code-lines"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projecten Sectie -->
+            <section class="section-box" id="projecten">
+                <h2>📁 Projecten</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Omschrijving</th>
+                                <th>Technologieën</th>
+                                <th>Jaar</th>
+                                <th>Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="bold">FLEET</td>
+                                mini-batchwagenparkbeheer en planning.
+                                <td>
+                                    <span class="tag">Mendix</span>
+                                    <span class="tag">JavaScript</span>
+                                    <span class="tag">PostgreSQL</span>
+                                </td>
+                                <td>2022 - Heden</td>
+                                <td><a href="#" class="link-icon">🔗</a></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Ceddy's AI Assistant</td>
+                                <td>AI-assistent gebouwd met Gradio en verschillende AI-modellen.</td>
+                                <td>
+                                    <span class="tag">Python</span>
+                                    <span class="tag">Gradio</span>
+                                    <span class="tag">OpenAI API</span>
+                                </td>
+                                <td>2024</td>
+                                <td><a href="#" class="link-icon">🔗</a></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Portfolio Website</td>
+                                <td>Persoonlijke portfolio website om mijn werk en skills te tonen.</td>
+                                <td>
+                                    <span class="tag">Next.js</span>
+                                    <span class="tag">Tailwind CSS</span>
+                                    <span class="tag">TypeScript</span>
+                                </td>
+                                <td>2024</td>
+                                <td><a href="#" class="link-icon">🔗</a></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Task Manager</td>
+                                <td>To-do applicatie met authenticatie en real-time updates.</td>
+                                <td>
+                                    <span class="tag">React</span>
+                                    <span class="tag">Firebase</span>
+                                    <span class="tag">Tailwind CSS</span>
+                                </td>
+                                <td>2023</td>
+                                <td><a href="#" class="link-icon">🔗</a></td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Data Dashboard</td>
+                                <td>Dashboard voor data visualisatie en rapportering.</td>
+                                <td>
+                                    <span class="tag">Python</span>
+                                    <span class="tag">Pandas</span>
+                                    <span class="tag">Power BI</span>
+                                </td>
+                                <td>2023</td>
+                                <td><a href="#" class="link-icon">🔗</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="center-link">
+                    <a href="#" class="view-all">Bekijk alle projecten →</a>
+                </div>
+            </section>
+
+            <!-- Ervaring Sectie -->
+            <section class="section-box" id="ervaring">
+                <h2>💼 Ervaring</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Functie</th>
+                                <th>Bedrijf</th>
+                                <th>Omschrijving</th>
+                                <th>Periode</th>
+                            </tr>
+                        </thead>
+
+
+
+                        <tbody>
+                            <tr>
+                                <td class="bold">Full Stack Mendix Developer</td>
+                                <td>DEKRA</td>
+                                <td>Ontwikkelen en onderhouden van de in-house FLEET applicatie. Nieuwe functionaliteiten, bugfixes en optimalisaties.</td>
+                                <td>Jan 2022 - Heden</td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Mendix Developer</td>
+                                <td>DEKRA</td>
+                                <td>Bouwen van applicaties en integraties binnen het Mendix platform.</td>
+                                <td>2021 - Dec 2021</td>
+                            </tr>
+                            <tr>
+                                <td class="bold">Web Developer (Stage)</td>
+                                <td>XYZ Solutions</td>
+                                <td>Meewerken aan verschillende webprojecten met focus op frontend.</td>
+                                <td>2020 - 2021</td>
+                            </tr>
+                            <tr>
+                                <td class="bold">IT Support</td>
+                                <td>ABC Services</td>
+                                <td>Gebruikersondersteuning en systeembeheer.</td>
+                                <td>2019 - 2020</td>
+                            </tr>
+                                             </tbody>
+                    </table>
+                </div>
+                <div class="center-link">
+                    <a href="#" class="view-all">Bekijk volledige ervaring →</a>
+                </div>
+            </section>
+
+            <!-- ZWEVENDE GRADIO AI WIDGET (Altijd rechtsonder op het scherm) -->
+            <div id="aiWidget" class="ai-widget-container">
+                <!-- De inklapbare chatbox -->
+                <div id="aiChatBox" class="ai-chat-box">
+                    <div class="ai-chat-header">
+                        <span>Ceddy's AI Assistent 🤖</span>
+                        <button id="closeAiBtn" class="ai-close-btn">&times;</button>
+                    </div>
+                    <div class="ai-chat-body" id="chatbotVak">
+                        <!-- De iframe wordt hier live ingeladen via JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- De zwevende ronde startknop -->
+                <button id="openAiBtn" class="ai-launcher-btn">
+                    <span class="ai-icon">🤖</span>
+                    <span class="ai-badge">AI</span>
+                </button>
+            </div>
+
+            <!-- CSS-STYLING VOOR DE ZWEVENDE WIDGET -->
+            <style>
+                .ai-widget-container {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    z-index: 9999;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+
+                /* Ronde launcher-knop */
+                .ai-launcher-btn {
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, #3b82f6, #2563eb);
+                    border: none;
+                    color: white;
+                    cursor: pointer;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                    transition: transform 0.3s, background 0.3s;
+                }
+
+                .ai-launcher-btn:hover {
+                    transform: scale(1.1);
+                    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                }
+
+                .ai-icon {
+                    font-size: 28px;
+                }
+
+                .ai-badge {
+                    position: absolute;
+                    top: -2px;
+                    right: -2px;
+                    background-color: #10b981;
+                    color: white;
+                    font-size: 10px;
+                    font-weight: bold;
+                    padding: 2px 6px;
+                    border-radius: 10px;
+                    border: 2px solid #0b111e;
+                }
+
+                /* De pop-up chatbox */
+                .ai-chat-box {
+                    display: none; /* Standaard onzichtbaar */
+                    flex-direction: column;
+                    width: 380px;
+                    height: 600px;
+                    background-color: #161f30;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+                    border: 1px solid #1e293b;
+                    overflow: hidden;
+                    margin-bottom: 15px;
+                    transition: all 0.3s ease-in-out;
+                }
+
+                /* Header van de chatbox */
+                .ai-chat-header {
+                    background-color: #1f293d;
+                    padding: 12px 15px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px solid #2d3748;
+                    color: #e2e8f0;
+                    font-weight: bold;
+                }
+
+                .ai-close-btn {
+                    background: none;
+                    border: none;
+                    color: #94a3b8;
+                    font-size: 24px;
+                    cursor: pointer;
+                    transition: color 0.2s;
+                    line-height: 1;
+                }
+
+                .ai-close-btn:hover {
+                    color: #ef4444;
+                }
+
+                /* Container voor de iframe */
+                .ai-chat-body {
+                    flex-grow: 1;
+                    position: relative;
+                    overflow: hidden;
+                    background-color: #161f30;
+                }
+
+                /* Het Gradio iframe trucje om de onderbalk weg te snijden */
+                .ai-chat-body iframe {
+                    height: calc(100% + 40px) !important;
+                    margin-bottom: -40px;
+                    border: none;
+                    background-color: transparent;
+                }
+
+                /* Mobiele optimalisatie */
+                @media (max-width: 450px) {
+                    .ai-chat-box {
+                        width: calc(100vw - 40px);
+                        height: 75vh;
+                    }
+                }
+            </style>
+
+            <!-- JAVASCRIPT VOOR LOGICA EN LINKS -->
+            <script>
+                const linkDeel1 = "https://huggingface.co"; 
+                const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
+                const linkDeel3 = "/embed";
+                const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
+
+                const chatBox = document.getElementById("aiChatBox");
+                const openBtn = document.getElementById("openAiBtn");
+                const closeBtn = document.getElementById("closeAiBtn");
+                const containerVak = document.getElementById("chatbotVak");
+
+                // Vlag om bij te houden of de AI al een keer is ingeladen (voorkomt onnodig laden)
+                let isGeladen = false;
+
+                // Open de AI-widget
+                openBtn.addEventListener("click", function() {
+                    chatBox.style.display = "flex";
+                    openBtn.style.display = "none"; // Verberg de ronde knop als hij open is
+
+                    // Laad de iframe pas in zodra er écht geklikt wordt (bespaart data/snelheid)
+                    if (!isGeladen) {
+                        containerVak.innerHTML = `
+                            <iframe 
+                                src="${completeUrl}" 
+                                width="100%" 
+                                height="100%" 
+                                style="border-radius: 0 0 8px 8px; overflow: hidden;">
+                            </iframe>
+                        `;
+                        isGeladen = true;
+                    }
+                });
+
+                // Sluit / Minimaliseer de AI-widget
+                closeBtn.addEventListener("click", function() {
+                    chatBox.style.display = "none";
+                    openBtn.style.display = "flex"; // Toon de ronde knop weer
+                });
+            </script>
+        </div> <!-- Sluiting van je hoofd-container of wrapper indien van toepassing -->
+    </body>
 </html>
+
