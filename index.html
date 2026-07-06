@@ -303,6 +303,46 @@
                     background-color: transparent;
                 }
 
+
+                .chat-messages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.message-bubble {
+    padding: 10px 14px;
+    border-radius: 8px;
+    max-width: 85%;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Bericht van de gebruiker (Rechts, blauw) */
+.message-bubble.user {
+    background-color: var(--primary);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+/* Bericht van de chatbot (Links, donkere kaart) */
+.message-bubble.bot {
+    background-color: #0b111e;
+    color: var(--text-color);
+    border: 1px solid #1e293b;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+.message-bubble.loading {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+
                 /* Mobiele optimalisatie */
                 @media (max-width: 450px) {
                     .ai-chat-box {
@@ -351,6 +391,81 @@
                     chatBox.style.display = "none";
                     openBtn.style.display = "flex"; // Toon de ronde knop weer
                 });
+
+
+
+
+const sendBtn = document.getElementById('send-chat-btn');
+const userInput = document.getElementById('user-input');
+const chatMessages = document.getElementById('chat-messages');
+
+// VERVANG DIT door jouw eigen Gradio-link (bijv. van Hugging Face Spaces of je eigen server)
+const GRADIO_API_URL = "https://hf.space"; 
+
+async function sendMessage() {
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    // 1. Toon het bericht van de gebruiker direct in je eigen UI
+    appendMessage(text, 'user');
+    userInput.value = '';
+
+    // 2. Toon een tijdelijk "aan het typen..." bericht
+    const loadingId = appendMessage('Aan het typen...', 'bot loading');
+
+    try {
+        // 3. Stuur het bericht naar de Gradio API
+        const response = await fetch(GRADIO_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                data: [text] // Gradio verwacht de input(s) altijd in een array
+            })
+        });
+
+        const result = await response.json();
+        
+        // Verwijder de laadstatus
+        document.getElementById(loadingId).remove();
+
+        // 4. Ontvang de pure response tekst en zet deze in je UI
+        // Let op: afhankelijk van je Gradio setup is dit vaak result.data[0]
+        const botReply = result.data[0]; 
+        appendMessage(botReply, 'bot');
+
+    } catch (error) {
+        console.error("Gradio API Fout:", error);
+        document.getElementById(loadingId).innerText = "Er ging iets mis met de verbinding.";
+    }
+}
+
+// Helper functie om berichten netjes toe te voegen aan de HTML
+function appendMessage(text, sender) {
+    const msgId = 'msg-' + Date.now();
+    const msgDiv = document.createElement('div');
+    msgDiv.id = msgId;
+    msgDiv.className = `message-bubble ${sender}`;
+    msgDiv.innerText = text;
+    chatMessages.appendChild(msgDiv);
+    
+    // Zorg dat de modal automatisch naar beneden scrollt bij nieuwe berichten
+    const modalContent = document.querySelector('.modal-content');
+    if(modalContent) modalContent.scrollTop = modalContent.scrollHeight;
+    
+    return msgId;
+}
+
+// Event listeners voor klikken en de Enter-toets
+sendBtn.addEventListener('click', sendMessage);
+userInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+});
+
+
+
+
+
+                
             </script>
         </div> <!-- Sluiting van je hoofd-container of wrapper indien van toepassing -->
     </body>
