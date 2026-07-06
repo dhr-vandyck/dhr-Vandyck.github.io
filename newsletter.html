@@ -33,13 +33,13 @@
             <form id="newsForm">
                 <input type="email" id="newsEmail" placeholder="Jouw e-mailadres" required>
                 
-                <!-- AANPASSING: Eerste vinkje voor algemene toestemming (Mag direct aangevinkt worden) -->
+                <!-- Eerste vinkje voor algemene toestemming -->
                 <label class="checkbox-label">
                     <input type="checkbox" id="consentCheck" required>
                     <span>Ik ga ermee akkoord dat Ceddy mij updates stuurt. Ik kan me op elk moment weer uitschrijven.</span>
                 </label>
 
-                <!-- AANPASSING: Tweede vinkje voor voorwaarden (Alleen vinkbaar ná openen en sluiten pop-up!) -->
+                <!-- Tweede vinkje voor voorwaarden -->
                 <label class="checkbox-label">
                     <input type="checkbox" id="privacyCheck" required>
                     <span>Gelezen en goedgekeurd: <a href="#" id="openPrivacyBtn">Lees de voorwaarden & privacy</a>.</span>
@@ -50,7 +50,7 @@
             
             <p id="formMessage" class="message"></p>
         </div>
-    </div>
+    </div> <!-- OPTIMALISATIE: Container netjes gesloten -->
 
     <!-- Het Pop-up venster (Modal) voor de Privacyvoorwaarden -->
     <div id="privacyModal" class="modal">
@@ -73,10 +73,10 @@
     const openBtn = document.getElementById('openPrivacyBtn');
     const closeBtn = document.getElementById('closePrivacyBtn');
     const privacyCheck = document.getElementById('privacyCheck');
-    const consentCheck = document.getElementById('consentCheck'); // Variabele toegevoegd voor reset
+    const consentCheck = document.getElementById('consentCheck'); 
     const messageText = document.getElementById('formMessage');
 
-    // AANPASSING: De blokkering en melding werken nu exclusief op het TWEEDE vinkje (privacyCheck)!
+    // Blokkering en melding op het TWEEDE vinkje
     privacyCheck.addEventListener('click', function(e) {
         if (heeftVoorwaardenGelezen === false) {
             e.preventDefault(); 
@@ -100,9 +100,14 @@
         }
     });
 
+    // OPTIMALISATIE: Als men naast de modal klikt, telt het nu ook als 'gelezen' om frustratie te voorkomen
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.style.display = 'none';
+            heeftVoorwaardenGelezen = true;
+            if (messageText.innerText.includes("Lees de voorwaarden")) {
+                messageText.style.display = "none";
+            }
         }
     });
 
@@ -129,12 +134,10 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            // De link veilig opgeknipt in 3 logische delen
             const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
             const urlPart2 = "hf.space";
             const urlPart3 = "/subscribe";
 
-            // JavaScript plakt de delen hier foutloos aan elkaar
             const backendUrl = urlPart1 + urlPart2 + urlPart3;
 
             const response = await fetch(backendUrl, {
@@ -150,7 +153,7 @@
                 messageText.innerText = data.message;
                 emailInput.value = "";
                 privacyCheck.checked = false;
-                consentCheck.checked = false; // AANPASSING: Reset nu ook de eerste checkbox netjes bij succes
+                consentCheck.checked = false; 
                 heeftVoorwaardenGelezen = false; 
             } else {
                 messageText.className = "message error";
