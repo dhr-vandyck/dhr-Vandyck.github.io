@@ -408,67 +408,43 @@ async function sendMessage() {
     
     if (!userAiInput || !userAiInput.value.trim()) return;
 
-    // Sla de getypte tekst op en toon het bericht van de gebruiker
+    // Toon het bericht van de gebruiker
     const messageToSend = userAiInput.value;
     appendMessage(messageToSend, 'user');
-    
-    // Maak het invoerveld direct leeg voor de volgende vraag
     userAiInput.value = "";
 
-    // Maak laadstatus aan
+    // Laadstatus tonen
     const loadingId = 'loading-' + Date.now();
     const loadingDiv = document.createElement('div');
     loadingDiv.id = loadingId;
     loadingDiv.className = 'message-bubble bot loading';
     loadingDiv.innerText = 'Typen...';
-    
     if (chatMessagesBox) {
         chatMessagesBox.appendChild(loadingDiv);
-        if (chatMessagesBox.scrollTop !== undefined) chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+        chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
     }
 
-
-
-    
-
     try {
-        // GECORRIGEERD: De officiële, directe subdomein-route van Hugging Face
         const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
         const urlPart2 = "hf.space";
         
-        // GECORRIGEERD: Sommige Gradio apps luisteren direct op het hoofd-endpoint bij directe POST
-        const urlPart3 = "/run/predict"; 
+        // 1. PAS DIT PAD AAN: Vul hier het exacte pad in van je C# Controller endpoint (bijv: "/api/chat" of "/chat")
+        const urlPart3 = "/api/chat"; 
 
         const backendUrl = urlPart1 + urlPart2 + urlPart3;
 
-        // Verstuur het verzoek naar de Gradio API
+        // Verstuur het verzoek als een schone JSON string naar C#
         const response = await fetch(backendUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            // Gradio /run/predict verwacht de input in een data-array
-            body: JSON.stringify({ data: [messageToSend] }) 
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            // 2. CONTROLEER DE PROPERTIE: we sturen nu 'message'. Verwacht jouw C# DTO 'text' of 'prompt'? Pas het hier aan!
+            body: JSON.stringify({ message: messageToSend }) 
         });
 
-        // Als /run/predict een 404 geeft, proberen we automatisch de basis URL (FastAPI fallback)
-        if (response.status === 404) {
-            const fallbackUrl = urlPart1 + urlPart2 + "/predict";
-            const fallbackResponse = await fetch(fallbackUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: messageToSend }) // Vaak 'message' bij pure FastAPI
-            });
-            
-            if (!fallbackResponse.ok) throw new Error("Fallback mislukt.");
-            const fallbackResult = await fallbackResponse.json();
-            
-            // Verwijder laadstatus & toon antwoord
-            const loadingEl = document.getElementById(loadingId);
-            if (loadingEl) loadingEl.remove();
-            appendMessage(fallbackResult.reply || fallbackResult.response || fallbackResult, 'bot');
-            return;
-        }
-
-        if (!response.ok) throw new Error("Server reageerde niet goed.");
+        if (!response.ok) throw new Error(`Server reageerde met status: ${response.status}`);
 
         const result = await response.json();
         
@@ -476,27 +452,21 @@ async function sendMessage() {
         const loadingEl = document.getElementById(loadingId);
         if (loadingEl) loadingEl.remove();
 
-        // Haal de tekst op uit de resultaten
-        let botReply = "Er ging iets mis bij het ophalen van het antwoord.";
-        if (result && result.data && Array.isArray(result.data) && result.data[0]) {
-            botReply = result.data[0];
-        } else if (result && result.data) {
-            botReply = result.data;
-        }
-
-        // Toon antwoord van de bot
+        // 3. PAS ANTWOORD-MAPPING AAN: afhankelijk van wat je C# API terugstuurt (bijv: result.reply of result.response)
+        let botReply = result.reply || result.response || result.message || JSON.stringify(result);
+        
         appendMessage(botReply, 'bot');
 
     } catch (error) {
-
-        console.error("Gradio API Fout:", error);
+        console.error("C# Backend API Fout:", error);
         const loadingEl = document.getElementById(loadingId);
         if (loadingEl) {
-            loadingEl.innerText = "Er ging iets mis met de verbinding.";
+            loadingEl.innerText = "Er ging iets mis met de C# verbinding.";
             loadingEl.classList.remove('loading');
         }
     }
 }
+
 
 
 
