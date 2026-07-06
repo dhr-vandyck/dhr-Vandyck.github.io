@@ -10,9 +10,25 @@
     --error: #ef4444;
 }
 
-.container {
-    max-width: 600px;
-    margin: 40px auto;
+.container { /* Of de specifieke klasse van jouw nieuwsbrief-box */
+    max-width: 600px; /* Een mooie, compacte breedte voor een nieuwsbrief */
+    margin: 0 auto;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    
+    /* GECORRIGEERD: Haalt de 2 kolommen weg en zet alles netjes onder elkaar */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Dit zorgt voor een mooie, strakke ruimte TUSSEN de elementen onder elkaar */
+}
+
+/* Zorg dat het invoerveld en de knop de volledige breedte van de box pakken */
+.container input[type="email"],
+.container button {
+    width: 100%;
+    display: block;
 }
 
 .box {
