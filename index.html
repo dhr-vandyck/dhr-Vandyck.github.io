@@ -403,30 +403,48 @@
 
         try {
             // De backend URL voor jouw specifieke Gradio Space app
-            const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend./";
+            const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
             const urlPart2 = "hf.space";
-            const urlPart3 = "/api/predict"; 
+            // GECORRIGEERD: Nieuwe Gradio versies gebruiken /call/predict in plaats van /api/predict
+            const urlPart3 = "/call/predict"; 
 
             const backendUrl = urlPart1 + urlPart2 + urlPart3;
-
-            // Haal de tekst op die de gebruiker daadwerkelijk heeft getypt
             const messageToSend = userInput.value;
 
+            // STAP 1: Start de chat-wachtrij op de server
             const response = await fetch(backendUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                // GECORRIGEERD: Gradio verwacht de inputtekst in een 'data' array
                 body: JSON.stringify({ data: [messageToSend] }) 
             });
 
             const result = await response.json();
+            const eventId = result.event_id; // De unieke ID van jouw chat-aanvraag
+
+            // STAP 2: Vraag het daadwerkelijke antwoord op met de event_id
+            const resultUrl = `${backendUrl}/${eventId}`;
+            let botReply = "Er ging iets mis bij het ophalen van het antwoord.";
+            
+            // We blijven kort pollen tot de server het antwoord klaar heeft (SSE stream uitlezen)
+            const eventResponse = await fetch(resultUrl);
+            const textData = await eventResponse.text();
+            
+            // Filter de tekstdata die Gradio terugstuurt (haalt 'data: [...]' uit de stream)
+            const lines = textData.split('\n');
+            for (let line of lines) {
+                if (line.startsWith('data:')) {
+                    const jsonData = JSON.parse(line.replace('data:', '').trim());
+                    if (jsonData && jsonData[0]) {
+                        botReply = jsonData[0]; // Dit is de pure tekst van je AI
+                    }
+                }
+            }
             
             // Verwijder laadstatus
             const loadingEl = document.getElementById(loadingId);
             if (loadingEl) loadingEl.remove();
 
-            // GECORRIGEERD: Gradio stuurt een array terug, pak het eerste element [0]
-            const botReply = result.data[0]; 
+            // Toon antwoord van de bot
             appendMessage(botReply, 'bot');
 
             // Maak het invoerveld leeg voor het volgende bericht
@@ -440,7 +458,9 @@
                 loadingEl.classList.remove('loading');
             }
         }
-    }
+
+
+            
 
     // Helper functie om berichten toe te voegen en direct te scrollen
     function appendMessage(text, sender) {
