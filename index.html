@@ -427,20 +427,46 @@ async function sendMessage() {
         if (chatMessagesBox.scrollTop !== undefined) chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
     }
 
+
+
+    
+
     try {
+        // GECORRIGEERD: De officiële, directe subdomein-route van Hugging Face
         const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
         const urlPart2 = "hf.space";
-        // GECORRIGEERD: Terug naar het ondersteunde /api/predict endpoint
-        const urlPart3 = "/api/predict"; 
+        
+        // GECORRIGEERD: Sommige Gradio apps luisteren direct op het hoofd-endpoint bij directe POST
+        const urlPart3 = "/run/predict"; 
 
         const backendUrl = urlPart1 + urlPart2 + urlPart3;
 
-        // Verstuur het verzoek direct naar de Gradio API
+        // Verstuur het verzoek naar de Gradio API
         const response = await fetch(backendUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            // Gradio /run/predict verwacht de input in een data-array
             body: JSON.stringify({ data: [messageToSend] }) 
         });
+
+        // Als /run/predict een 404 geeft, proberen we automatisch de basis URL (FastAPI fallback)
+        if (response.status === 404) {
+            const fallbackUrl = urlPart1 + urlPart2 + "/predict";
+            const fallbackResponse = await fetch(fallbackUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: messageToSend }) // Vaak 'message' bij pure FastAPI
+            });
+            
+            if (!fallbackResponse.ok) throw new Error("Fallback mislukt.");
+            const fallbackResult = await fallbackResponse.json();
+            
+            // Verwijder laadstatus & toon antwoord
+            const loadingEl = document.getElementById(loadingId);
+            if (loadingEl) loadingEl.remove();
+            appendMessage(fallbackResult.reply || fallbackResult.response || fallbackResult, 'bot');
+            return;
+        }
 
         if (!response.ok) throw new Error("Server reageerde niet goed.");
 
@@ -450,7 +476,7 @@ async function sendMessage() {
         const loadingEl = document.getElementById(loadingId);
         if (loadingEl) loadingEl.remove();
 
-        // GECORRIGEERD: Haal de tekst op uit de array die de API terugstuurt
+        // Haal de tekst op uit de resultaten
         let botReply = "Er ging iets mis bij het ophalen van het antwoord.";
         if (result && result.data && Array.isArray(result.data) && result.data[0]) {
             botReply = result.data[0];
@@ -462,6 +488,7 @@ async function sendMessage() {
         appendMessage(botReply, 'bot');
 
     } catch (error) {
+
         console.error("Gradio API Fout:", error);
         const loadingEl = document.getElementById(loadingId);
         if (loadingEl) {
