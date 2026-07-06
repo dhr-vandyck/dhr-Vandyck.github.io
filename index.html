@@ -401,53 +401,67 @@
             // Toon laadstatus
             const loadingId = appendMessage('Aan het typen...', 'bot loading');
 
-            try {
-                const response = await fetch(GRADIO_API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ data: [text] })
-                });
+        try {
+            // De backend URL voor jouw specifieke Gradio Space app
+            const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
+            const urlPart2 = "hf.space";
+            const urlPart3 = "/api/predict"; 
 
-                const result = await response.json();
-                
-                // Verwijder laadstatus
-                const loadingEl = document.getElementById(loadingId);
-                if (loadingEl) loadingEl.remove();
+            const backendUrl = urlPart1 + urlPart2 + urlPart3;
 
-                // Toon antwoord van de bot
-                const botReply = result.data; 
-                appendMessage(botReply, 'bot');
+            // Haal de tekst op die de gebruiker daadwerkelijk heeft getypt
+            const messageToSend = userInput.value;
 
-            } catch (error) {
-                console.error("Gradio API Fout:", error);
-                const loadingEl = document.getElementById(loadingId);
-                if (loadingEl) {
-                    loadingEl.innerText = "Er ging iets mis met de verbinding.";
-                    loadingEl.classList.remove('loading');
-                }
+            const response = await fetch(backendUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // GECORRIGEERD: Gradio verwacht de inputtekst in een 'data' array
+                body: JSON.stringify({ data: [messageToSend] }) 
+            });
+
+            const result = await response.json();
+            
+            // Verwijder laadstatus
+            const loadingEl = document.getElementById(loadingId);
+            if (loadingEl) loadingEl.remove();
+
+            // GECORRIGEERD: Gradio stuurt een array terug, pak het eerste element [0]
+            const botReply = result.data[0]; 
+            appendMessage(botReply, 'bot');
+
+            // Maak het invoerveld leeg voor het volgende bericht
+            userInput.value = "";
+
+        } catch (error) {
+            console.error("Gradio API Fout:", error);
+            const loadingEl = document.getElementById(loadingId);
+            if (loadingEl) {
+                loadingEl.innerText = "Er ging iets mis met de verbinding.";
+                loadingEl.classList.remove('loading');
             }
         }
+    }
 
-        // Helper functie om berichten toe te voegen en direct te scrollen
-        function appendMessage(text, sender) {
-            const msgId = 'msg-' + Date.now();
-            const msgDiv = document.createElement('div');
-            msgDiv.id = msgId;
-            msgDiv.className = `message-bubble ${sender}`;
-            msgDiv.innerText = text;
-            chatMessages.appendChild(msgDiv);
-            
-            // Scroll direct naar beneden binnen het chatvenster
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            return msgId;
-        }
+    // Helper functie om berichten toe te voegen en direct te scrollen
+    function appendMessage(text, sender) {
+        const msgId = 'msg-' + Date.now();
+        const msgDiv = document.createElement('div');
+        msgDiv.id = msgId;
+        msgDiv.className = `message-bubble ${sender}`;
+        msgDiv.innerText = text;
+        chatMessages.appendChild(msgDiv);
+        
+        // Scroll direct naar beneden binnen het chatvenster
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        return msgId;
+    }
 
-        // Event listeners voor versturen
-        sendBtn.addEventListener('click', sendMessage);
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-    </script>
+    // Event listeners voor versturen
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+</script>
 </body>
 </html>
