@@ -6,6 +6,177 @@
     <title>Ceddy.dev | Portfolio</title>
     <!-- Koppeling naar het externe CSS-bestand -->
     <link rel="stylesheet" href="styleCV.css">
+
+    <!-- CSS-STYLING VOOR DE INTERACTIEVE ELEMENTEN -->
+    <style>
+        .ai-widget-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Ronde launcher-knop */
+        .ai-launcher-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .ai-launcher-btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .ai-icon {
+            font-size: 28px;
+        }
+
+        .ai-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: #10b981;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 2px solid #0b111e;
+        }
+
+        /* De pop-up chatbox */
+        .ai-chat-box {
+            display: none; /* Standaard onzichtbaar */
+            flex-direction: column;
+            width: 380px;
+            height: 600px;
+            background-color: #161f30;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1e293b;
+            overflow: hidden;
+            margin-bottom: 15px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Header van de chatbox */
+        .ai-chat-header {
+            background-color: #1f293d;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2d3748;
+            color: #e2e8f0;
+            font-weight: bold;
+        }
+
+        .ai-close-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .ai-close-btn:hover {
+            color: #ef4444;
+        }
+
+        /* Container voor de iframe */
+        .ai-chat-body {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            background-color: #161f30;
+        }
+
+        /* Het Gradio iframe trucje om de onderbalk weg te snijden */
+        .ai-chat-body iframe {
+            height: calc(100% + 40px) !important;
+            margin-bottom: -40px;
+            border: none;
+            background-color: transparent;
+        }
+
+        /* CHAT BUBBLES & GEBRUIKERSINTERACTIE */
+        .chat-messages-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+            overflow-y: auto;
+            max-height: 400px;
+            padding-right: 5px;
+        }
+
+        .message-bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            max-width: 75%;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-break: break-word;
+            animation: fadeIn 0.2s ease-in-out forwards;
+        }
+
+        /* Bericht van de gebruiker (Rechts, blauw) */
+        .message-bubble.user {
+            background-color: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        /* Bericht van de chatbot (Links, donkere kaart) */
+        .message-bubble.bot {
+            background-color: #0b111e;
+            color: var(--text-color);
+            border: 1px solid #1e293b;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        /* Loading indicator met een subtiel pulse-effect */
+        .message-bubble.loading {
+            color: var(--text-muted);
+            font-style: italic;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        /* Animaties */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Mobiele optimalisatie */
+        @media (max-width: 450px) {
+            .ai-chat-box {
+                width: calc(100vw - 40px);
+                height: 75vh;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -16,10 +187,6 @@
             <a href="#home" class="active">Home</a>
             <a href="newsletter.html">Nieuwsbrief</a>
             <a href="Web-Pages/Bootstrap/index.html">Bootstrap Webpage Demo</a>
-            <!-- 
-            <a href="#">Mijn Games</a>
-            <a href="#">Online CV</a>
-            -->
         </nav>
     </header>
 
@@ -83,14 +250,13 @@
                         <tbody>
                             <tr>
                                 <td class="bold">FLEET BOAR Automotive</td>
-                                      <td>Interne Mendix apps voor DEKRA.</td>
+                                <td>Interne Mendix apps voor DEKRA.</td>
                                 <td>
                                     <span class="tag">Mendix</span>
                                     <span class="tag">JavaScript</span>
                                     <span class="tag">PostgreSQL</span>
                                 </td>
                                 <td>2026</td>
-
                             </tr>
                             <tr>
                                 <td class="bold">Ceddy's AI Assistant</td>
@@ -100,7 +266,6 @@
                                     <span class="tag">OpenAI API</span>
                                 </td>
                                 <td>2026</td>
-
                             </tr>
                             <tr>
                                 <td class="bold">Portfolio Website</td>
@@ -109,14 +274,10 @@
                                     <span class="tag">JavaScript</span>
                                 </td>
                                 <td>2026</td>
-
                             </tr>
-
-                            
                         </tbody>
                     </table>
                 </div>
-
             </section>
 
             <!-- Ervaring Sectie -->
@@ -132,340 +293,161 @@
                                 <th>Periode</th>
                             </tr>
                         </thead>
-
-
-
                         <tbody>
                             <tr>
-    <td class="bold">Opleiding C# Ontwikkelaar</td>
-    <td>VDAB</td>
-    <td>Intensieve JavaScript en .NET/C# softwareontwikkeling training gericht op objectgeoriënteerd programmeren, databases en enterprise applicaties.</td>
-    <td>2026 - Heden</td>
-</tr>
+                                <td class="bold">Opleiding C# Ontwikkelaar</td>
+                                <td>VDAB</td>
+                                <td>Intensieve JavaScript en .NET/C# softwareontwikkeling training gericht op objectgeoriënteerd programmeren, databases en enterprise applicaties.</td>
+                                <td>2026 - Heden</td>
+                            </tr>
                             <tr>
                                 <td class="bold">Full Stack Mendix Developer</td>
                                 <td>DEKRA</td>
                                 <td>Ontwikkelen en onderhouden van de in-house FLEET applicatie. Nieuwe functionaliteiten, bugfixes en optimalisaties.</td>
-                                <td>2026 - 2025</td>
+                                <td>2025 - 2026</td>
                             </tr>
-
-                                             </tbody>
+                        </tbody>
                     </table>
                 </div>
-
             </section>
 
-            <!-- ZWEVENDE GRADIO AI WIDGET (Altijd rechtsonder op het scherm) -->
+            <!-- Handmatige Chatbox -->
+            <div class="chat-helper newsletter-ai">
+                <div id="chat-messages" class="chat-messages-container"></div>
+                <div class="chat-input-box">
+                    <input type="text" id="user-input" placeholder="Stel gerust je vraag...">
+                    <button id="send-chat-btn" class="send-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Zwevende AI Widget Structuur -->
             <div id="aiWidget" class="ai-widget-container">
-                <!-- De inklapbare chatbox -->
                 <div id="aiChatBox" class="ai-chat-box">
                     <div class="ai-chat-header">
                         <span>Ceddy's AI Assistent 🤖</span>
                         <button id="closeAiBtn" class="ai-close-btn">&times;</button>
                     </div>
                     <div class="ai-chat-body" id="chatbotVak">
-                        <!-- De iframe wordt hier live ingeladen via JavaScript -->
                     </div>
                 </div>
                 
-                <!-- De zwevende ronde startknop -->
                 <button id="openAiBtn" class="ai-launcher-btn">
                     <span class="ai-icon">🤖</span>
                     <span class="ai-badge">AI</span>
                 </button>
             </div>
 
+        </main>
+    </div> <!-- Sluiting van de hoofd-container -->
+    <script>
+        // --- 1. LOGICA VOOR DE ZWEVENDE AI WIDGET (IFRAME) ---
+        const linkDeel1 = "https://huggingface.co"; 
+        const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
+        const linkDeel3 = "/embed";
+        const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
 
+        const chatBox = document.getElementById("aiChatBox");
+        const openBtn = document.getElementById("openAiBtn");
+        const closeBtn = document.getElementById("closeAiBtn");
+        const containerVak = document.getElementById("chatbotVak");
 
+        let isGeladen = false;
 
-<div class="chat-helper newsletter-ai">
-    <!-- De plek waar de chatgeschiedenis komt -->
-    <div id="chat-messages" class="chat-messages-container"></div>
+        // Open de AI-widget en laad het iframe in
+        openBtn.addEventListener("click", function() {
+            chatBox.style.display = "flex";
+            openBtn.style.display = "none"; 
 
-    <!-- Je eigen invoerbox met submitknop -->
-    <div class="chat-input-box">
-        <input type="text" id="user-input" placeholder="Stel gerust je vraag...">
-        <button id="send-chat-btn" class="send-btn">
-            <!-- Vliegtuig icoon (of tekst zoals 'Verstuur') -->
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
-        </button>
-    </div>
-</div>
-
-
-            
-
-            <!-- CSS-STYLING VOOR DE ZWEVENDE WIDGET -->
-            <style>
-                .ai-widget-container {
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    z-index: 9999;
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                }
-
-                /* Ronde launcher-knop */
-                .ai-launcher-btn {
-                    width: 60px;
-                    height: 60px;
-                    border-radius: 50%;
-                    background: linear-gradient(135deg, #3b82f6, #2563eb);
-                    border: none;
-                    color: white;
-                    cursor: pointer;
-                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    position: relative;
-                    transition: transform 0.3s, background 0.3s;
-                }
-
-                .ai-launcher-btn:hover {
-                    transform: scale(1.1);
-                    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-                }
-
-                .ai-icon {
-                    font-size: 28px;
-                }
-
-                .ai-badge {
-                    position: absolute;
-                    top: -2px;
-                    right: -2px;
-                    background-color: #10b981;
-                    color: white;
-                    font-size: 10px;
-                    font-weight: bold;
-                    padding: 2px 6px;
-                    border-radius: 10px;
-                    border: 2px solid #0b111e;
-                }
-
-                /* De pop-up chatbox */
-                .ai-chat-box {
-                    display: none; /* Standaard onzichtbaar */
-                    flex-direction: column;
-                    width: 380px;
-                    height: 600px;
-                    background-color: #161f30;
-                    border-radius: 12px;
-                    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-                    border: 1px solid #1e293b;
-                    overflow: hidden;
-                    margin-bottom: 15px;
-                    transition: all 0.3s ease-in-out;
-                }
-
-                /* Header van de chatbox */
-                .ai-chat-header {
-                    background-color: #1f293d;
-                    padding: 12px 15px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    border-bottom: 1px solid #2d3748;
-                    color: #e2e8f0;
-                    font-weight: bold;
-                }
-
-                .ai-close-btn {
-                    background: none;
-                    border: none;
-                    color: #94a3b8;
-                    font-size: 24px;
-                    cursor: pointer;
-                    transition: color 0.2s;
-                    line-height: 1;
-                }
-
-                .ai-close-btn:hover {
-                    color: #ef4444;
-                }
-
-                /* Container voor de iframe */
-                .ai-chat-body {
-                    flex-grow: 1;
-                    position: relative;
-                    overflow: hidden;
-                    background-color: #161f30;
-                }
-
-                /* Het Gradio iframe trucje om de onderbalk weg te snijden */
-                .ai-chat-body iframe {
-                    height: calc(100% + 40px) !important;
-                    margin-bottom: -40px;
-                    border: none;
-                    background-color: transparent;
-                }
-
-
-                .chat-messages-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 15px;
-}
-
-.message-bubble {
-    padding: 10px 14px;
-    border-radius: 8px;
-    max-width: 85%;
-    font-size: 0.95rem;
-    line-height: 1.4;
-    word-break: break-word;
-}
-
-/* Bericht van de gebruiker (Rechts, blauw) */
-.message-bubble.user {
-    background-color: var(--primary);
-    color: white;
-    align-self: flex-end;
-    border-bottom-right-radius: 2px;
-}
-
-/* Bericht van de chatbot (Links, donkere kaart) */
-.message-bubble.bot {
-    background-color: #0b111e;
-    color: var(--text-color);
-    border: 1px solid #1e293b;
-    align-self: flex-start;
-    border-bottom-left-radius: 2px;
-}
-
-.message-bubble.loading {
-    color: var(--text-muted);
-    font-style: italic;
-}
-
-
-                /* Mobiele optimalisatie */
-                @media (max-width: 450px) {
-                    .ai-chat-box {
-                        width: calc(100vw - 40px);
-                        height: 75vh;
-                    }
-                }
-            </style>
-
-            <!-- JAVASCRIPT VOOR LOGICA EN LINKS -->
-            <script>
-                const linkDeel1 = "https://huggingface.co/"; 
-                const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
-                const linkDeel3 = "/embed";
-                const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
-
-                const chatBox = document.getElementById("aiChatBox");
-                const openBtn = document.getElementById("openAiBtn");
-                const closeBtn = document.getElementById("closeAiBtn");
-                const containerVak = document.getElementById("chatbotVak");
-
-                // Vlag om bij te houden of de AI al een keer is ingeladen (voorkomt onnodig laden)
-                let isGeladen = false;
-
-                // Open de AI-widget
-                openBtn.addEventListener("click", function() {
-                    chatBox.style.display = "flex";
-                    openBtn.style.display = "none"; // Verberg de ronde knop als hij open is
-
-                    // Laad de iframe pas in zodra er écht geklikt wordt (bespaart data/snelheid)
-                    if (!isGeladen) {
-                        containerVak.innerHTML = `
-                            <iframe 
-                                src="${completeUrl}" 
-                                width="100%" 
-                                height="100%" 
-                                style="border-radius: 0 0 8px 8px; overflow: hidden;">
-                            </iframe>
-                        `;
-                        isGeladen = true;
-                    }
-                });
-
-                // Sluit / Minimaliseer de AI-widget
-                closeBtn.addEventListener("click", function() {
-                    chatBox.style.display = "none";
-                    openBtn.style.display = "flex"; // Toon de ronde knop weer
-                });
-
-
-
-
-const sendBtn = document.getElementById('send-chat-btn');
-const userInput = document.getElementById('user-input');
-const chatMessages = document.getElementById('chat-messages');
-
-// VERVANG DIT door jouw eigen Gradio-link (bijv. van Hugging Face Spaces of je eigen server)
-const GRADIO_API_URL = "https://hf.space"; 
-
-async function sendMessage() {
-    const text = userInput.value.trim();
-    if (!text) return;
-
-    // 1. Toon het bericht van de gebruiker direct in je eigen UI
-    appendMessage(text, 'user');
-    userInput.value = '';
-
-    // 2. Toon een tijdelijk "aan het typen..." bericht
-    const loadingId = appendMessage('Aan het typen...', 'bot loading');
-
-    try {
-        // 3. Stuur het bericht naar de Gradio API
-        const response = await fetch(GRADIO_API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                data: [text] // Gradio verwacht de input(s) altijd in een array
-            })
+            if (!isGeladen) {
+                containerVak.innerHTML = `
+                    <iframe 
+                        src="${completeUrl}" 
+                        width="100%" 
+                        height="100%" 
+                        style="border-radius: 0 0 8px 8px; overflow: hidden; border: none; background-color: transparent;">
+                    </iframe>
+                `;
+                isGeladen = true;
+            }
         });
 
-        const result = await response.json();
-        
-        // Verwijder de laadstatus
-        document.getElementById(loadingId).remove();
-
-        // 4. Ontvang de pure response tekst en zet deze in je UI
-        // Let op: afhankelijk van je Gradio setup is dit vaak result.data[0]
-        const botReply = result.data[0]; 
-        appendMessage(botReply, 'bot');
-
-    } catch (error) {
-        console.error("Gradio API Fout:", error);
-        document.getElementById(loadingId).innerText = "Er ging iets mis met de verbinding.";
-    }
-}
-
-// Helper functie om berichten netjes toe te voegen aan de HTML
-function appendMessage(text, sender) {
-    const msgId = 'msg-' + Date.now();
-    const msgDiv = document.createElement('div');
-    msgDiv.id = msgId;
-    msgDiv.className = `message-bubble ${sender}`;
-    msgDiv.innerText = text;
-    chatMessages.appendChild(msgDiv);
-    
-    // Zorg dat de modal automatisch naar beneden scrollt bij nieuwe berichten
-    const modalContent = document.querySelector('.modal-content');
-    if(modalContent) modalContent.scrollTop = modalContent.scrollHeight;
-    
-    return msgId;
-}
-
-// Event listeners voor klikken en de Enter-toets
-sendBtn.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-});
+        // Sluit / Minimaliseer de AI-widget
+        closeBtn.addEventListener("click", function() {
+            chatBox.style.display = "none";
+            openBtn.style.display = "flex"; 
+        });
 
 
+        // --- 2. LOGICA VOOR DE HANDMATIGE CHATBOX ---
+        const sendBtn = document.getElementById('send-chat-btn');
+        const userInput = document.getElementById('user-input');
+        const chatMessages = document.getElementById('chat-messages');
 
+        // VERVANG DIT door jouw eigen werkende API endpoint indien nodig
+        const GRADIO_API_URL = "https://hf.space"; 
 
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // Toon gebruikersbericht direct
+            appendMessage(text, 'user');
+            userInput.value = '';
+
+            // Toon laadstatus
+            const loadingId = appendMessage('Aan het typen...', 'bot loading');
+
+            try {
+                const response = await fetch(GRADIO_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ data: [text] })
+                });
+
+                const result = await response.json();
                 
-            </script>
-        </div> <!-- Sluiting van je hoofd-container of wrapper indien van toepassing -->
-    </body>
+                // Verwijder laadstatus
+                const loadingEl = document.getElementById(loadingId);
+                if (loadingEl) loadingEl.remove();
+
+                // Toon antwoord van de bot
+                const botReply = result.data; 
+                appendMessage(botReply, 'bot');
+
+            } catch (error) {
+                console.error("Gradio API Fout:", error);
+                const loadingEl = document.getElementById(loadingId);
+                if (loadingEl) {
+                    loadingEl.innerText = "Er ging iets mis met de verbinding.";
+                    loadingEl.classList.remove('loading');
+                }
+            }
+        }
+
+        // Helper functie om berichten toe te voegen en direct te scrollen
+        function appendMessage(text, sender) {
+            const msgId = 'msg-' + Date.now();
+            const msgDiv = document.createElement('div');
+            msgDiv.id = msgId;
+            msgDiv.className = `message-bubble ${sender}`;
+            msgDiv.innerText = text;
+            chatMessages.appendChild(msgDiv);
+            
+            // Scroll direct naar beneden binnen het chatvenster
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            return msgId;
+        }
+
+        // Event listeners voor versturen
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
 </html>
