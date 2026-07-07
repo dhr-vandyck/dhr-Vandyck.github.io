@@ -1,5 +1,5 @@
 /* =========================================================
-   STYLELAYOUTS.CSS - KLEUREN, STRUCTUUR & VISUEEL DESIGN
+   STYLELAYOUTS.CSS - DEEL 1: BASISSMEER, NAVIGATIE & GRID
    ========================================================= */
 
 * {
@@ -25,7 +25,7 @@
 
 body {
     background-color: var(--bg-color);
-    /* Modern 3D tech-patroon met een zacht kleurverloop */
+    /* Modern tech-patroon met een zacht kleurverloop */
     background-image: 
         linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(226, 232, 240, 0.9) 100%),
         radial-gradient(var(--accent-color) 0.5px, transparent 0.5px),
@@ -34,7 +34,7 @@ body {
     background-position: 0 0, 0 0, 20px 20px;
     background-attachment: fixed;
     color: var(--text-secondary);
-    padding-top: 80px;            
+    padding-top: 90px;            
 }
 
 /* --- NAVIGATIEBALK --- */
@@ -73,25 +73,23 @@ body {
     color: var(--accent-color);
 }
 
-/* --- LAYOUT CONFIGURATIE --- */
-/* --- LAYOUT CONFIGURATIE --- */
+/* --- HOOFDLAYOUT CONFIGURATIE --- */
 .container {
     max-width: 1300px;
     margin: 0 auto;
     padding: 20px;
     display: grid;
-    /* PAS DIT AAN: Alleen 2 kolommen als er daadwerkelijk een sidebar aanwezig is */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 30px;
+    /* Hoofdinhoud links krijgt alle flexibele ruimte (1fr), slanke sidebar rechts krijgt exact 260px */
+    grid-template-columns: 1fr 260px;
+    gap: 40px; 
 }
 
-/* VOEG DIT TOE: Zorgt ervoor dat de nieuwsbrief-box op zijn eigen pagina maximaal 800px breed wordt en netjes centreert */
+/* Gecentreerde fallback voor pagina's zonder zijbalk (zoals de nieuwsbrief) */
 .container:not(:has(.sidebar)) {
     max-width: 800px;
     display: flex;
     flex-direction: column;
 }
-
 
 .main-content {
     display: flex;
@@ -99,25 +97,33 @@ body {
     gap: 35px;
 }
 
-/* --- VASTE EN ZWEVENDE KAARTEN (Zijbalk & Secties) --- */
-.sidebar, .section-box {
+/* --- KAARTEN (Zijbalk & Secties) --- */
+.sidebar, .section-box, .box {
     background-color: var(--card-color);
     border: 1px solid var(--border-color);
-    border-radius: 16px; /* Iets ronder voor een moderne look */
+    border-radius: 16px; 
     padding: 30px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Smooth lift-up effect bij hover */
-.sidebar:hover, .section-box:hover {
+.sidebar:hover, .section-box:hover, .box:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
 }
 
-.sidebar h3, .section-box h2 {
+.sidebar h3, .section-box h2, .box h3 {
     color: var(--text-primary);
     margin-bottom: 20px;
+}
+/* =========================================================
+   STYLELAYOUTS.CSS - DEEL 2: HERO, TABELLEN & FORMULIEREN
+   ========================================================= */
+
+/* --- SIDEBAR DETAILS (Skills) --- */
+.sidebar {
+    padding: 25px;
+    align-self: start;
 }
 
 .sidebar h3 {
@@ -143,11 +149,12 @@ body {
     font-weight: bold;
 }
 
-/* --- HERO SECTIE --- */
+/* --- HERO / INTRODUCTIE SECTIE --- */
 .hero-section {
     display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 20px;
+    /* Tekst links krijgt alle ruimte, laptop-illustratie rechts wordt compact gehouden */
+    grid-template-columns: 1fr 280px;
+    gap: 30px;
     align-items: center;
     padding: 20px 0;
 }
@@ -187,7 +194,6 @@ body {
     background-color: var(--accent-hover);
 }
 
-/* Geanimeerde laptop achtergrond */
 .mock-laptop {
     width: 100%;
     height: 180px;
@@ -250,42 +256,16 @@ th {
 
 .link-icon {
     color: var(--accent-color);
-
-   /* --- EXTRA PORTFOLIO ELEMENTEN (Nieuwsbrief & Boxen) --- */
-.container {
-    max-width: 800px; 
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+    text-decoration: none;
 }
 
-.box {
-    background-color: var(--card-color);
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-    border: 1px solid var(--border-color);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.box:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-}
-
-.box h3 {
-    color: var(--text-primary);
-    margin-bottom: 10px;
-}
-
+/* --- FORMULIEREN & EXTRA ELEMENTEN (Nieuwsbrief) --- */
 .description {
     color: var(--text-muted);
     font-size: 0.9em;
     margin-bottom: 20px;
 }
 
-/* --- FORMULIER ELEMENTEN --- */
 input[type="email"] {
     width: 100%;
     padding: 12px;
@@ -347,7 +327,6 @@ button[type="submit"]:hover, #submitBtn:hover {
     background-color: var(--accent-hover);
 }
 
-/* --- STATUSBODSCHAPPEN --- */
 .message {
     margin-top: 15px;
     font-size: 0.95em;
@@ -359,7 +338,7 @@ button[type="submit"]:hover, #submitBtn:hover {
 .message.warning { color: #ff9800; }
 .message.error { color: #ef4444; }
 
-/* --- POP-UP MODAL LIGHT LOOK --- */
+/* --- POP-UP MODALS --- */
 .modal-content {
     background: var(--card-color);
     padding: 25px;
@@ -408,7 +387,6 @@ button[type="submit"]:hover, #submitBtn:hover {
     background-color: var(--accent-hover);
 }
 
-/* --- GEÏNTEGREERDE ASSISTENT BOX --- */
 .chat-header-title {
     display: flex;
     align-items: center;
@@ -419,6 +397,4 @@ button[type="submit"]:hover, #submitBtn:hover {
     color: var(--text-primary);
     font-size: 1.1rem;
     font-weight: 600;
-}
-    text-decoration: none;
 }
