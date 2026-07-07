@@ -78,17 +78,18 @@ body {
     margin: 0 auto;
     padding: 20px;
     display: grid;
-    grid-template-columns: 1fr 260px; /* Brede kolom links, 260px rechts */
+    grid-template-columns: 1fr auto; /* Links flexibel breed, rechts past zich aan de breedte aan */
     gap: 40px; 
 }
 
-/* Harde visuele plaatsing om HTML-volgorde te overrulen */
+/* Visuele positionering om de HTML-volgorde op te vangen */
 .sidebar {
-    grid-column: 2; /* Dwingt skills naar de rechterkolom */
+    grid-column: 2; /* Verplaatst de skills-balk naar de rechterkolom */
+    width: 240px;   /* Houdt de skills-balk strak en slank */
 }
 
 .main-content {
-    grid-column: 1; /* Dwingt intro & tabellen naar de linkerkolom */
+    grid-column: 1; /* Plaatst je introductie en tabellen in de brede linkerkolom */
     grid-row: 1;
     display: flex;
     flex-direction: column;
@@ -102,7 +103,7 @@ body {
     flex-direction: column;
 }
 
-/* --- KAARTEN & MET BOXEN --- */
+/* --- ALGEMENE MET BOXEN --- */
 .sidebar, .section-box, .box {
     background-color: var(--card-color);
     border: 1px solid var(--border-color);
@@ -127,7 +128,7 @@ body {
 
 /* --- SIDEBAR DETAILS (Skills) --- */
 .sidebar {
-    padding: 25px;
+    padding: 20px; /* Compactere padding passend bij de slanke vorm */
     align-self: start;
 }
 
