@@ -1,5 +1,5 @@
 /* =========================================================
-   STYLELAYOUTS.CSS - DEEL 1: BASISSMEER, NAVIGATIE & GRID
+   STYLELAYOUTS.CSS - DEEL 1: BASIS, NAVIGATIE & STRUCTUUR
    ========================================================= */
 
 * {
@@ -10,22 +10,21 @@
 }
 
 :root {
-    --bg-color: #f8fafc;          /* Basis lichte achtergrond */
-    --card-color: #ffffff;        /* Wit voor de boxen/kaarten */
-    --border-color: #e2e8f0;      /* Subtiele scheidingslijnen */
-    --text-primary: #0f172a;      /* Krachtig donkergrijs voor titels */
-    --text-secondary: #475569;    /* Rustig grijs voor lopende tekst */
-    --text-muted: #64748b;        /* Placeholder- en datakleur */
-    --accent-color: #2563eb;      /* Professioneel tech-blauw */
-    --accent-hover: #1d4ed8;      /* Donkerder blauw bij hover */
-    --tag-bg: #eff6ff;            /* Lichtblauwe achtergrond voor skills */
-    --tag-text: #1d4ed8;          /* Blauwe tekstkleur voor skills */
-    --success-color: #10b981;     /* Groene online status indicator */
+    --bg-color: #f8fafc;          
+    --card-color: #ffffff;        
+    --border-color: #e2e8f0;      
+    --text-primary: #0f172a;      
+    --text-secondary: #475569;    
+    --text-muted: #64748b;        
+    --accent-color: #2563eb;      
+    --accent-hover: #1d4ed8;      
+    --tag-bg: #eff6ff;            
+    --tag-text: #1d4ed8;          
+    --success-color: #10b981;     
 }
 
 body {
     background-color: var(--bg-color);
-    /* Modern tech-patroon met een zacht kleurverloop */
     background-image: 
         linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(226, 232, 240, 0.9) 100%),
         radial-gradient(var(--accent-color) 0.5px, transparent 0.5px),
@@ -45,7 +44,7 @@ body {
     width: 100%;
     height: 70px;
     background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px); /* Modern wazig glaseffect */
+    backdrop-filter: blur(10px); 
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
@@ -79,25 +78,31 @@ body {
     margin: 0 auto;
     padding: 20px;
     display: grid;
-    /* Hoofdinhoud links krijgt alle flexibele ruimte (1fr), slanke sidebar rechts krijgt exact 260px */
-    grid-template-columns: 1fr 260px;
+    grid-template-columns: 1fr 260px; /* Brede kolom links, 260px rechts */
     gap: 40px; 
 }
 
-/* Gecentreerde fallback voor pagina's zonder zijbalk (zoals de nieuwsbrief) */
+/* Harde visuele plaatsing om HTML-volgorde te overrulen */
+.sidebar {
+    grid-column: 2; /* Dwingt skills naar de rechterkolom */
+}
+
+.main-content {
+    grid-column: 1; /* Dwingt intro & tabellen naar de linkerkolom */
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+/* Gecentreerde weergave voor pagina's zonder zijbalk (Nieuwsbrief) */
 .container:not(:has(.sidebar)) {
     max-width: 800px;
     display: flex;
     flex-direction: column;
 }
 
-.main-content {
-    display: flex;
-    flex-direction: column;
-    gap: 35px;
-}
-
-/* --- KAARTEN (Zijbalk & Secties) --- */
+/* --- KAARTEN & MET BOXEN --- */
 .sidebar, .section-box, .box {
     background-color: var(--card-color);
     border: 1px solid var(--border-color);
@@ -117,7 +122,7 @@ body {
     margin-bottom: 20px;
 }
 /* =========================================================
-   STYLELAYOUTS.CSS - DEEL 2: HERO, TABELLEN & FORMULIEREN
+   STYLELAYOUTS.CSS - DEEL 2: DETAILS, HERO & FORMULIEREN
    ========================================================= */
 
 /* --- SIDEBAR DETAILS (Skills) --- */
@@ -152,7 +157,6 @@ body {
 /* --- HERO / INTRODUCTIE SECTIE --- */
 .hero-section {
     display: grid;
-    /* Tekst links krijgt alle ruimte, laptop-illustratie rechts wordt compact gehouden */
     grid-template-columns: 1fr 280px;
     gap: 30px;
     align-items: center;
@@ -252,11 +256,6 @@ th {
     background-color: var(--accent-color);
     color: white;
     transform: scale(1.05);
-}
-
-.link-icon {
-    color: var(--accent-color);
-    text-decoration: none;
 }
 
 /* --- FORMULIEREN & EXTRA ELEMENTEN (Nieuwsbrief) --- */
