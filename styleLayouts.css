@@ -74,14 +74,24 @@ body {
 }
 
 /* --- LAYOUT CONFIGURATIE --- */
+/* --- LAYOUT CONFIGURATIE --- */
 .container {
     max-width: 1300px;
     margin: 0 auto;
     padding: 20px;
     display: grid;
-    grid-template-columns: 300px 1fr;
+    /* PAS DIT AAN: Alleen 2 kolommen als er daadwerkelijk een sidebar aanwezig is */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
     gap: 30px;
 }
+
+/* VOEG DIT TOE: Zorgt ervoor dat de nieuwsbrief-box op zijn eigen pagina maximaal 800px breed wordt en netjes centreert */
+.container:not(:has(.sidebar)) {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+}
+
 
 .main-content {
     display: flex;
