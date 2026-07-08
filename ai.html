@@ -102,16 +102,26 @@
             <p>Stel gerust een vraag over mijn cv, Mendix-ervaring, C#-projecten of hobby's.</p>
         </div>
         
-        <div class="chatbot-container-box">
-            <!-- Laadt jouw Python app in zonder omringende marges of cookie-beperkingen -->
-            <gradio-app 
-                src="https://ceddyvandyck-ceddy-portfolio-backend.hf.space/api/chat";
-                eager="true" 
-                container="false" 
-                theme="light" 
-                embed="true"
-                style="margin: -5px -25px -35px -25px;">
-            </gradio-app>
+        <div class="chatbot-container-box" id="injectieVak">
+            <!-- JavaScript injecteert hier de tag met jouw exacte 3-delige link -->
+            <script>
+                // Deel 1, 2 en 3 van jouw exacte backend url
+                const urlDeel1 = "https://ceddyvandyck-";
+                const urlDeel2 = "ceddy-portfolio-backend.";
+                const urlDeel3 = "hf.space/api/chat";
+                const exacteUrl = urlDeel1 + urlDeel2 + urlDeel3;
+
+                document.getElementById("injectieVak").innerHTML = `
+                    <gradio-app 
+                        src="${exacteUrl}" 
+                        eager="true" 
+                        container="false" 
+                        theme="light" 
+                        embed="true"
+                        style="margin: -5px -25px -35px -25px;">
+                    </gradio-app>
+                `;
+            </script>
         </div>
     </div>
 
