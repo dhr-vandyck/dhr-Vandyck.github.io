@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceddy's AI Assistent - Live Chat</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        /* Exacte styling en variabelen overgenomen van dhr-vandyck.github.io */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --bg-color: #f8fafc;          
+            --card-color: #ffffff;        
+            --border-color: #e2e8f0;      
+            --text-primary: #0f172a;      
+            --text-secondary: #475569;    
+            --text-muted: #64748b;        
+            --accent-color: #ff5722; /* Jouw kenmerkende oranje huiskleur */
+            --border-radius: 16px;
+        }
+
+        /* Jouw originele live achtergrondpatroon, maar gecentreerd via Flexbox */
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(226, 232, 240, 0.9) 100%),
+                radial-gradient(var(--accent-color) 0.5px, transparent 0.5px),
+                radial-gradient(var(--accent-color) 0.5px, transparent 0.5px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            background-position: 0 0, 0 0, 20px 20px;
+            background-attachment: fixed;
+            color: var(--text-secondary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* De gecentreerde card-container die alle visuele ruimte opeist */
+        .ai-center-card {
+            width: 100%;
+            max-width: 850px;
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .ai-header-text {
+            text-align: center;
+        }
+
+        .ai-header-text h1 {
+            color: var(--text-primary);
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .ai-header-text p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* De boks waarbinnen de live Hugging Face stream gerenderd wordt */
+        .chatbot-container-box {
+            width: 100%;
+            height: 550px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: #fafafa;
+        }
+
+        /* Dempt en corrigeert cross-origin autofocus meldingen in de console */
+        gradio-app { visibility: hidden; }
+        gradio-app:defined { visibility: visible; }
+    </style>
+    <!-- Officiële module om de Gradio 5 websocket engine direct lokaal uit te voeren -->
+    <script type="module" src="https://jsdelivr.net"></script>
+</head>
+<body>
+
+    <!-- DE ENIGE EN CENTRALE AI CHAT INTERFACE OP JOUW PAGINA -->
+    <div class="ai-center-card">
+        <div class="ai-header-text">
+            <h1>Ceddy's AI Assistent 🤖</h1>
+            <p>Stel gerust een vraag over mijn cv, Mendix-ervaring, C#-projecten of hobby's.</p>
+        </div>
+        
+        <div class="chatbot-container-box">
+            <!-- Laadt jouw Python app in zonder omringende marges of cookie-beperkingen -->
+            <gradio-app 
+                src="https://hf.space" 
+                eager="true" 
+                container="false" 
+                theme="light" 
+                embed="true"
+                style="margin: -5px -25px -35px -25px;">
+            </gradio-app>
+        </div>
+    </div>
+
+    <!-- JOUW PROFESSIONELE FOOTER HELEMAAL ONDERAAN DE LANDINGSPAGINA -->
+    <footer style="text-align: center; font-size: 0.85rem; color: var(--text-muted); width: 100%; padding-top: 20px; border-top: 1px solid rgba(226, 232, 240, 0.4);">
+        <p>&copy; 2026 Ceddy Vandyck. Alle rechten voorbehouden.</p>
+        <p style="margin-top: 4px; font-size: 0.78rem;">
+            Aangedreven door Llama 3 8B Instruct & Gradio 5.
+        </p>
+    </footer>
+
+</body>
+</html>
