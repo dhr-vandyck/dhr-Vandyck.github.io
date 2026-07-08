@@ -76,7 +76,7 @@
             font-size: 1rem;
         }
 
-        /* De boks waarbinnen de live Hugging Face stream gerenderd wordt */
+        /* De boks waarbinnen het iframe gerenderd wordt */
         .chatbot-container-box {
             width: 100%;
             height: 550px;
@@ -85,13 +85,7 @@
             border: 1px solid var(--border-color);
             background-color: #fafafa;
         }
-
-        /* Dempt en corrigeert cross-origin autofocus meldingen in de console */
-        gradio-app { visibility: hidden; }
-        gradio-app:defined { visibility: visible; }
     </style>
-    <!-- Officiële module om de Gradio 5 websocket engine direct lokaal uit te voeren -->
-    <script type="module" src="https://jsdelivr.net"></script>
 </head>
 <body>
 
@@ -102,24 +96,21 @@
             <p>Stel gerust een vraag over mijn cv, Mendix-ervaring, C#-projecten of hobby's.</p>
         </div>
         
-        <div class="chatbot-container-box" id="injectieVak">
-            <!-- JavaScript injecteert hier de tag met jouw exacte 3-delige link -->
+        <div class="chatbot-container-box" id="chatbotVak">
+            <!-- Het script injecteert direct jouw exacte 3-delige iframe-link bij het laden -->
             <script>
-                // Deel 1, 2 en 3 van jouw exacte backend url
-                const urlDeel1 = "https://ceddyvandyck-";
-                const urlDeel2 = "ceddy-portfolio-backend.";
-                const urlDeel3 = "hf.space/api/chat";
-                const exacteUrl = urlDeel1 + urlDeel2 + urlDeel3;
+                const linkDeel1 = "https://huggingface.co/"; 
+                const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
+                const linkDeel3 = "/embed";
+                const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
 
-                document.getElementById("injectieVak").innerHTML = `
-                    <gradio-app 
-                        src="${exacteUrl}" 
-                        eager="true" 
-                        container="false" 
-                        theme="light" 
-                        embed="true"
-                        style="margin: -5px -25px -35px -25px;">
-                    </gradio-app>
+                document.getElementById("chatbotVak").innerHTML = `
+                    <iframe 
+                        src="${completeUrl}" 
+                        width="100%" 
+                        height="100%" 
+                        style="border-radius: 0 0 8px 8px; overflow: hidden; border: none; background-color: transparent;">
+                    </iframe>
                 `;
             </script>
         </div>
