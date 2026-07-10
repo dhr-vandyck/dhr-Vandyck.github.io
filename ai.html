@@ -6,7 +6,6 @@
     <title>Ceddy's AI Assistent - Live Chat</title>
     <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        /* Exacte styling en variabelen overgenomen van dhr-vandyck.github.io */
         * {
             margin: 0;
             padding: 0;
@@ -21,11 +20,10 @@
             --text-primary: #0f172a;      
             --text-secondary: #475569;    
             --text-muted: #64748b;        
-            --accent-color: #ff5722; /* Jouw kenmerkende oranje huiskleur */
+            --accent-color: #ff5722;
             --border-radius: 16px;
         }
 
-        /* Jouw originele live achtergrondpatroon, maar gecentreerd via Flexbox */
         body {
             background-color: var(--bg-color);
             background-image: 
@@ -43,8 +41,6 @@
             align-items: center;
             padding: 40px 20px;
         }
-
-        /* De gecentreerde card-container die alle visuele ruimte opeist */
         .ai-center-card {
             width: 100%;
             max-width: 850px;
@@ -75,8 +71,6 @@
             color: var(--text-muted);
             font-size: 1rem;
         }
-
-        /* De boks waarbinnen het iframe gerenderd wordt */
         .chatbot-container-box {
             width: 100%;
             height: 470px;
@@ -88,15 +82,12 @@
     </style>
 </head>
 <body>
-
-    <!-- DE ENIGE EN CENTRALE AI CHAT INTERFACE OP JOUW PAGINA -->
     <div class="ai-center-card">
         <div class="ai-header-text">
             <h1>Ceddy's AI Assistent</h1>
         </div>
         
         <div class="chatbot-container-box" id="chatbotVak">
-            <!-- Het script injecteert direct jouw exacte 3-delige iframe-link bij het laden -->
             <script>
                 const linkDeel1 = "https://huggingface.co/"; 
                 const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
@@ -114,8 +105,6 @@
             </script>
         </div>
     </div>
-
-    <!-- JOUW PROFESSIONELE FOOTER HELEMAAL ONDERAAN DE LANDINGSPAGINA -->
     <footer style="text-align: center; font-size: 0.85rem; color: var(--text-muted); width: 100%; padding-top: 20px; border-top: 1px solid rgba(226, 232, 240, 0.4);">
         <p>&copy; 2026 Ceddy Vandyck. Alle rechten voorbehouden.</p>
         <p style="margin-top: 4px; font-size: 0.78rem;">
