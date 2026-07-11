@@ -59,7 +59,6 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     border: 1px solid var(--border-color);
     overflow: hidden;
-    margin-bottom: 15px;
     transition: all 0.3s ease;
 }
 
