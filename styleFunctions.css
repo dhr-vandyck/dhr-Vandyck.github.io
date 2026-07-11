@@ -53,7 +53,7 @@
     display: none; /* Wordt getoggled via JS */
     flex-direction: column;
     width: 380px;
-    height: 520px;
+    height: 516px;
     background-color: var(--card-color);
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
