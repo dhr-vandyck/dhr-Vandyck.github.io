@@ -95,12 +95,14 @@
                 const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
 
                 document.getElementById("chatbotVak").innerHTML = `
-                    <iframe 
-                        src="${completeUrl}" 
-                        width="100%" 
-                        height="100%" 
-                        style="border-radius: 0 0 8px 8px; overflow: hidden; border: none; background-color: transparent;">
-                    </iframe>
+
+<iframe id="portfolio-chat" 
+        src="${completeUrl}" 
+        style="border:none; width:100%; height:600px; opacity: 0; transition: opacity 0.3s ease;"
+        onload="this.style.opacity='1';">
+</iframe>
+                
+
                 `;
             </script>
         </div>
