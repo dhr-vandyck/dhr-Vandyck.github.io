@@ -105,7 +105,7 @@
             }
         }
     });
-        // Formulier-afhandeling (Veilige Variant via Supabase Auth)
+            // Formulier-afhandeling (Veilige Variant via Supabase Auth)
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -127,14 +127,13 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            // 1. Laad de officiële Supabase module via een stabiele CDN
+            // 1. Laad de officiële Supabase module in via de volledige, juiste URL
             const { createClient } = await import('https://esm.sh');
             const supabaseUrl = "https://supabase.co";
             const supabaseKey = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
             const supabase = createClient(supabaseUrl, supabaseKey);
 
             // 2. Registreer de gebruiker veilig via Supabase Auth
-            // Dit triggert automatisch de Brevo-mail die je net in Supabase hebt ingesteld!
             const { data, error: authError } = await supabase.auth.signUp({
                 email: email,
                 options: {
@@ -164,6 +163,7 @@
         }
     });
     </script>
+
 
     <!-- JAVASCRIPT VOOR LOGICA EN LINKS VAN DE AI CHATBOT -->
     <script>
