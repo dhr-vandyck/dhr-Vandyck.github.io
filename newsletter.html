@@ -7,8 +7,6 @@
     <!-- We hergebruiken exact jouw originele styling links -->
     <link rel="stylesheet" href="styleLayouts.css">
     <link rel="stylesheet" href="styleFunctions.css">
-    <!-- De meest stabiele manier om Supabase in te laden voor normale HTML -->
-    <script src="https://unpkg.com"></script>
 </head>
 <body>
 
@@ -64,56 +62,14 @@
         </div>
     </div>
 
-    <script>
+        <script type="module">
+    // We importeren de officiële, stabiele bibliotheek rechtstreeks in het script
+    import { createClient } from 'https://jsdelivr.net';
+
     // Status bijhouden of de voorwaarden gelezen zijn
-    let heeftVoorwaardenGelezen = false;
+    // (We herhalen deze vlag voor de zekerheid binnen dit scriptblok)
+    window.heeftVoorwaardenGelezen = window.heeftVoorwaardenGelezen || false;
 
-    const modal = document.getElementById('privacyModal');
-    const openBtn = document.getElementById('openPrivacyBtn');
-    const closeBtn = document.getElementById('closePrivacyBtn');
-    const privacyCheck = document.getElementById('privacyCheck');
-    const consentCheck = document.getElementById('consentCheck'); 
-    const messageText = document.getElementById('formMessage');
-
-    // Blokkering en melding op het tweede vinkje
-    if (privacyCheck) {
-        privacyCheck.addEventListener('click', function(e) {
-            if (heeftVoorwaardenGelezen === false) {
-                e.preventDefault(); 
-                messageText.style.display = "block";
-                messageText.className = "message warning"; 
-                messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
-            }
-        });
-    }
-
-    if (openBtn) {
-        openBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            modal.style.display = 'flex';
-        });
-    }
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none';
-            heeftVoorwaardenGelezen = true;
-            if (messageText.innerText.includes("Lees de voorwaarden")) {
-                messageText.style.display = "none";
-            }
-        });
-    }
-
-    // Sluiten door naast het venster te klikken
-    window.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-            heeftVoorwaardenGelezen = true;
-            if (messageText.innerText.includes("Lees de voorwaarden")) {
-                messageText.style.display = "none";
-            }
-        }
-    });
     // Formulier-afhandeling met directe Supabase verbinding
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -139,8 +95,8 @@
             const supabaseUrl = "https://supabase.co";
             const supabaseKey = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
             
-            // Initialiseer de client via de globale unpkg library
-            const MySupabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+            // Initialiseer de client rechtstreeks via de geïmporteerde functie
+            const MySupabaseClient = createClient(supabaseUrl, supabaseKey);
 
             // Registreer de gebruiker veilig via Supabase Auth
             const { data, error: authError } = await MySupabaseClient.auth.signUp({
@@ -170,6 +126,7 @@
         }
     });
     </script>
+
 
     <!-- JAVASCRIPT VOOR LOGICA VAN DE AI CHATBOT WIDGET -->
     <script>
