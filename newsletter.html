@@ -62,143 +62,81 @@
         </div>
     </div>
 
-    <script>
-    // Status bijhouden of de voorwaarden gelezen zijn
-    window.heeftVoorwaardenGelezen = false;
-
-    const modal = document.getElementById('privacyModal');
-    const openBtn = document.getElementById('openPrivacyBtn');
-    const closeBtn = document.getElementById('closePrivacyBtn');
-    const privacyCheck = document.getElementById('privacyCheck');
-    const consentCheck = document.getElementById('consentCheck'); 
-    const messageText = document.getElementById('formMessage');
-
-    // Blokkering en melding op het tweede vinkje
-    if (privacyCheck) {
-        privacyCheck.addEventListener('click', function(e) {
-            if (window.heeftVoorwaardenGelezen === false) {
-                e.preventDefault(); 
-                messageText.style.display = "block";
-                messageText.className = "message warning"; 
-                messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
-            }
-        });
-    }
-
-    if (openBtn) {
-        openBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            modal.style.display = 'flex';
-        });
-    }
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none';
-            window.heeftVoorwaardenGelezen = true;
-            if (messageText.innerText.includes("Lees de voorwaarden")) {
-                messageText.style.display = "none";
-            }
-        });
-    }
-
-    // Sluiten door naast het venster te klikken
-    window.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-            window.heeftVoorwaardenGelezen = true;
-            if (messageText.innerText.includes("Lees de voorwaarden")) {
-                messageText.style.display = "none";
-            }
-        }
-    });
-    </script>
     <!-- Directe Supabase Auth module-koppeling -->
-    <script type="module">
-    // De import link voor @supabase/supabase-js volledig in 3 stukjes opgeknipt
-    const libDeel1 = "https://cdn.js" + "delivr.net";
-    const libDeel2 = "/npm/@supabase/supabase-js@2";
-    const libDeel3 = "/+esm";
-    const completeImportUrl = libDeel1 + libDeel2 + libDeel3;
+<script type="module">
+const libDeel1 = "https://cdn.js" + "delivr.net";
+const libDeel2 = "/npm/@supabase/supabase-js@2";
+const libDeel3 = "/+esm";
+const completeImportUrl = libDeel1 + libDeel2 + libDeel3;
 
-    // We laden de module dynamisch in via de samengestelde 3-delige URL
-    const { createClient } = await import(completeImportUrl);
+// We laden de module dynamisch in via de samengestelde URL
+const { createClient } = await import(completeImportUrl);
 
-        
-            // Formulier-afhandeling (Zwaar beveiligd met RPC Backend - GEEN Sleutels op GitHub!)
-    document.getElementById('newsForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const emailInput = document.getElementById('newsEmail');
-        const submitButton = document.getElementById('submitBtn');
-        const email = emailInput.value;
+// Formulier-afhandeling (Zwaar beveiligd met RPC Backend)
+document.getElementById('newsForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const emailInput = document.getElementById('newsEmail');
+    const submitButton = document.getElementById('submitBtn');
+    const email = emailInput.value;
 
-        if (window.heeftVoorwaardenGelezen === false) {
-            messageText.style.display = "block";
-            messageText.className = "message warning";
-            messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
-            return;
-        }
-        
-        submitButton.disabled = true;
-        submitButton.innerText = "Verwerken...";
+    if (window.heeftVoorwaardenGelezen === false) {
         messageText.style.display = "block";
-        messageText.className = "message processing";
-        messageText.innerText = "Je aanvraag wordt verwerkt...";
+        messageText.className = "message warning";
+        messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
+        return;
+    }
+    
+    submitButton.disabled = true;
+    submitButton.innerText = "Verwerken...";
+    messageText.style.display = "block";
+    messageText.className = "message processing";
+    messageText.innerText = "Je aanvraag wordt verwerkt...";
 
-        try {
-            const libDeel1 = "https://cdn.js" + "delivr.net";
-            const libDeel2 = "/npm/@supabase/supabase-js@2";
-            const libDeel3 = "/+esm";
-            const { createClient } = await import(libDeel1 + libDeel2 + libDeel3);
+    try {
+        const urlDeel1 = "https://ozcsksqiizlhgrskmada.";
+        const urlDeel2 = "supabase";
+        const urlDeel3 = ".co";
+        const MySupabaseClient = createClient(urlDeel1 + urlDeel2 + urlDeel3, "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU");
 
-            const urlDeel1 = "https://ozcsksqiizlhgrskmada.";
-            const urlDeel2 = "supabase";
-            const urlDeel3 = ".co";
-            const MySupabaseClient = createClient(urlDeel1 + urlDeel2 + urlDeel3, "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU");
+        // Genereer het geheime token aan de voorkant
+        const randomBytes = new Uint8Array(32);
+        window.crypto.getRandomValues(randomBytes);
+        const geheimeToken = Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
 
-            // Genereer het geheime token
-            const randomBytes = new Uint8Array(32);
-            window.crypto.getRandomValues(randomBytes);
-            const geheimeToken = Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+        // We roepen de database-functie aan
+        const { data, error: rpcError } = await MySupabaseClient.rpc('verstuur_nieuwsbrief_veilig_rpc', {
+            p_email: email,
+            p_token: geheimeToken
+        });
 
-            // 1. Ruim oude pending records op
-            await MySupabaseClient.from('nieuwsbrief_abonnees').delete().eq('email', email);
-
-            // 2. Sla de abonnee op in de tabel nieuwsbrief_abonnees
-            const uniekId = Math.floor(100000 + Math.random() * 900000) * 2;
-            const { error: insertError } = await MySupabaseClient
-                .from('nieuwsbrief_abonnees')
-                .insert([{ id: uniekId, email: email, status: 'pending', token: geheimeToken }]);
-                
-            if (insertError) throw insertError;
-
-            // 3. Roep de beveiligde RPC-schakelaar aan in de database om de mail direct af te vuren
-            const { error: rpcError } = await MySupabaseClient.rpc('verstuur_nieuwsbrief_veilig_rpc', {
-                p_email: email,
-                p_token: geheimeToken
-            });
-
-            if (rpcError) throw rpcError;
-
-            // Volledig geslaagd!
-            messageText.className = "message success";
-            messageText.innerText = "Inschrijving ontvangen! Check je mailbox om je aanmelding te activeren.";
-            
-            emailInput.value = "";
-            privacyCheck.checked = false;
-            consentCheck.checked = false; 
-            window.heeftVoorwaardenGelezen = false; 
-
-        } catch (error) {
-            messageText.className = "message error";
-            messageText.innerText = "Er ging iets mis bij de databaseverbinding.";
-            console.error(error);
-        } finally {
-            submitButton.disabled = false;
-            submitButton.innerText = "Inschrijven";
+        // GEWIJZIGD: Als Supabase/PostgreSQL zelf een fout geeft, sturen we die door naar de catch
+        if (rpcError) throw new Error("Database fout: " + rpcError.message);
+        
+        // GEWIJZIGD: Als Brevo de e-mail weigert (bijv. status 401 of 400), sturen we die door naar de catch
+        if (data && data.http_status !== 201) {
+            throw new Error("Brevo weigering (Status " + data.http_status + "): " + data.brevo_response);
         }
-    });
-    </script>
+
+        // Volledig geslaagd!
+        messageText.className = "message success";
+        messageText.innerText = "Inschrijving ontvangen! Check je mailbox om je aanmelding te activeren.";
+        
+        emailInput.value = "";
+        if (privacyCheck) privacyCheck.checked = false;
+        if (consentCheck) consentCheck.checked = false; 
+        window.heeftVoorwaardenGelezen = false; 
+
+    } catch (error) {
+        // GEWIJZIGD: De HTML laat nu direct de échte, specifieke foutmelding zien op het scherm!
+        messageText.className = "message error";
+        messageText.innerText = "❌ Fout: " + error.message;
+        console.error(error);
+    } finally {
+        submitButton.disabled = false;
+        submitButton.innerText = "Inschrijven";
+    }
+});
+</script>
 </body>
 </html>
