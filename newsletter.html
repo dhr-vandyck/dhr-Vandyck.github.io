@@ -147,8 +147,11 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            const supabaseUrl = "https://supabase.co";
-            const supabaseKey = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
+            const urlDeel1 = "https://ozcsksqiizlhgrskmada.";
+            const urlDeel2 = "supabase";
+            const urlDeel3 = ".co";
+            const completeSupabaseUrl = "https://ozcsksqiizlhgrskmada.supabase.co";
+            const supabaseKey = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU";
             
             // Initialiseer de client
             const MySupabaseClient = createClient(supabaseUrl, supabaseKey);
