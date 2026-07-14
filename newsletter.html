@@ -125,7 +125,7 @@
     const { createClient } = await import(completeImportUrl);
 
         
-         // Formulier-afhandeling (Zwaar beveiligd: GEEN API-keys in de browser!)
+            // Formulier-afhandeling (Zwaar beveiligd met RPC Backend - GEEN Sleutels op GitHub!)
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -165,7 +165,7 @@
             // 1. Ruim oude pending records op
             await MySupabaseClient.from('nieuwsbrief_abonnees').delete().eq('email', email);
 
-            // 2. Sla de abonnee op in de tabel
+            // 2. Sla de abonnee op in de tabel nieuwsbrief_abonnees
             const uniekId = Math.floor(100000 + Math.random() * 900000) * 2;
             const { error: insertError } = await MySupabaseClient
                 .from('nieuwsbrief_abonnees')
@@ -173,15 +173,15 @@
                 
             if (insertError) throw insertError;
 
-            // 3. Roep de beveiligde database-backend aan om de mail te versturen (RPC)
-const { error: rpcError } = await MySupabaseClient.rpc('registreer_en_mail_backend', {
-    p_email: email,
-    p_token: geheimeToken
-});
+            // 3. Roep de beveiligde RPC-schakelaar aan in de database om de mail direct af te vuren
+            const { error: rpcError } = await MySupabaseClient.rpc('verstuur_nieuwsbrief_veilig_rpc', {
+                p_email: email,
+                p_token: geheimeToken
+            });
 
-if (rpcError) throw rpcError;
+            if (rpcError) throw rpcError;
 
-
+            // Volledig geslaagd!
             messageText.className = "message success";
             messageText.innerText = "Inschrijving ontvangen! Check je mailbox om je aanmelding te activeren.";
             
