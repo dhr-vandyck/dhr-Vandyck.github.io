@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceddy.dev | Portfolio</title>
-<link rel="stylesheet" href="styleLayouts.css">
-<link rel="stylesheet" href="styleFunctions.css">
-
-      <!-- <link rel="stylesheet" href="styleNewsletter.css">-->
+    <link rel="stylesheet" href="styleLayouts.css">
+    <link rel="stylesheet" href="styleFunctions.css">
+    <!-- Officiële Supabase bibliotheek inladen -->
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
 
@@ -15,13 +15,9 @@
     <header class="navbar">
         <div class="logo">&lt;/&gt; Ceddy.dev</div>
         <nav>
-<a href="https://dhr-vandyck.github.io/#home">Home</a>
-<a href="newsletter.html" class="active">Nieuwsbrief</a>
+            <a href="https://github.io">Home</a>
+            <a href="newsletter.html" class="active">Nieuwsbrief</a>
             <a href="Web-Pages/Bootstrap/index.html">Bootstrap Webpage Demo</a>
-            <!-- 
-            <a href="#">Mijn Games</a>
-            <a href="#">Online CV</a>
-            -->
         </nav>
     </header>
 
@@ -53,8 +49,7 @@
             
             <p id="formMessage" class="message"></p>
         </div>
-    </div> <!-- OPTIMALISATIE: Container netjes gesloten -->
-
+    </div>
     <!-- Het Pop-up venster (Modal) voor de Privacyvoorwaarden -->
     <div id="privacyModal" class="modal">
         <div class="modal-content">
@@ -103,7 +98,7 @@
         }
     });
 
-    // OPTIMALISATIE: Als men naast de modal klikt, telt het nu ook als 'gelezen' om frustratie te voorkomen
+    // Als men naast de modal klikt, telt het nu ook als 'gelezen' om frustratie te voorkomen
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.style.display = 'none';
@@ -113,7 +108,6 @@
             }
         }
     });
-
     // Formulier-afhandeling
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -137,81 +131,86 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
-            const urlPart2 = "hf.space";
-            const urlPart3 = "/subscribe";
+            // Jouw unieke Supabase URL en API Key
+            const supabaseUrl = "https://supabase.co";
+            const supabaseKey = "JOUW_SUPABASE_ANON_KEY"; 
+            
+            // Initialiseer de Supabase client
+            const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-            const backendUrl = urlPart1 + urlPart2 + urlPart3;
-
-            const response = await fetch(backendUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email })
+            // Registreer de gebruiker rechtstreeks via Supabase Auth
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                options: {
+                    emailRedirectTo: 'https://github.io'
+                }
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
+            if (error) {
+                messageText.className = "message error";
+                messageText.innerText = error.message || "Er ging iets mis.";
+            } else {
                 messageText.className = "message success";
-                messageText.innerText = data.message;
+                messageText.innerText = "Inschrijving ontvangen! Check je mailbox om je aanmelding te activeren.";
+                
+                // Formulier en vinkjes netjes resetten
                 emailInput.value = "";
                 privacyCheck.checked = false;
                 consentCheck.checked = false; 
                 heeftVoorwaardenGelezen = false; 
-            } else {
-                messageText.className = "message error";
-                messageText.innerText = data.message || "Er ging iets mis.";
             }
         } catch (error) {
             messageText.className = "message error";
-            messageText.innerText = "Kan geen verbinding maken met de server.";
+            messageText.innerText = "Kan geen verbinding maken met de database.";
         } finally {
             submitButton.disabled = false;
             submitButton.innerText = "Inschrijven";
         }
     });
     </script>
-      
+    <!-- JAVASCRIPT VOOR LOGICA EN LINKS VAN DE AI CHATBOT -->
+    <script>
+        const linkDeel1 = "https://huggingface.co"; 
+        const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
+        const linkDeel3 = "/embed";
+        const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
 
-            <!-- JAVASCRIPT VOOR LOGICA EN LINKS -->
-            <script>
-                const linkDeel1 = "https://huggingface.co/"; 
-                const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
-                const linkDeel3 = "/embed";
-                const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
+        const chatBox = document.getElementById("aiChatBox");
+        const openBtn = document.getElementById("openAiBtn");
+        const closeBtn = document.getElementById("closeAiBtn");
+        const containerVak = document.getElementById("chatbotVak");
 
-                const chatBox = document.getElementById("aiChatBox");
-                const openBtn = document.getElementById("openAiBtn");
-                const closeBtn = document.getElementById("closeAiBtn");
-                const containerVak = document.getElementById("chatbotVak");
+        // Vlag om bij te houden of de AI al een keer is ingeladen (voorkomt onnodig laden)
+        let isGeladen = false;
 
-                // Vlag om bij te houden of de AI al een keer is ingeladen (voorkomt onnodig laden)
-                let isGeladen = false;
+        // Open de AI-widget
+        if (openBtn) {
+            openBtn.addEventListener("click", function() {
+                if (chatBox) chatBox.style.display = "flex";
+                openBtn.style.display = "none"; // Verberg de ronde knop als hij open is
 
-                // Open de AI-widget
-                openBtn.addEventListener("click", function() {
-                    chatBox.style.display = "flex";
-                    openBtn.style.display = "none"; // Verberg de ronde knop als hij open is
+                // Laad de iframe pas in zodra er écht geklikt wordt (bespaart data/snelheid)
+                if (!isGeladen && containerVak) {
+                    containerVak.innerHTML = `
+                        <iframe 
+                            src="${completeUrl}" 
+                            width="100%" 
+                            height="100%" 
+                            style="border-radius: 0 0 8px 8px; overflow: hidden;">
+                        </iframe>
+                    `;
+                    isGeladen = true;
+                }
+            });
+        }
 
-                    // Laad de iframe pas in zodra er écht geklikt wordt (bespaart data/snelheid)
-                    if (!isGeladen) {
-                        containerVak.innerHTML = `
-                            <iframe 
-                                src="${completeUrl}" 
-                                width="100%" 
-                                height="100%" 
-                                style="border-radius: 0 0 8px 8px; overflow: hidden;">
-                            </iframe>
-                        `;
-                        isGeladen = true;
-                    }
-                });
-
-                // Sluit / Minimaliseer de AI-widget
-                closeBtn.addEventListener("click", function() {
-                    chatBox.style.display = "none";
-                    openBtn.style.display = "flex"; // Toon de ronde knop weer
-                });
-            </script>
+        // Sluit / Minimaliseer de AI-widget
+        if (closeBtn) {
+            closeBtn.addEventListener("click", function() {
+                if (chatBox) chatBox.style.display = "none";
+                if (openBtn) openBtn.style.display = "flex"; // Toon de ronde knop weer
+            });
+        }
+    </script>
 </body>
 </html>
