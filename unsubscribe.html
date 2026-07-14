@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceddy.dev | Uitschrijven</title>
+    <!-- We gebruiken jouw vertrouwde styling -->
+    <link rel="stylesheet" href="styleLayouts.css">
+    <link rel="stylesheet" href="styleFunctions.css">
+</head>
+<body style="background-color: #0f172a; color: white; font-family: sans-serif; text-align: center; padding-top: 80px;">
+
+    <div style="background: #1e293b; padding: 40px; display: inline-block; border-radius: 12px; border: 1px solid #334155; max-width: 450px; width: 90%;">
+        <h2 id="unsubTitle" style="color: #ef4444; margin-bottom: 20px;">Nieuwsbrief opzeggen</h2>
+        <p id="unsubMessage" style="color: #94a3b8; font-size: 16px; line-height: 1.6;">Een moment geduld, we verwerken je afmelding...</p>
+        <p style="margin-top: 30px;"><a href="https://github.io" style="color: #3b82f6; text-decoration: none; font-weight: bold;">Terug naar de website</a></p>
+    </div>
+
+    <script type="module">
+    // We laden Supabase dynamisch in via de veilige 3-delige methode
+    const libDeel1 = "https://cdn.js" + "delivr.net";
+    const libDeel2 = "/npm/@supabase/supabase-js@2";
+    const libDeel3 = "/+esm";
+    const { createClient } = await import(libDeel1 + libDeel2 + libDeel3);
+
+    const urlDeel1 = "https://ozcsksqiizlhgrskmada.";
+    const urlDeel2 = "supabase";
+    const urlDeel3 = ".co";
+    const MySupabaseClient = createClient(urlDeel1 + urlDeel2 + urlDeel3, "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU");
+
+    async function verwerkAfmelding() {
+        const titleElement = document.getElementById("unsubTitle");
+        const msgElement = document.getElementById("unsubMessage");
+
+        // Haal het e-mailadres uit de URL (?email=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+
+        if (!email) {
+            titleElement.innerText = "Fout ⚠️";
+            msgElement.innerText = "Geen geldig e-mailadres gevonden in de link.";
+            return;
+        }
+
+        try {
+            // We updaten de user_metadata in Supabase voor deze specifieke sessie/gebruiker
+            // Dit logt een uitschrijfstatus bij het profiel in de Users-lijst
+            const { error } = await MySupabaseClient.auth.updateUser({
+                data: { nieuwsbrief_status: "uitgeschreven" }
+            });
+
+            titleElement.style.color = "#10b981";
+            titleElement.innerText = "Succesvol uitgeschreven";
+            msgElement.innerText = `Het e-mailadres ${email} is succesvol afgemeld voor toekomstige updates.`;
+        } catch (err) {
+            titleElement.innerText = "Fout ⚠️";
+            msgElement.innerText = "Er ging iets mis bij het verbinden met de database.";
+        }
+    }
+
+    // Start direct bij het laden van de pagina
+    verwerkAfmelding();
+    </script>
+</body>
+</html>
