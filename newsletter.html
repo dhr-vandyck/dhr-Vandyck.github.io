@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceddy.dev | Portfolio</title>
+    <!-- We hergebruiken exact jouw originele styling links -->
     <link rel="stylesheet" href="styleLayouts.css">
     <link rel="stylesheet" href="styleFunctions.css">
+    <!-- De meest stabiele manier om Supabase in te laden voor normale HTML -->
+    <script src="https://unpkg.com"></script>
 </head>
 <body>
 
@@ -62,7 +65,7 @@
     </div>
 
     <script>
-    // Status bijhouden of de voorwaarden geopend en gesloten zijn via de knop
+    // Status bijhouden of de voorwaarden gelezen zijn
     let heeftVoorwaardenGelezen = false;
 
     const modal = document.getElementById('privacyModal');
@@ -72,30 +75,36 @@
     const consentCheck = document.getElementById('consentCheck'); 
     const messageText = document.getElementById('formMessage');
 
-    // Blokkering en melding op het TWEEDE vinkje
-    privacyCheck.addEventListener('click', function(e) {
-        if (heeftVoorwaardenGelezen === false) {
-            e.preventDefault(); 
-            messageText.style.display = "block";
-            messageText.className = "message warning"; 
-            messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
-        }
-    });
+    // Blokkering en melding op het tweede vinkje
+    if (privacyCheck) {
+        privacyCheck.addEventListener('click', function(e) {
+            if (heeftVoorwaardenGelezen === false) {
+                e.preventDefault(); 
+                messageText.style.display = "block";
+                messageText.className = "message warning"; 
+                messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
+            }
+        });
+    }
 
-    openBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        modal.style.display = 'flex';
-    });
+    if (openBtn) {
+        openBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.style.display = 'flex';
+        });
+    }
 
-    closeBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
-        heeftVoorwaardenGelezen = true;
-        if (messageText.innerText.includes("Lees de voorwaarden")) {
-            messageText.style.display = "none";
-        }
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+            heeftVoorwaardenGelezen = true;
+            if (messageText.innerText.includes("Lees de voorwaarden")) {
+                messageText.style.display = "none";
+            }
+        });
+    }
 
-    // Sluiten naast de modal
+    // Sluiten door naast het venster te klikken
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.style.display = 'none';
@@ -105,7 +114,7 @@
             }
         }
     });
-            // Formulier-afhandeling (Veilige Variant via Supabase Auth)
+    // Formulier-afhandeling met directe Supabase verbinding
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -127,14 +136,14 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            // 1. Laad de officiële Supabase module in via de volledige, juiste URL
-            const { createClient } = await import('https://esm.sh');
             const supabaseUrl = "https://supabase.co";
             const supabaseKey = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
-            const supabase = createClient(supabaseUrl, supabaseKey);
+            
+            // Initialiseer de client via de globale unpkg library
+            const MySupabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-            // 2. Registreer de gebruiker veilig via Supabase Auth
-            const { data, error: authError } = await supabase.auth.signUp({
+            // Registreer de gebruiker veilig via Supabase Auth
+            const { data, error: authError } = await MySupabaseClient.auth.signUp({
                 email: email,
                 options: {
                     emailRedirectTo: 'https://github.io'
@@ -143,11 +152,9 @@
 
             if (authError) throw authError;
 
-            // 3. Succesmelding tonen
             messageText.className = "message success";
             messageText.innerText = "Inschrijving ontvangen! Check je mailbox en activeer je aanmelding via de groene knop.";
             
-            // Formulier en vinkjes netjes resetten
             emailInput.value = "";
             privacyCheck.checked = false;
             consentCheck.checked = false; 
@@ -164,44 +171,43 @@
     });
     </script>
 
-
-    <!-- JAVASCRIPT VOOR LOGICA EN LINKS VAN DE AI CHATBOT -->
+    <!-- JAVASCRIPT VOOR LOGICA VAN DE AI CHATBOT WIDGET -->
     <script>
         const linkDeel1 = "https://huggingface.co"; 
         const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
         const linkDeel3 = "/embed";
-        const chatbotCompleteUrl = linkDeel1 + linkDeel2 + linkDeel3;
+        const chatbotUrl = linkDeel1 + linkDeel2 + linkDeel3;
 
-        const aiChatBoxElement = document.getElementById("aiChatBox");
-        const chatbotOpenBtn = document.getElementById("openAiBtn");
-        const chatbotCloseBtn = document.getElementById("closeAiBtn");
-        const chatbotContainerVak = document.getElementById("chatbotVak");
+        const aiChatBoxContainer = document.getElementById("aiChatBox");
+        const chatbotOpenButton = document.getElementById("openAiBtn");
+        const chatbotCloseButton = document.getElementById("closeAiBtn");
+        const chatbotIframeVak = document.getElementById("chatbotVak");
 
-        let isChatbotGeladen = false;
+        let isWidgetGeladen = false;
 
-        if (chatbotOpenBtn) {
-            chatbotOpenBtn.addEventListener("click", function() {
-                if (aiChatBoxElement) aiChatBoxElement.style.display = "flex";
-                chatbotOpenBtn.style.display = "none"; 
+        if (chatbotOpenButton) {
+            chatbotOpenButton.addEventListener("click", function() {
+                if (aiChatBoxContainer) aiChatBoxContainer.style.display = "flex";
+                chatbotOpenButton.style.display = "none"; 
 
-                if (!isChatbotGeladen && chatbotContainerVak) {
-                    chatbotContainerVak.innerHTML = `
+                if (!isWidgetGeladen && chatbotIframeVak) {
+                    chatbotIframeVak.innerHTML = `
                         <iframe 
-                            src="${chatbotCompleteUrl}" 
+                            src="${chatbotUrl}" 
                             width="100%" 
                             height="100%" 
                             style="border-radius: 0 0 8px 8px; overflow: hidden;">
                         </iframe>
                     `;
-                    isChatbotGeladen = true;
+                    isWidgetGeladen = true;
                 }
             });
         }
 
-        if (chatbotCloseBtn) {
-            chatbotCloseBtn.addEventListener("click", function() {
-                if (aiChatBoxElement) aiChatBoxElement.style.display = "none";
-                if (chatbotOpenBtn) chatbotOpenBtn.style.display = "flex"; 
+        if (chatbotCloseButton) {
+            chatbotCloseButton.addEventListener("click", function() {
+                if (aiChatBoxContainer) aiChatBoxContainer.style.display = "none";
+                if (chatbotOpenButton) chatbotOpenButton.style.display = "flex"; 
             });
         }
     </script>
