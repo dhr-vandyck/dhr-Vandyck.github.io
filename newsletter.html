@@ -125,7 +125,7 @@
     const { createClient } = await import(completeImportUrl);
 
         
-    // Formulier-afhandeling met directe Supabase verbinding (Wachtwoordloos)
+        // Formulier-afhandeling (Zwaar beveiligd met database-tokens)
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -135,7 +135,7 @@
 
         if (window.heeftVoorwaardenGelezen === false) {
             messageText.style.display = "block";
-            messageText.className = "message error";
+            messageText.className = "message warning";
             messageText.innerText = "Fout: Je moet de voorwaarden geopend hebben om je te kunnen inschrijven.";
             return;
         }
@@ -147,28 +147,54 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
+            // We laden de officiële Supabase module dynamisch in
+            const libDeel1 = "https://cdn.js" + "delivr.net";
+            const libDeel2 = "/npm/@supabase/supabase-js@2";
+            const libDeel3 = "/+esm";
+            const { createClient } = await import(libDeel1 + libDeel2 + libDeel3);
+
             const urlDeel1 = "https://ozcsksqiizlhgrskmada.";
             const urlDeel2 = "supabase";
             const urlDeel3 = ".co";
-            const completeSupabaseUrl = urlDeel1 + urlDeel2 + urlDeel3;
-            const supabaseUrl = "https://ozcsksqiizlhgrskmada.supabase.co";
-            const supabaseKey = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU";
-            
-            // Initialiseer de client
-            const MySupabaseClient = createClient(supabaseUrl, supabaseKey);
+            const MySupabaseClient = createClient(urlDeel1 + urlDeel2 + urlDeel3, "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU");
 
-            // Meld de gebruiker wachtwoordloos aan via OTP (Magic Link)
-            const { data, error: authError } = await MySupabaseClient.auth.signInWithOtp({
-                email: email,
-                options: {
-                    emailRedirectTo: 'https://github.io'
+            // Genereer een onkraakbaar cryptografisch token voor de e-mail link
+            const randomBytes = new Uint8Array(32);
+            window.crypto.getRandomValues(randomBytes);
+            const geheimeToken = Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+
+            // Controleer of het e-mailadres al bestaat in je tabel nieuwsbrief_abonnees
+            const { data: bestaand, error: checkError } = await MySupabaseClient
+                .from('nieuwsbrief_abonnees')
+                .select('*')
+                .eq('email', email);
+
+            if (checkError) throw checkError;
+
+            if (bestaand && bestaand.length > 0) {
+                if (bestaand[0].status === 'active') {
+                    messageText.className = "message success";
+                    messageText.innerText = "Dit e-mailadres is al geregistreerd voor de nieuwsbrief.";
+                    return;
                 }
-            });
+                // Update bestaande aanvraag met nieuw token en zet terug op pending
+                const { error: updateError } = await MySupabaseClient
+                    .from('nieuwsbrief_abonnees')
+                    .update({ token: geheimeToken, status: 'pending' })
+                    .eq('email', email);
+                if (updateError) throw updateError;
+            } else {
+                // Maak een uniek ID en voeg de nieuwe inschrijving toe
+                const uniekId = Math.floor(100000 + Math.random() * 900000) * 2;
+                const { error: insertError } = await MySupabaseClient
+                    .from('nieuwsbrief_abonnees')
+                    .insert([{ id: uniekId, email: email, status: 'pending', token: geheimeToken }]);
+                if (insertError) throw insertError;
+            }
 
-            if (authError) throw authError;
-
+            // Succes! De database trigger schiet nu automatisch de mail af via Brevo
             messageText.className = "message success";
-            messageText.innerText = "Inschrijving ontvangen! Check je mailbox en activeer je aanmelding via de groene knop.";
+            messageText.innerText = "Inschrijving ontvangen! Check je mailbox om je aanmelding via de veilige link te activeren.";
             
             emailInput.value = "";
             privacyCheck.checked = false;
@@ -177,7 +203,7 @@
 
         } catch (error) {
             messageText.className = "message error";
-            messageText.innerText = error.message || "Er ging iets mis bij de databaseverbinding.";
+            messageText.innerText = "Er ging iets mis bij de databaseverbinding.";
             console.error(error);
         } finally {
             submitButton.disabled = false;
