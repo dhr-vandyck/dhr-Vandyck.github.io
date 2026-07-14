@@ -174,13 +174,13 @@
             if (insertError) throw insertError;
 
             // 3. Roep de beveiligde database-backend aan om de mail te versturen (RPC)
-            // Hierdoor blijft je Brevo API-key 100% onzichtbaar voor de buitenwereld!
-            const { error: rpcError } = await MySupabaseClient.rpc('registreer_en_mail_backend', {
-                p_email: email,
-                p_token: geheimeToken
-            });
+const { error: rpcError } = await MySupabaseClient.rpc('registreer_en_mail_backend', {
+    p_email: email,
+    p_token: geheimeToken
+});
 
-            if (rpcError) throw rpcError;
+if (rpcError) throw rpcError;
+
 
             messageText.className = "message success";
             messageText.innerText = "Inschrijving ontvangen! Check je mailbox om je aanmelding te activeren.";
