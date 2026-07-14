@@ -62,15 +62,61 @@
         </div>
     </div>
 
-        <script type="module">
-    // We importeren de officiële, stabiele bibliotheek rechtstreeks in het script
+    <script>
+    // Status bijhouden of de voorwaarden gelezen zijn
+    window.heeftVoorwaardenGelezen = false;
+
+    const modal = document.getElementById('privacyModal');
+    const openBtn = document.getElementById('openPrivacyBtn');
+    const closeBtn = document.getElementById('closePrivacyBtn');
+    const privacyCheck = document.getElementById('privacyCheck');
+    const consentCheck = document.getElementById('consentCheck'); 
+    const messageText = document.getElementById('formMessage');
+
+    // Blokkering en melding op het tweede vinkje
+    if (privacyCheck) {
+        privacyCheck.addEventListener('click', function(e) {
+            if (window.heeftVoorwaardenGelezen === false) {
+                e.preventDefault(); 
+                messageText.style.display = "block";
+                messageText.className = "message warning"; 
+                messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
+            }
+        });
+    }
+
+    if (openBtn) {
+        openBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.style.display = 'flex';
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+            window.heeftVoorwaardenGelezen = true;
+            if (messageText.innerText.includes("Lees de voorwaarden")) {
+                messageText.style.display = "none";
+            }
+        });
+    }
+
+    // Sluiten door naast het venster te klikken
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            window.heeftVoorwaardenGelezen = true;
+            if (messageText.innerText.includes("Lees de voorwaarden")) {
+                messageText.style.display = "none";
+            }
+        }
+    });
+    </script>
+    <!-- Directe Supabase Auth module-koppeling -->
+    <script type="module">
     import { createClient } from 'https://jsdelivr.net';
 
-    // Status bijhouden of de voorwaarden gelezen zijn
-    // (We herhalen deze vlag voor de zekerheid binnen dit scriptblok)
-    window.heeftVoorwaardenGelezen = window.heeftVoorwaardenGelezen || false;
-
-    // Formulier-afhandeling met directe Supabase verbinding
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -78,7 +124,7 @@
         const submitButton = document.getElementById('submitBtn');
         const email = emailInput.value;
 
-        if (heeftVoorwaardenGelezen === false) {
+        if (window.heeftVoorwaardenGelezen === false) {
             messageText.style.display = "block";
             messageText.className = "message error";
             messageText.innerText = "Fout: Je moet de voorwaarden geopend hebben om je te kunnen inschrijven.";
@@ -92,10 +138,10 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            const supabaseUrl = "https://supabase.co";
+            const supabaseUrl = "https://ozcsksqiizlhgrskmada.supabase.co";
             const supabaseKey = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
             
-            // Initialiseer de client rechtstreeks via de geïmporteerde functie
+            // Initialiseer de client rechtstreeks via de geïmporteerde module
             const MySupabaseClient = createClient(supabaseUrl, supabaseKey);
 
             // Registreer de gebruiker veilig via Supabase Auth
@@ -114,7 +160,7 @@
             emailInput.value = "";
             privacyCheck.checked = false;
             consentCheck.checked = false; 
-            heeftVoorwaardenGelezen = false; 
+            window.heeftVoorwaardenGelezen = false; 
 
         } catch (error) {
             messageText.className = "message error";
@@ -125,48 +171,6 @@
             submitButton.innerText = "Inschrijven";
         }
     });
-    </script>
-
-
-    <!-- JAVASCRIPT VOOR LOGICA VAN DE AI CHATBOT WIDGET -->
-    <script>
-        const linkDeel1 = "https://huggingface.co"; 
-        const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
-        const linkDeel3 = "/embed";
-        const chatbotUrl = linkDeel1 + linkDeel2 + linkDeel3;
-
-        const aiChatBoxContainer = document.getElementById("aiChatBox");
-        const chatbotOpenButton = document.getElementById("openAiBtn");
-        const chatbotCloseButton = document.getElementById("closeAiBtn");
-        const chatbotIframeVak = document.getElementById("chatbotVak");
-
-        let isWidgetGeladen = false;
-
-        if (chatbotOpenButton) {
-            chatbotOpenButton.addEventListener("click", function() {
-                if (aiChatBoxContainer) aiChatBoxContainer.style.display = "flex";
-                chatbotOpenButton.style.display = "none"; 
-
-                if (!isWidgetGeladen && chatbotIframeVak) {
-                    chatbotIframeVak.innerHTML = `
-                        <iframe 
-                            src="${chatbotUrl}" 
-                            width="100%" 
-                            height="100%" 
-                            style="border-radius: 0 0 8px 8px; overflow: hidden;">
-                        </iframe>
-                    `;
-                    isWidgetGeladen = true;
-                }
-            });
-        }
-
-        if (chatbotCloseButton) {
-            chatbotCloseButton.addEventListener("click", function() {
-                if (aiChatBoxContainer) aiChatBoxContainer.style.display = "none";
-                if (chatbotOpenButton) chatbotOpenButton.style.display = "flex"; 
-            });
-        }
     </script>
 </body>
 </html>
