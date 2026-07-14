@@ -124,6 +124,8 @@
     // We laden de module dynamisch in via de samengestelde 3-delige URL
     const { createClient } = await import(completeImportUrl);
 
+        
+    // Formulier-afhandeling met directe Supabase verbinding (Wachtwoordloos)
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -145,14 +147,14 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            const supabaseUrl = "https://ozcsksqiizlhgrskmada.supabase.co";
+            const supabaseUrl = "https://supabase.co";
             const supabaseKey = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
             
-            // Initialiseer de client rechtstreeks via de geïmporteerde module
+            // Initialiseer de client
             const MySupabaseClient = createClient(supabaseUrl, supabaseKey);
 
-            // Registreer de gebruiker veilig via Supabase Auth
-            const { data, error: authError } = await MySupabaseClient.auth.signUp({
+            // Meld de gebruiker wachtwoordloos aan via OTP (Magic Link)
+            const { data, error: authError } = await MySupabaseClient.auth.signInWithOtp({
                 email: email,
                 options: {
                     emailRedirectTo: 'https://github.io'
