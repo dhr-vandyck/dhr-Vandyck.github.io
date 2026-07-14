@@ -115,7 +115,14 @@
     </script>
     <!-- Directe Supabase Auth module-koppeling -->
     <script type="module">
-    import { createClient } from 'https://jsdelivr.net';
+    // De import link voor @supabase/supabase-js volledig in 3 stukjes opgeknipt
+    const libDeel1 = "https://cdn.js" + "delivr.net";
+    const libDeel2 = "/npm/@supabase/supabase-js@2";
+    const libDeel3 = "/+esm";
+    const completeImportUrl = libDeel1 + libDeel2 + libDeel3;
+
+    // We laden de module dynamisch in via de samengestelde 3-delige URL
+    const { createClient } = await import(completeImportUrl);
 
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
