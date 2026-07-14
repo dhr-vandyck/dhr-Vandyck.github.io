@@ -125,7 +125,7 @@
     const { createClient } = await import(completeImportUrl);
 
         
-            // Formulier-afhandeling (Gekoppeld aan de Supabase Database Webhook Backend)
+         // Formulier-afhandeling (Zwaar beveiligd: GEEN API-keys in de browser!)
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -147,7 +147,6 @@
         messageText.innerText = "Je aanvraag wordt verwerkt...";
 
         try {
-            // We laden de officiële Supabase module dynamisch in
             const libDeel1 = "https://cdn.js" + "delivr.net";
             const libDeel2 = "/npm/@supabase/supabase-js@2";
             const libDeel3 = "/+esm";
@@ -158,37 +157,15 @@
             const urlDeel3 = ".co";
             const MySupabaseClient = createClient(urlDeel1 + urlDeel2 + urlDeel3, "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU");
 
-            // Genereer een onkraakbaar cryptografisch token voor de backend-link
+            // Genereer het geheime token
             const randomBytes = new Uint8Array(32);
             window.crypto.getRandomValues(randomBytes);
             const geheimeToken = Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
 
-            // 1. Controleer of het e-mailadres al in de tabel staat
-            const { data: bestaand, error: checkError } = await MySupabaseClient
-                .from('nieuwsbrief_abonnees')
-                .select('*')
-                .eq('email', email);
+            // 1. Ruim oude pending records op
+            await MySupabaseClient.from('nieuwsbrief_abonnees').delete().eq('email', email);
 
-            if (checkError) throw checkError;
-
-            if (bestaand && bestaand.length > 0) {
-                if (bestaand[0].status === 'active') {
-                    messageText.className = "message success";
-                    messageText.innerText = "Dit e-mailadres is al geregistreerd voor de nieuwsbrief.";
-                    return;
-                }
-                
-                // Als de status 'pending' of 'disabled' is, verwijderen we de oude rij 
-                // zodat de INSERT hieronder gegarandeerd de Brevo-mailtrigger activeert!
-                const { error: deleteError } = await MySupabaseClient
-                    .from('nieuwsbrief_abonnees')
-                    .delete()
-                    .eq('email', email);
-                    
-                if (deleteError) throw deleteError;
-            }
-
-            // 2. Voeg de inschrijving toe (INSERT triggert direct de database-mail)
+            // 2. Sla de abonnee op in de tabel
             const uniekId = Math.floor(100000 + Math.random() * 900000) * 2;
             const { error: insertError } = await MySupabaseClient
                 .from('nieuwsbrief_abonnees')
@@ -196,7 +173,15 @@
                 
             if (insertError) throw insertError;
 
-            // Succes! De database-trigger heeft de mail nu server-side afgevuurd
+            // 3. Roep de beveiligde database-backend aan om de mail te versturen (RPC)
+            // Hierdoor blijft je Brevo API-key 100% onzichtbaar voor de buitenwereld!
+            const { error: rpcError } = await MySupabaseClient.rpc('registreer_en_mail_backend', {
+                p_email: email,
+                p_token: geheimeToken
+            });
+
+            if (rpcError) throw rpcError;
+
             messageText.className = "message success";
             messageText.innerText = "Inschrijving ontvangen! Check je mailbox om je aanmelding te activeren.";
             
