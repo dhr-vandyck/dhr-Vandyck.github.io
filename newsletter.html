@@ -125,7 +125,7 @@
     const { createClient } = await import(completeImportUrl);
 
         
-        // Formulier-afhandeling (Zwaar beveiligd met database-tokens)
+            // Formulier-afhandeling (Gekoppeld aan de Supabase Database Webhook Backend)
     document.getElementById('newsForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -136,7 +136,7 @@
         if (window.heeftVoorwaardenGelezen === false) {
             messageText.style.display = "block";
             messageText.className = "message warning";
-            messageText.innerText = "Fout: Je moet de voorwaarden geopend hebben om je te kunnen inschrijven.";
+            messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
             return;
         }
         
@@ -158,12 +158,12 @@
             const urlDeel3 = ".co";
             const MySupabaseClient = createClient(urlDeel1 + urlDeel2 + urlDeel3, "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU");
 
-            // Genereer een onkraakbaar cryptografisch token voor de e-mail link
+            // Genereer een onkraakbaar cryptografisch token voor de backend-link
             const randomBytes = new Uint8Array(32);
             window.crypto.getRandomValues(randomBytes);
             const geheimeToken = Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
 
-            // Controleer of het e-mailadres al bestaat in je tabel nieuwsbrief_abonnees
+            // 1. Controleer of het e-mailadres al in de tabel staat
             const { data: bestaand, error: checkError } = await MySupabaseClient
                 .from('nieuwsbrief_abonnees')
                 .select('*')
@@ -177,24 +177,28 @@
                     messageText.innerText = "Dit e-mailadres is al geregistreerd voor de nieuwsbrief.";
                     return;
                 }
-                // Update bestaande aanvraag met nieuw token en zet terug op pending
-                const { error: updateError } = await MySupabaseClient
+                
+                // Als de status 'pending' of 'disabled' is, verwijderen we de oude rij 
+                // zodat de INSERT hieronder gegarandeerd de Brevo-mailtrigger activeert!
+                const { error: deleteError } = await MySupabaseClient
                     .from('nieuwsbrief_abonnees')
-                    .update({ token: geheimeToken, status: 'pending' })
+                    .delete()
                     .eq('email', email);
-                if (updateError) throw updateError;
-            } else {
-                // Maak een uniek ID en voeg de nieuwe inschrijving toe
-                const uniekId = Math.floor(100000 + Math.random() * 900000) * 2;
-                const { error: insertError } = await MySupabaseClient
-                    .from('nieuwsbrief_abonnees')
-                    .insert([{ id: uniekId, email: email, status: 'pending', token: geheimeToken }]);
-                if (insertError) throw insertError;
+                    
+                if (deleteError) throw deleteError;
             }
 
-            // Succes! De database trigger schiet nu automatisch de mail af via Brevo
+            // 2. Voeg de inschrijving toe (INSERT triggert direct de database-mail)
+            const uniekId = Math.floor(100000 + Math.random() * 900000) * 2;
+            const { error: insertError } = await MySupabaseClient
+                .from('nieuwsbrief_abonnees')
+                .insert([{ id: uniekId, email: email, status: 'pending', token: geheimeToken }]);
+                
+            if (insertError) throw insertError;
+
+            // Succes! De database-trigger heeft de mail nu server-side afgevuurd
             messageText.className = "message success";
-            messageText.innerText = "Inschrijving ontvangen! Check je mailbox om je aanmelding via de veilige link te activeren.";
+            messageText.innerText = "Inschrijving ontvangen! Check je mailbox om je aanmelding te activeren.";
             
             emailInput.value = "";
             privacyCheck.checked = false;
