@@ -63,6 +63,59 @@
     </div>
 
     <!-- Directe Supabase Auth module-koppeling -->
+<script>
+// Status bijhouden of de voorwaarden gelezen zijn
+window.heeftVoorwaardenGelezen = false;
+
+const modal = document.getElementById('privacyModal');
+const openBtn = document.getElementById('openPrivacyBtn');
+const closeBtn = document.getElementById('closePrivacyBtn');
+const privacyCheck = document.getElementById('privacyCheck');
+const consentCheck = document.getElementById('consentCheck'); 
+const messageText = document.getElementById('formMessage');
+
+// Blokkering en melding op het tweede vinkje
+if (privacyCheck) {
+    privacyCheck.addEventListener('click', function(e) {
+        if (window.heeftVoorwaardenGelezen === false) {
+            e.preventDefault(); 
+            messageText.style.display = "block";
+            messageText.className = "message warning"; 
+            messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
+        }
+    });
+}
+
+if (openBtn) {
+    openBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.style.display = 'flex';
+    });
+}
+
+if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        window.heeftVoorwaardenGelezen = true;
+        if (messageText.innerText.includes("Lees de voorwaarden")) {
+            messageText.style.display = "none";
+        }
+    });
+}
+
+// Sluiten door naast het venster te klikken
+window.addEventListener('click', function(e) {
+    if (e.target === modal) {
+        modal.style.display = 'none';
+        window.heeftVoorwaardenGelezen = true;
+        if (messageText.innerText.includes("Lees de voorwaarden")) {
+            messageText.style.display = "none";
+        }
+    }
+});
+</script>
+
+<!-- Directe Supabase Auth module-koppeling -->
 <script type="module">
 const libDeel1 = "https://cdn.js" + "delivr.net";
 const libDeel2 = "/npm/@supabase/supabase-js@2";
@@ -72,9 +125,14 @@ const completeImportUrl = libDeel1 + libDeel2 + libDeel3;
 // We laden de module dynamisch in via de samengestelde URL
 const { createClient } = await import(completeImportUrl);
 
-// Formulier-afhandeling (Zwaar beveiligd met RPC Backend)
+// Formulier-afhandeling (Zwaar beveiligid met RPC Backend)
 document.getElementById('newsForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    
+    // GECORRIGEERD: Deze elementen vragen we binnen de module op zodat ze ALTIJD gedefinieerd zijn
+    const messageText = document.getElementById('formMessage');
+    const privacyCheck = document.getElementById('privacyCheck');
+    const consentCheck = document.getElementById('consentCheck');
     
     const emailInput = document.getElementById('newsEmail');
     const submitButton = document.getElementById('submitBtn');
@@ -110,10 +168,10 @@ document.getElementById('newsForm').addEventListener('submit', async function(e)
             p_token: geheimeToken
         });
 
-        // GEWIJZIGD: Als Supabase/PostgreSQL zelf een fout geeft, sturen we die door naar de catch
+        // Als Supabase/PostgreSQL zelf een fout geeft, sturen we die door naar de catch
         if (rpcError) throw new Error("Database fout: " + rpcError.message);
         
-        // GEWIJZIGD: Als Brevo de e-mail weigert (bijv. status 401 of 400), sturen we die door naar de catch
+        // Als Brevo de e-mail weigert (bijv. status 401 of 400), sturen we die door naar de catch
         if (data && data.http_status !== 201) {
             throw new Error("Brevo weigering (Status " + data.http_status + "): " + data.brevo_response);
         }
@@ -128,7 +186,7 @@ document.getElementById('newsForm').addEventListener('submit', async function(e)
         window.heeftVoorwaardenGelezen = false; 
 
     } catch (error) {
-        // GEWIJZIGD: De HTML laat nu direct de échte, specifieke foutmelding zien op het scherm!
+        // De HTML laat nu direct de échte, specifieke foutmelding zien op het scherm!
         messageText.className = "message error";
         messageText.innerText = "❌ Fout: " + error.message;
         console.error(error);
@@ -138,5 +196,6 @@ document.getElementById('newsForm').addEventListener('submit', async function(e)
     }
 });
 </script>
+
 </body>
 </html>
