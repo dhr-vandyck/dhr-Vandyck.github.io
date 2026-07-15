@@ -47,7 +47,6 @@ async function verwerkStatus() {
     messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving activeren in de database..." : "Je uitschrijven uit de database...";
 
     const nieuweStatus = action === 'confirm' ? 'active' : 'denied';
-    const statusNaamNederlands = action === 'confirm' ? 'actief' : 'geweigerd';
 
     try {
         const response = await fetch(`${SUPABASE_REST_URL}?token=eq.${token}`, {
@@ -62,22 +61,35 @@ async function verwerkStatus() {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP fout! Status: ${response.status}`);
+            const errorData = await response.json().catch(() => ({}));
+            
+            // Als de foutboodschap van onze nieuwe database-trigger binnenkomt:
+            if (errorData.message && errorData.message.includes('Status is reeds')) {
+                
+                // We vissen de geformatteerde datum uit de foutmelding van de database
+                // De database stuurt: "Status is reeds active sinds DD-MM-YYYY om HH:MM"
+                const delen = errorData.message.split(' sinds ');
+                const dbDatumEnTijd = delen[1] || "onbekende datum";
+                
+                messageText.className = "message warning";
+                if (action === 'confirm') {
+                    messageText.innerText = `ℹ️ Je bent al actief aangemeld op ${dbDatumEnTijd}. Prettige dag verder!`;
+                } else {
+                    messageText.innerText = `ℹ️ Je bent al veilig afgemeld geweest op ${dbDatumEnTijd}. Prettige dag verder!`;
+                }
+                return;
+            }
+            
+            throw new Error(errorData.message || `HTTP Fout ${response.status}`);
         }
 
         const data = await response.json();
 
-        if (data && data.message && data.message.includes('Status is reeds')) {
-            messageText.className = "message warning";
-            messageText.innerText = `ℹ️ Geen aanpassing gebeurd, de status was reeds al de gewenste status (${statusNaamNederlands}).`;
-            return;
-        }
-
         if (data && data.length > 0) {
             messageText.className = "message success";
             messageText.innerText = action === 'confirm' 
-                ? "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd." 
-                : "👋 Tot ziens! Je bent succesvol uitgeschreven.";
+                ? "Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd." 
+                : "Tot ziens! Je bent succesvol uitgeschreven.";
         } else {
             messageText.className = "message error";
             messageText.innerText = "❌ Fout: Deze activatielink is ongeldig, al gebruikt of verlopen.";
@@ -85,9 +97,17 @@ async function verwerkStatus() {
 
     } catch (err) {
         console.error("Database Fout:", err);
+        
         if (err.message && err.message.includes('Status is reeds')) {
+            const delen = err.message.split(' sinds ');
+            const dbDatumEnTijd = delen[1] || "onbekende datum";
+            
             messageText.className = "message warning";
-            messageText.innerText = `ℹ️ Geen aanpassing gebeurd, de status was reeds al de gewenste status (${statusNaamNederlands}).`;
+            if (action === 'confirm') {
+                messageText.innerText = `ℹ️ Je bent al actief aangemeld op ${dbDatumEnTijd}. Prettige dag verder!`;
+            } else {
+                messageText.innerText = `ℹ️ Je bent al veilig afgemeld geweest op ${dbDatumEnTijd}. Prettige dag verder!`;
+            }
         } else {
             messageText.className = "message error";
             messageText.innerText = "❌ Fout: Er is een verbindingsfout opgetreden met de database.";
@@ -97,6 +117,7 @@ async function verwerkStatus() {
 
 window.addEventListener('DOMContentLoaded', verwerkStatus);
 </script>
+
 
 </body>
 </html>
