@@ -55,11 +55,11 @@
 
 <script>
 // De API URL opgesplitst in 3 delen om automatische overschrijvingen te voorkomen
-const domeinDeel1 = "https://ozcsksqiizlhgrskmada";
+nst domeinDeel1 = "https://ozcsksqiizlhgrskmada";
 const domeinDeel2 = ".supabase.co/rest/v1/";
-const rpcPad     = "rpc/verstuur_nieuwsbrief_veilig_rpc";
+const tabelNaam   = "nieuwsbrief_abonnees";
 
-const SUPABASE_RPC_URL = domeinDeel1 + domeinDeel2 + rpcPad;
+const SUPABASE_REST_URL = domeinDeel1 + domeinDeel2 + tabelNaam; 
 const SUPABASE_ANON_KEY = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU";
 
 document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
