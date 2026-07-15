@@ -3,117 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nieuwsbrief Portaal</title>
+    <title>Nieuwsbrief Inschrijven</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #0b111e; color: #f3f4f6; padding: 50px 20px; text-align: center; }
-        .card { background: #161f30; max-width: 500px; margin: 0 auto; padding: 40px; border-radius: 12px; border: 1px solid #1e293b; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .message { display: block; padding: 15px; margin-top: 20px; border-radius: 6px; font-weight: bold; }
-        .processing { background-color: #1e293b; color: #94a3b8; border: 1px solid #3b82f6; }
-        .success { background-color: #064e3b; color: #10b981; border: 1px solid #10b981; }
-        .error { background-color: #7f1d1d; color: #f87171; border: 1px solid #f87171; }
-        a { color: #3b82f6; text-decoration: none; font-weight: bold; }
+        .card { background: #161f30; max-width: 500px; margin: 0 auto; padding: 40px; border-radius: 12px; border: 1px solid #1e293b; box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-align: left; }
+        h2 { margin-top: 0; color: #3b82f6; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #94a3b8; }
+        input[type="email"] { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #1e293b; background-color: #0b111e; color: #f3f4f6; box-sizing: border-box; font-size: 16px; }
+        input[type="email"]:focus { outline: none; border-color: #3b82f6; }
+        .checkbox-group { margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #94a3b8; }
+        .checkbox-group input { margin-top: 3px; }
+        button { width: 100%; padding: 14px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        button:hover { background-color: #2563eb; }
+        button:disabled { background-color: #1e293b; color: #64748b; cursor: not-allowed; }
+        .message { display: none; padding: 15px; margin-top: 20px; border-radius: 6px; font-weight: bold; font-size: 14px; text-align: center; }
+        .processing { display: block; background-color: #1e293b; color: #94a3b8; border: 1px solid #3b82f6; }
+        .success { display: block; background-color: #064e3b; color: #10b981; border: 1px solid #10b981; }
+        .error { display: block; background-color: #7f1d1d; color: #f87171; border: 1px solid #f87171; }
+        a { color: #3b82f6; text-decoration: none; }
         a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2 style="margin-top:0; color:#3b82f6;">Nieuwsbrief Portaal</h2>
-    <div id="portalMessage" class="message processing">Verbinding maken met de database...</div>
-    <p style="margin-top:30px;"><a href="https://github.io">Terug naar de website</a></p>
+    <h2>Blijf op de hoogte</h2>
+    <p style="color: #94a3b8; margin-bottom: 30px; text-align: center;">Meld je aan voor mijn nieuwsbrief over nieuwe AI-updates en game-projecten. Je ontvangt direct een welkomstmail na je aanmelding!</p>
+
+    <form id="newsletterForm">
+        <div class="form-group">
+            <label for="emailInput">E-mailadres</label>
+            <input type="email" id="emailInput" placeholder="jouw@email.com" required>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="agreeCheckbox" required>
+            <label for="agreeCheckbox">Ik ga ermee akkoord dat Ceddy mij updates stuurt. Ik kan me op elk moment weer uitschrijven.</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="privacyCheckbox" required>
+            <label for="privacyCheckbox">Gelezen en goedgekeurd: <a href="#">Lees de voorwaarden & privacy</a>.</label>
+        </div>
+
+        <button type="submit" id="submitBtn">Inschrijven</button>
+    </form>
+
+    <div id="responseMessage" class="message"></div>
 </div>
 
 <script>
-// De URL opgesplitst in 3 delen om automatische overschrijvingen te voorkomen
+// De API URL opgesplitst in 3 delen om automatische overschrijvingen te voorkomen
 const domeinDeel1 = "https://ozcsksqiizlhgrskmada";
 const domeinDeel2 = ".supabase.co/rest/v1/";
-const tabelNaam   = "nieuwsbrief_abonnees";
+const rpcPad     = "rpc/verstuur_nieuwsbrief_veilig_rpc";
 
-const SUPABASE_REST_URL = domeinDeel1 + domeinDeel2 + tabelNaam; 
-const SUPABASE_ANON_KEY = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
+const SUPABASE_RPC_URL = domeinDeel1 + domeinDeel2 + rpcPad;
+const SUPABASE_ANON_KEY = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU";
 
-async function verwerkStatus() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    const action = urlParams.get('action'); 
-    const messageText = document.getElementById('portalMessage');
+document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Voorkom dat de pagina herlaadt
 
-    if (!token || !action) {
-        messageText.className = "message error";
-        messageText.innerText = "❌ Fout: Geen geldige portaal-token of actie gevonden in de link.";
-        return;
-    }
+    const emailInputWaarde = document.getElementById('emailInput').value;
+    const submitBtn = document.getElementById('submitBtn');
+    const messageBox = document.getElementById('responseMessage');
 
-    messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving activeren in de database..." : "Je uitschrijven uit de database...";
-
-    // Status bepalen op basis van de link-actie
-    const nieuweStatus = action === 'confirm' ? 'active' : 'denied';
+    // Zet de knop uit en toon de laadstatus
+    submitBtn.disabled = true;
+    messageBox.className = "message processing";
+    messageBox.innerText = "⏳ Bezig met verwerken en e-mail verzenden...";
 
     try {
-        // We updaten de rij NU ENKEL als de huidige status NIET gelijk is aan de nieuwe status (neq)
-        const response = await fetch(`${SUPABASE_REST_URL}?token=eq.${token}&status=neq.${nieuweStatus}`, {
-            method: 'PATCH',
+        // We sturen via de body PUUR en ALLEEN het e-mailadres mee (p_email)
+        // Geen tokens en geen statussen; dit handelt de database-functie af!
+        const response = await fetch(SUPABASE_RPC_URL, {
+            method: "POST",
             headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
+                "apikey": SUPABASE_ANON_KEY,
+                "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify({ status: nieuweStatus })
+            body: JSON.stringify({
+                p_email: emailInputWaarde
+            })
         });
 
+        // Controleer of de HTTP-status goed is (bijv. 200 of 204)
         if (!response.ok) {
-            throw new Error(`HTTP fout! Status: ${response.status}`);
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `Serverfout (Status: ${response.status})`);
         }
 
-        const data = await response.json();
+        // Succes! Toon de groene balk
+        messageBox.className = "message success";
+        messageBox.innerText = "🚀 Gelukt! Check je mailbox om je inschrijving te activeren.";
+        document.getElementById('newsletterForm').reset(); // Maak het formulier leeg
 
-        // Situatie A: Er is EENRIJ aangepast (Status is succesvol veranderd!)
-        if (data && data.length > 0) {
-            messageText.className = "message success";
-            messageText.innerText = action === 'confirm' 
-                ? "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd." 
-                : "👋 Tot ziens! Je bent succesvol uitgeschreven.";
-            return;
-        }
-
-        // Situatie B: Er is GEEN rij aangepast. Dit betekent dat het token niet bestaat ÓF de status was al gelijk.
-        // We doen een snelle extra check om te kijken welke van de twee het is.
-        const checkResponse = await fetch(`${SUPABASE_REST_URL}?token=eq.${token}&select=status`, {
-            method: 'GET',
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-            }
-        });
+    } catch (fout) {
+        console.error("Inschrijffout:", fout);
         
-        const checkData = await checkResponse.json();
-
-        if (checkData && checkData.length > 0) {
-            const huidigeStatusInDb = checkData[0].status;
-            
-            messageText.className = "message success"; // We houden het groen/blauw omdat het geen systeemfout is
-            if (huidigeStatusInDb === 'active') {
-                messageText.innerText = "ℹ️ Je inschrijving was al actief! Je hoeft niks meer te doen.";
-            } else if (huidigeStatusInDb === 'denied') {
-                messageText.innerText = "ℹ️ Je was al succesvol uitgeschreven uit onze nieuwsbrief.";
-            }
-        } else {
-            // Het token bestaat echt helemaal niet
-            messageText.className = "message error";
-            messageText.innerText = "❌ Fout: Deze activatielink is ongeldig of verlopen.";
-        }
-
-    } catch (err) {
-        console.error("Database Fout:", err);
-        messageText.className = "message error";
-        messageText.innerText = "❌ Fout: Er is een verbindingsfout opgetreden met de database.";
+        // Toon de rode foutbalk bij problemen
+        messageBox.className = "message error";
+        messageBox.innerText = `❌ Fout: ${fout.message || "Er is een verbindingsfout opgetreden."}`;
+    } finally {
+        // Zet de knop na afloop altijd weer aan
+        submitBtn.disabled = false;
     }
-}
-
-window.addEventListener('DOMContentLoaded', verwerkStatus);
+});
 </script>
-
 
 </body>
 </html>
