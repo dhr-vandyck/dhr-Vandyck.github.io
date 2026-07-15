@@ -3,55 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nieuwsbrief Inschrijven</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #0b111e; color: #f3f4f6; padding: 50px 20px; text-align: center; }
-        .card { background: #161f30; max-width: 500px; margin: 0 auto; padding: 40px; border-radius: 12px; border: 1px solid #1e293b; box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-align: left; }
-        h2 { margin-top: 0; color: #3b82f6; text-align: center; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #94a3b8; }
-        input[type="email"] { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #1e293b; background-color: #0b111e; color: #f3f4f6; box-sizing: border-box; font-size: 16px; }
-        input[type="email"]:focus { outline: none; border-color: #3b82f6; }
-        .checkbox-group { margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #94a3b8; }
-        .checkbox-group input { margin-top: 3px; }
-        button { width: 100%; padding: 14px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        button:hover { background-color: #2563eb; }
-        button:disabled { background-color: #1e293b; color: #64748b; cursor: not-allowed; }
-        .message { display: none; padding: 15px; margin-top: 20px; border-radius: 6px; font-weight: bold; font-size: 14px; text-align: center; }
-        .processing { display: block; background-color: #1e293b; color: #94a3b8; border: 1px solid #3b82f6; }
-        .success { display: block; background-color: #064e3b; color: #10b981; border: 1px solid #10b981; }
-        .error { display: block; background-color: #7f1d1d; color: #f87171; border: 1px solid #f87171; }
-        a { color: #3b82f6; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
+    <title>Ceddy.dev | Portfolio</title>
+<link rel="stylesheet" href="styleLayouts.css">
+<link rel="stylesheet" href="styleFunctions.css">
+
+      <!-- <link rel="stylesheet" href="styleNewsletter.css">-->
 </head>
 <body>
 
-<div class="card">
-    <h2>Blijf op de hoogte</h2>
-    <p style="color: #94a3b8; margin-bottom: 30px; text-align: center;">Meld je aan voor mijn nieuwsbrief over nieuwe AI-updates en game-projecten. Je ontvangt direct een welkomstmail na je aanmelding!</p>
+    <!-- Navigatiebalk bovenin -->
+    <header class="navbar">
+        <div class="logo">&lt;/&gt; Ceddy.dev</div>
+        <nav>
+<a href="https://dhr-vandyck.github.io/#home">Home</a>
+<a href="newsletter.html" class="active">Nieuwsbrief</a>
+            <a href="Web-Pages/Bootstrap/index.html">Bootstrap Webpage Demo</a>
+            <!-- 
+            <a href="#">Mijn Games</a>
+            <a href="#">Online CV</a>
+            -->
+        </nav>
+    </header>
 
-    <form id="newsletterForm">
-        <div class="form-group">
-            <label for="emailInput">E-mailadres</label>
-            <input type="email" id="emailInput" placeholder="jouw@email.com" required>
+    <div class="container">
+        <div class="box">
+            <h3>Blijf op de hoogte</h3>
+            <p class="description">
+                Meld je aan voor mijn nieuwsbrief over nieuwe AI-updates en game-projecten.<br>
+                Je ontvangt direct een welkomstmail na je aanmelding!
+            </p>
+            
+            <form id="newsForm">
+                <input type="email" id="newsEmail" placeholder="Jouw e-mailadres" required>
+                
+                <!-- Eerste vinkje voor algemene toestemming -->
+                <label class="checkbox-label">
+                    <input type="checkbox" id="consentCheck" required>
+                    <span>Ik ga ermee akkoord dat Ceddy mij updates stuurt. Ik kan me op elk moment weer uitschrijven.</span>
+                </label>
+
+                <!-- Tweede vinkje voor voorwaarden -->
+                <label class="checkbox-label">
+                    <input type="checkbox" id="privacyCheck" required>
+                    <span>Gelezen en goedgekeurd: <a href="#" id="openPrivacyBtn">Lees de voorwaarden & privacy</a>.</span>
+                </label>
+                
+                <button type="submit" id="submitBtn">Inschrijven</button>
+            </form>
+            
+            <p id="formMessage" class="message"></p>
         </div>
+    </div> <!-- OPTIMALISATIE: Container netjes gesloten -->
 
-        <div class="checkbox-group">
-            <input type="checkbox" id="agreeCheckbox" required>
-            <label for="agreeCheckbox">Ik ga ermee akkoord dat Ceddy mij updates stuurt. Ik kan me op elk moment weer uitschrijven.</label>
+    <!-- Het Pop-up venster (Modal) voor de Privacyvoorwaarden -->
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <h4>Voorwaarden & Privacy 🔒</h4>
+            <div class="modal-body">
+                <p><strong>1. Doel van gegevensverwerking:</strong> Je e-mailadres wordt uitsluitend gebruikt om je updates te sturen over mijn nieuwste game-projecten en AI-ontwikkelingen via deze nieuwsbrief.</p>
+                <p><strong>2. Opslag & Beveiliging:</strong> Je gegevens worden veilig opgeslagen in een Supabase database en nooit gedeeld met derden of gebruikt voor commerciële doeleinden.</p>
+                <p><strong>3. Jouw rechten (Uitschrijven):</strong> Je hebt altijd het recht om je gegevens te laten verwijderen. Dit kan direct via de uitschrijflink onderaan elke e-mail.</p>
+            </div>
+            <button id="closePrivacyBtn" class="modal-close-btn" type="button">Ik heb het gelezen & sluiten</button>
         </div>
+    </div>
 
-        <div class="checkbox-group">
-            <input type="checkbox" id="privacyCheckbox" required>
-            <label for="privacyCheckbox">Gelezen en goedgekeurd: <a href="#">Lees de voorwaarden & privacy</a>.</label>
-        </div>
+    <script>
+    // Status bijhouden of de voorwaarden effectief geopend en gesloten zijn via de knop
+    let heeftVoorwaardenGelezen = false;
 
-        <button type="submit" id="submitBtn">Inschrijven</button>
-    </form>
+    const modal = document.getElementById('privacyModal');
+    const openBtn = document.getElementById('openPrivacyBtn');
+    const closeBtn = document.getElementById('closePrivacyBtn');
+    const privacyCheck = document.getElementById('privacyCheck');
+    const consentCheck = document.getElementById('consentCheck'); 
+    const messageText = document.getElementById('formMessage');
 
-    <div id="responseMessage" class="message"></div>
-</div>
+    // Blokkering en melding op het TWEEDE vinkje
+    privacyCheck.addEventListener('click', function(e) {
+        if (heeftVoorwaardenGelezen === false) {
+            e.preventDefault(); 
+            messageText.style.display = "block";
+            messageText.className = "message warning"; 
+            messageText.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
+        }
+    });
+
+    openBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.style.display = 'flex';
+    });
+
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        heeftVoorwaardenGelezen = true;
+        
+        if (messageText.innerText.includes("Lees de voorwaarden")) {
+            messageText.style.display = "none";
+        }
+    });
+
+    // OPTIMALISATIE: Als men naast de modal klikt, telt het nu ook als 'gelezen' om frustratie te voorkomen
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            heeftVoorwaardenGelezen = true;
+            if (messageText.innerText.includes("Lees de voorwaarden")) {
+                messageText.style.display = "none";
+            }
+        }
+    });
+
+    // Formulier-afhandeling
+    document.getElementById('newsForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const emailInput = document.getElementById('newsEmail');
+        const submitButton = document.getElementById('submitBtn');
+        const email = emailInput.value;
+
+        if (heeftVoorwaardenGelezen === false) {
+            messageText.style.display = "block";
+            messageText.className = "message error";
+            messageText.innerText = "Fout: Je moet de voorwaarden geopend hebben om je te kunnen inschrijven.";
+            return;
+        }
+        
+        submitButton.disabled = true;
+        submitButton.innerText = "Verwerken...";
+        
+        messageText.style.display = "block";
+        messageText.className = "message processing";
+        messageText.innerText = "Je aanvraag wordt verwerkt...";
+
+        try {
+            const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
+            const urlPart2 = "hf.space";
+            const urlPart3 = "/subscribe";
+
+            const backendUrl = urlPart1 + urlPart2 + urlPart3;
+
+            const response = await fetch(backendUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                messageText.className = "message success";
+                messageText.innerText = data.message;
+                emailInput.value = "";
+                privacyCheck.checked = false;
+                consentCheck.checked = false; 
+                heeftVoorwaardenGelezen = false; 
+            } else {
+                messageText.className = "message error";
+                messageText.innerText = data.message || "Er ging iets mis.";
+            }
+        } catch (error) {
+            messageText.className = "message error";
+            messageText.innerText = "Kan geen verbinding maken met de server.";
+        } finally {
+            submitButton.disabled = false;
+            submitButton.innerText = "Inschrijven";
+        }
+    });
+    </script>
 
 <script>
 // Dit stuurt data rechtstreeks naar jouw tabel nieuwsbrief_abonnees
