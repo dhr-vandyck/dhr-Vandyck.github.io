@@ -77,7 +77,7 @@ document.getElementById('newsletterForm').addEventListener('submit', async (e) =
     try {
         // We sturen via de body PUUR en ALLEEN het e-mailadres mee (p_email)
         // Geen tokens en geen statussen; dit handelt de database-functie af!
-        const response = await fetch(SUPABASE_RPC_URL, {
+        const response = await fetch(SUPABASE_REST_URL, {
             method: "POST",
             headers: {
                 "apikey": SUPABASE_ANON_KEY,
