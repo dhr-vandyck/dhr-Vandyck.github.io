@@ -14,6 +14,9 @@
         a { color: #3b82f6; text-decoration: none; font-weight: bold; }
         a:hover { text-decoration: underline; }
     </style>
+
+    <!-- 1. Laad de Supabase bibliotheek globaal in via unpkg (dit voorkomt CORS-fouten) -->
+    <script src="https://unpkg.com"></script>
 </head>
 <body>
 
@@ -23,73 +26,72 @@
     <p style="margin-top:30px;"><a href="https://github.io">Terug naar de website</a></p>
 </div>
 
-<!-- Gecorrigeerde Supabase SDK koppeling via module -->
-<script type="module">
-// 1. Importeer de Supabase bibliotheek via de volledige, juiste ESM link
-import { createClient } from "https://unpkg.com";
-
+<script>
 // 2. JOUW SUPABASE PROJECT CONFIGURATIE
-const SUPABASE_URL = "https://ixuuaddpxrefhlnrglin.supabase.co"; 
+const SUPABASE_URL = "https://supabase.co"; 
 const SUPABASE_ANON_KEY = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
 
-const MySupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Omdat we de script-tag in de head gebruiken, is 'supabase' nu direct globaal beschikbaar
+const MySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// 3. Directe uitvoering van de logica bij het laden van de pagina
-const urlParams = new URLSearchParams(window.location.search);
-const token = urlParams.get('token');
-const action = urlParams.get('action'); 
-const messageText = document.getElementById('portalMessage');
+// 3. Functie om de status te verwerken
+async function verwerkStatus() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const action = urlParams.get('action'); 
+    const messageText = document.getElementById('portalMessage');
 
-// Controleer of de benodigde parameters in de link zitten
-if (token && action) {
-    messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving activeren in de database..." : "Je uitschrijven uit de database...";
+    if (token && action) {
+        messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving activeren in de database..." : "Je uitschrijven uit de database...";
 
-    try {
-        if (action === 'confirm') {
-            // Update de status naar 'active' in de database
-            const { data, error } = await MySupabaseClient
-                .from('nieuwsbrief_abonnees')
-                .update({ status: 'active' })
-                .eq('token', token)
-                .select(); // Geeft terug of er écht een rij is aangepast
-            
-            if (error) throw error;
-            
-            if (data && data.length > 0) {
-                messageText.className = "message success";
-                messageText.innerText = "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd.";
-            } else {
-                messageText.className = "message error";
-                messageText.innerText = "❌ Fout: Deze activatielink is ongeldig, al gebruikt of verlopen.";
+        try {
+            if (action === 'confirm') {
+                const { data, error } = await MySupabaseClient
+                    .from('nieuwsbrief_abonnees')
+                    .update({ status: 'active' })
+                    .eq('token', token)
+                    .select();
+                
+                if (error) throw error;
+                
+                if (data && data.length > 0) {
+                    messageText.className = "message success";
+                    messageText.innerText = "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd.";
+                } else {
+                    messageText.className = "message error";
+                    messageText.innerText = "❌ Fout: Deze activatielink is ongeldig, al gebruikt of verlopen.";
+                }
+
+            } else if (action === 'unsubscribe') {
+                const { data, error } = await MySupabaseClient
+                    .from('nieuwsbrief_abonnees')
+                    .update({ status: 'denied' })
+                    .eq('token', token)
+                    .select();
+                
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    messageText.className = "message success";
+                    messageText.innerText = "👋 Tot ziens! Je bent succesvol uitgeschreven (Status: Geweigerd).";
+                } else {
+                    messageText.className = "message error";
+                    messageText.innerText = "❌ Fout: Dit token is ongeldig of bestaat niet.";
+                }
             }
-
-        } else if (action === 'unsubscribe') {
-            // Pas de status aan naar 'denied' in de database
-            const { data, error } = await MySupabaseClient
-                .from('nieuwsbrief_abonnees')
-                .update({ status: 'denied' })
-                .eq('token', token)
-                .select();
-            
-            if (error) throw error;
-
-            if (data && data.length > 0) {
-                messageText.className = "message success";
-                messageText.innerText = "👋 Tot ziens! Je bent succesvol uitgeschreven (Status: Geweigerd).";
-            } else {
-                messageText.className = "message error";
-                messageText.innerText = "❌ Fout: Dit token is ongeldig of bestaat niet.";
-            }
+        } catch (err) {
+            console.error("Supabase Fout:", err);
+            messageText.className = "message error";
+            messageText.innerText = "❌ Fout: Er is een verbindingsfout opgetreden met de database.";
         }
-    } catch (err) {
-        console.error("Supabase Fout:", err);
+    } else {
         messageText.className = "message error";
-        messageText.innerText = "❌ Fout: Er is een verbindingsfout opgetreden met de database.";
+        messageText.innerText = "❌ Fout: Geen geldige portaal-token of actie gevonden in de link.";
     }
-} else {
-    messageText.className = "message error";
-    messageText.innerText = "❌ Fout: Geen geldige portaal-token of actie gevonden in de link.";
 }
+
+// Start de logica zodra de pagina klaar is
+window.addEventListener('DOMContentLoaded', verwerkStatus);
 </script>
 
 </body>
