@@ -27,10 +27,9 @@
 <script>
 const domeinDeel1 = "https://ozcsksqiizlhgrskmada";
 const domeinDeel2 = ".supabase.co/rest/v1/";
+const rpcPad     = "rpc/verwerk_portaal_status_update";
 
-// We splitsen de URL's op naar beide tabellen
-const URL_ABONNEES = domeinDeel1 + domeinDeel2 + "nieuwsbrief_abonnees";
-const URL_STATUSSEN = domeinDeel1 + domeinDeel2 + "abonnee_statussen";
+const SUPABASE_RPC_URL = domeinDeel1 + domeinDeel2 + rpcPad;
 const SUPABASE_ANON_KEY = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
 
 async function verwerkStatus() {
@@ -45,101 +44,59 @@ async function verwerkStatus() {
         return;
     }
 
-    messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving activeren in de database..." : "Je uitschrijven uit de database...";
-
-    const nieuweStatus = action === 'confirm' ? 'active' : 'denied';
-    const statusNaamNederlands = action === 'confirm' ? 'actief' : 'geweigerd';
+    messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving verwerken..." : "Je uitschrijving verwerken...";
 
     try {
-        // STAP 1: Zoek de 'id' van de abonnee op via het token dat in de mail zat
-        const checkResponse = await fetch(`${URL_ABONNEES}?token=eq.${token}&select=id`, {
-            method: 'GET',
+        const response = await fetch(SUPABASE_RPC_URL, {
+            method: 'POST',
             headers: {
                 'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-            }
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ p_token: token, p_action: action })
         });
 
-        if (!checkResponse.ok) throw new Error("Abonneetabel niet bereikbaar.");
-        const abonnees = await checkResponse.json();
+        if (!response.ok) throw new Error("Er is een databasefout opgetreden.");
+        const data = await response.json();
 
-        // Als het token niet (meer) bestaat
-        if (!abonnees || abonnees.length === 0) {
+        // 1. Controleer op ongeldige tokens of acties
+        if (data.status === 'invalid_token' || data.status === 'invalid_action') {
             messageText.className = "message error";
             messageText.innerText = "❌ Fout: Deze activatielink is ongeldig of verlopen.";
             return;
         }
 
-        // Pak de id uit het eerste rij-object van de array
-        const abonneeId = abonnees[0].id;
-
-        // STAP 2: Schrijf de nieuwe status direct weg naar de historiek-tabel via POST (Insert)
-        const insertResponse = await fetch(URL_STATUSSEN, {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify({ 
-                abonnee_id: abonneeId, 
-                status: nieuweStatus 
-            })
-        });
-
-        const data = await insertResponse.json();
-
-        // Als onze 'BEFORE INSERT' database-trigger de dubbele status blokkeert:
-        if (data && data.message && data.message.includes('Status is reeds')) {
-            const delen = data.message.split(' sinds ');
-            const dbDatumEnTijd = delen[1] || "onbekende datum";
-            
-            messageText.className = "message warning";
-            if (action === 'confirm') {
-                messageText.innerText = `ℹ️ Je bent al actief aangemeld op ${dbDatumEnTijd}. Prettige dag verder!`;
-            } else {
-                messageText.innerText = `ℹ️ Je bent al veilig afgemeld geweest op ${dbDatumEnTijd}. Prettige dag verder!`;
-            }
-            return;
-        }
-
-        if (!insertResponse.ok) {
-            throw new Error(data.message || `HTTP fout! Status: ${insertResponse.status}`);
-        }
-
-        // Als de status succesvol is toegevoegd
-        if (data && data.length > 0) {
+        // 2. SITUATIE 1: De status is zojuist succesvol aangepast (Eerste klik)
+        if (data.status === 'success') {
             messageText.className = "message success";
-            messageText.innerText = action === 'confirm' 
-                ? "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd." 
-                : "👋 Tot ziens! Je bent succesvol uitgeschreven.";
+            if (data.action === 'confirm') {
+                messageText.innerText = `🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd op ${data.db_date}.`;
+            } else {
+                messageText.className = "message success"; // Je kunt dit eventueel ook oranje/rood stylen via css indien gewenst
+                messageText.innerText = `👋 Tot ziens! Je bent succesvol uitgeschreven op ${data.db_date}.`;
+            }
+        }
+
+        // 3. SITUATIE 2: Er is niks gebeurd omdat de status al gelijk was (Volgende kliks)
+        if (data.status === 'already_processed') {
+            messageText.className = "message warning";
+            if (data.action === 'confirm') {
+                messageText.innerText = `ℹ️ Je bent al actief aangemeld op ${data.db_date}. Prettige dag verder!`;
+            } else {
+                messageText.innerText = `ℹ️ Je bent al veilig afgemeld geweest op ${data.db_date}. Prettige dag verder!`;
+            }
         }
 
     } catch (err) {
-        console.error("Database Fout:", err);
-        
-        if (err.message && err.message.includes('Status is reeds')) {
-            const delen = err.message.split(' sinds ');
-            const dbDatumEnTijd = delen[1] || "onbekende datum";
-            
-            messageText.className = "message warning";
-            if (action === 'confirm') {
-                messageText.innerText = `ℹ️ Je bent al actief aangemeld op ${dbDatumEnTijd}. Prettige dag verder!`;
-            } else {
-                messageText.innerText = `ℹ️ Je bent al veilig afgemeld geweest op ${dbDatumEnTijd}. Prettige dag verder!`;
-            }
-        } else {
-            messageText.className = "message error";
-            messageText.innerText = "❌ Fout: Er is een verbindingsfout opgetreden met de database.";
-        }
+        console.error("Verbindingsfout:", err);
+        messageText.className = "message error";
+        messageText.innerText = "❌ Fout: Er is een verbindingsfout opgetreden met de database.";
     }
 }
 
 window.addEventListener('DOMContentLoaded', verwerkStatus);
 </script>
-
-
 
 </body>
 </html>
