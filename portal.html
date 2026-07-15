@@ -54,60 +54,60 @@
 </div>
 
 <script>
-// De API URL opgesplitst in 3 delen om automatische overschrijvingen te voorkomen
-nst domeinDeel1 = "https://ozcsksqiizlhgrskmada";
+// Jouw tabel-opzet hersteld om rechtstreeks naar de tabel te schrijven
+const domeinDeel1 = "https://ozcsksqiizlhgrskmada";
 const domeinDeel2 = ".supabase.co/rest/v1/";
 const tabelNaam   = "nieuwsbrief_abonnees";
 
-const SUPABASE_REST_URL = domeinDeel1 + domeinDeel2 + tabelNaam; 
+const SUPABASE_REST_URL = domeinDeel1 + domeinDeel2 + tabelNaam;
 const SUPABASE_ANON_KEY = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU";
 
 document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
-    e.preventDefault(); // Voorkom dat de pagina herlaadt
+    e.preventDefault();
 
     const emailInputWaarde = document.getElementById('emailInput').value;
     const submitBtn = document.getElementById('submitBtn');
     const messageBox = document.getElementById('responseMessage');
 
-    // Zet de knop uit en toon de laadstatus
     submitBtn.disabled = true;
     messageBox.className = "message processing";
-    messageBox.innerText = "⏳ Bezig met verwerken en e-mail verzenden...";
+    messageBox.innerText = "⏳ Bezig met inschrijven...";
 
     try {
-        // We sturen via de body PUUR en ALLEEN het e-mailadres mee (p_email)
-        // Geen tokens en geen statussen; dit handelt de database-functie af!
+        // We sturen via POST rechtstreeks naar de tabel en sturen ALLEEN het e-mailadres mee!
         const response = await fetch(SUPABASE_REST_URL, {
             method: "POST",
             headers: {
                 "apikey": SUPABASE_ANON_KEY,
                 "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Prefer": "return=representation"
             },
             body: JSON.stringify({
-                p_email: emailInputWaarde
+                email: emailInputWaarde // Puur en alleen het e-mailadres!
             })
         });
 
-        // Controleer of de HTTP-status goed is (bijv. 200 of 204)
+        const data = await response.json();
+
+        // Als het e-mailadres al bestaat, geeft PostgreSQL een 409 of een unieke schendingsfout
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `Serverfout (Status: ${response.status})`);
+            if (data.code === "23505" || (data.message && data.message.includes("already exists"))) {
+                throw new Error("Dit e-mailadres is al aangemeld voor de nieuwsbrief.");
+            }
+            throw new Error(data.message || `Foutcode: ${response.status}`);
         }
 
-        // Succes! Toon de groene balk
+        // Succes!
         messageBox.className = "message success";
-        messageBox.innerText = "🚀 Gelukt! Check je mailbox om je inschrijving te activeren.";
-        document.getElementById('newsletterForm').reset(); // Maak het formulier leeg
+        messageBox.innerText = "🚀 Gelukt! Je bent toegevoegd aan de database. Check je mailbox.";
+        document.getElementById('newsletterForm').reset();
 
     } catch (fout) {
         console.error("Inschrijffout:", fout);
-        
-        // Toon de rode foutbalk bij problemen
         messageBox.className = "message error";
-        messageBox.innerText = `❌ Fout: ${fout.message || "Er is een verbindingsfout opgetreden."}`;
+        messageBox.innerText = `❌ Fout: ${fout.message}`;
     } finally {
-        // Zet de knop na afloop altijd weer aan
         submitBtn.disabled = false;
     }
 });
