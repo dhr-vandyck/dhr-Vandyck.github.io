@@ -48,13 +48,10 @@ async function verwerkStatus() {
 
     // Status bepalen op basis van de link-actie
     const nieuweStatus = action === 'confirm' ? 'active' : 'denied';
-    const succesTekst = action === 'confirm' 
-        ? "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd." 
-        : "👋 Tot ziens! Je bent succesvol uitgeschreven (Status: Geweigerd).";
 
     try {
-        // HTTP PATCH verzoek sturen naar jouw echte Supabase tabel
-        const response = await fetch(`${SUPABASE_REST_URL}?token=eq.${token}`, {
+        // We updaten de rij NU ENKEL als de huidige status NIET gelijk is aan de nieuwe status (neq)
+        const response = await fetch(`${SUPABASE_REST_URL}?token=eq.${token}&status=neq.${nieuweStatus}`, {
             method: 'PATCH',
             headers: {
                 'apikey': SUPABASE_ANON_KEY,
@@ -71,13 +68,40 @@ async function verwerkStatus() {
 
         const data = await response.json();
 
-        // Controleren of er daadwerkelijk een record is aangepast
+        // Situatie A: Er is EENRIJ aangepast (Status is succesvol veranderd!)
         if (data && data.length > 0) {
             messageText.className = "message success";
-            messageText.innerText = succesTekst;
+            messageText.innerText = action === 'confirm' 
+                ? "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd." 
+                : "👋 Tot ziens! Je bent succesvol uitgeschreven.";
+            return;
+        }
+
+        // Situatie B: Er is GEEN rij aangepast. Dit betekent dat het token niet bestaat ÓF de status was al gelijk.
+        // We doen een snelle extra check om te kijken welke van de twee het is.
+        const checkResponse = await fetch(`${SUPABASE_REST_URL}?token=eq.${token}&select=status`, {
+            method: 'GET',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
+        
+        const checkData = await checkResponse.json();
+
+        if (checkData && checkData.length > 0) {
+            const huidigeStatusInDb = checkData[0].status;
+            
+            messageText.className = "message success"; // We houden het groen/blauw omdat het geen systeemfout is
+            if (huidigeStatusInDb === 'active') {
+                messageText.innerText = "ℹ️ Je inschrijving was al actief! Je hoeft niks meer te doen.";
+            } else if (huidigeStatusInDb === 'denied') {
+                messageText.innerText = "ℹ️ Je was al succesvol uitgeschreven uit onze nieuwsbrief.";
+            }
         } else {
+            // Het token bestaat echt helemaal niet
             messageText.className = "message error";
-            messageText.innerText = "❌ Fout: Deze activatielink is ongeldig, al gebruikt of verlopen.";
+            messageText.innerText = "❌ Fout: Deze activatielink is ongeldig of verlopen.";
         }
 
     } catch (err) {
@@ -87,9 +111,9 @@ async function verwerkStatus() {
     }
 }
 
-// Start zodra de pagina geladen is
 window.addEventListener('DOMContentLoaded', verwerkStatus);
 </script>
+
 
 </body>
 </html>
