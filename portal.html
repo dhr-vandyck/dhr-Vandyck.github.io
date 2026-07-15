@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nieuwsbrief Portaal</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #0b111e; color: #f3f4f6; padding: 50px 20px; text-align: center; }
+        body { font-family: Arial, sans-serif; padding: 50px 20px; text-align: center; }
         .card { max-width: 500px; margin: 0 auto; padding: 40px; border-radius: 12px; border: 1px solid #1e293b; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
         .message { display: block; padding: 15px; margin-top: 20px; border-radius: 6px; font-weight: bold; }
         .processing { background-color: #1e293b; color: #94a3b8; border: 1px solid #3b82f6; }
@@ -27,9 +27,10 @@
 <script>
 const domeinDeel1 = "https://ozcsksqiizlhgrskmada";
 const domeinDeel2 = ".supabase.co/rest/v1/";
-const tabelNaam   = "nieuwsbrief_abonnees";
 
-const SUPABASE_REST_URL = domeinDeel1 + domeinDeel2 + tabelNaam; 
+// We splitsen de URL's op naar beide tabellen
+const URL_ABONNEES = domeinDeel1 + domeinDeel2 + "nieuwsbrief_abonnees";
+const URL_STATUSSEN = domeinDeel1 + domeinDeel2 + "abonnee_statussen";
 const SUPABASE_ANON_KEY = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
 
 async function verwerkStatus() {
@@ -47,52 +48,72 @@ async function verwerkStatus() {
     messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving activeren in de database..." : "Je uitschrijven uit de database...";
 
     const nieuweStatus = action === 'confirm' ? 'active' : 'denied';
+    const statusNaamNederlands = action === 'confirm' ? 'actief' : 'geweigerd';
 
     try {
-        const response = await fetch(`${SUPABASE_REST_URL}?token=eq.${token}`, {
-            method: 'PATCH',
+        // STAP 1: Zoek de 'id' van de abonnee op via het token dat in de mail zat
+        const checkResponse = await fetch(`${URL_ABONNEES}?token=eq.${token}&select=id`, {
+            method: 'GET',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+        });
+
+        if (!checkResponse.ok) throw new Error("Abonneetabel niet bereikbaar.");
+        const abonnees = await checkResponse.json();
+
+        // Als het token niet (meer) bestaat
+        if (!abonnees || abonnees.length === 0) {
+            messageText.className = "message error";
+            messageText.innerText = "❌ Fout: Deze activatielink is ongeldig of verlopen.";
+            return;
+        }
+
+        // Pak de id uit het eerste rij-object van de array
+        const abonneeId = abonnees[0].id;
+
+        // STAP 2: Schrijf de nieuwe status direct weg naar de historiek-tabel via POST (Insert)
+        const insertResponse = await fetch(URL_STATUSSEN, {
+            method: 'POST',
             headers: {
                 'apikey': SUPABASE_ANON_KEY,
                 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                 'Content-Type': 'application/json',
                 'Prefer': 'return=representation'
             },
-            body: JSON.stringify({ status: nieuweStatus })
+            body: JSON.stringify({ 
+                abonnee_id: abonneeId, 
+                status: nieuweStatus 
+            })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
+        const data = await insertResponse.json();
+
+        // Als onze 'BEFORE INSERT' database-trigger de dubbele status blokkeert:
+        if (data && data.message && data.message.includes('Status is reeds')) {
+            const delen = data.message.split(' sinds ');
+            const dbDatumEnTijd = delen[1] || "onbekende datum";
             
-            // Als de foutboodschap van onze nieuwe database-trigger binnenkomt:
-            if (errorData.message && errorData.message.includes('Status is reeds')) {
-                
-                // We vissen de geformatteerde datum uit de foutmelding van de database
-                // De database stuurt: "Status is reeds active sinds DD-MM-YYYY om HH:MM"
-                const delen = errorData.message.split(' sinds ');
-                const dbDatumEnTijd = delen[1] || "onbekende datum";
-                
-                messageText.className = "message warning";
-                if (action === 'confirm') {
-                    messageText.innerText = `ℹ️ Je bent al actief aangemeld op ${dbDatumEnTijd}. Prettige dag verder!`;
-                } else {
-                    messageText.innerText = `ℹ️ Je bent al veilig afgemeld geweest op ${dbDatumEnTijd}. Prettige dag verder!`;
-                }
-                return;
+            messageText.className = "message warning";
+            if (action === 'confirm') {
+                messageText.innerText = `ℹ️ Je bent al actief aangemeld op ${dbDatumEnTijd}. Prettige dag verder!`;
+            } else {
+                messageText.innerText = `ℹ️ Je bent al veilig afgemeld geweest op ${dbDatumEnTijd}. Prettige dag verder!`;
             }
-            
-            throw new Error(errorData.message || `HTTP Fout ${response.status}`);
+            return;
         }
 
-        const data = await response.json();
+        if (!insertResponse.ok) {
+            throw new Error(data.message || `HTTP fout! Status: ${insertResponse.status}`);
+        }
 
+        // Als de status succesvol is toegevoegd
         if (data && data.length > 0) {
             messageText.className = "message success";
             messageText.innerText = action === 'confirm' 
-                ? "Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd." 
-                : "Tot ziens! Je bent succesvol uitgeschreven.";
-        } else {
-            messageText.className = "message error";
-            messageText.innerText = "❌ Fout: Deze activatielink is ongeldig, al gebruikt of verlopen.";
+                ? "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd." 
+                : "👋 Tot ziens! Je bent succesvol uitgeschreven.";
         }
 
     } catch (err) {
@@ -117,6 +138,7 @@ async function verwerkStatus() {
 
 window.addEventListener('DOMContentLoaded', verwerkStatus);
 </script>
+
 
 
 </body>
