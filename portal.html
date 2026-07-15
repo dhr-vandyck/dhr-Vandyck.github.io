@@ -14,9 +14,6 @@
         a { color: #3b82f6; text-decoration: none; font-weight: bold; }
         a:hover { text-decoration: underline; }
     </style>
-
-    <!-- 1. Laad de Supabase bibliotheek globaal in via unpkg (dit voorkomt CORS-fouten) -->
-    <script src="https://unpkg.com"></script>
 </head>
 <body>
 
@@ -27,70 +24,70 @@
 </div>
 
 <script>
-// 2. JOUW SUPABASE PROJECT CONFIGURATIE
-const SUPABASE_URL = "https://ixuuaddpxrefhlnrglin.supabase.co"; 
+// De URL opgesplitst in 3 delen om automatische overschrijvingen te voorkomen
+const domeinDeel1 = "https://ozcsksqiizlhgrskmada";
+const domeinDeel2 = ".supabase.co/rest/v1/";
+const tabelNaam   = "nieuwsbrief_abonnees";
+
+const SUPABASE_REST_URL = domeinDeel1 + domeinDeel2 + tabelNaam; 
 const SUPABASE_ANON_KEY = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU"; 
 
-// Omdat we de script-tag in de head gebruiken, is 'supabase' nu direct globaal beschikbaar
-const MySupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// 3. Functie om de status te verwerken
 async function verwerkStatus() {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const action = urlParams.get('action'); 
     const messageText = document.getElementById('portalMessage');
 
-    if (token && action) {
-        messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving activeren in de database..." : "Je uitschrijven uit de database...";
-
-        try {
-            if (action === 'confirm') {
-                const { data, error } = await MySupabaseClient
-                    .from('nieuwsbrief_abonnees')
-                    .update({ status: 'active' })
-                    .eq('token', token)
-                    .select();
-                
-                if (error) throw error;
-                
-                if (data && data.length > 0) {
-                    messageText.className = "message success";
-                    messageText.innerText = "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd.";
-                } else {
-                    messageText.className = "message error";
-                    messageText.innerText = "❌ Fout: Deze activatielink is ongeldig, al gebruikt of verlopen.";
-                }
-
-            } else if (action === 'unsubscribe') {
-                const { data, error } = await MySupabaseClient
-                    .from('nieuwsbrief_abonnees')
-                    .update({ status: 'denied' })
-                    .eq('token', token)
-                    .select();
-                
-                if (error) throw error;
-
-                if (data && data.length > 0) {
-                    messageText.className = "message success";
-                    messageText.innerText = "👋 Tot ziens! Je bent succesvol uitgeschreven (Status: Geweigerd).";
-                } else {
-                    messageText.className = "message error";
-                    messageText.innerText = "❌ Fout: Dit token is ongeldig of bestaat niet.";
-                }
-            }
-        } catch (err) {
-            console.error("Supabase Fout:", err);
-            messageText.className = "message error";
-            messageText.innerText = "❌ Fout: Er is een verbindingsfout opgetreden met de database.";
-        }
-    } else {
+    if (!token || !action) {
         messageText.className = "message error";
         messageText.innerText = "❌ Fout: Geen geldige portaal-token of actie gevonden in de link.";
+        return;
+    }
+
+    messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving activeren in de database..." : "Je uitschrijven uit de database...";
+
+    // Status bepalen op basis van de link-actie
+    const nieuweStatus = action === 'confirm' ? 'active' : 'denied';
+    const succesTekst = action === 'confirm' 
+        ? "🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd." 
+        : "👋 Tot ziens! Je bent succesvol uitgeschreven (Status: Geweigerd).";
+
+    try {
+        // HTTP PATCH verzoek sturen naar jouw echte Supabase tabel
+        const response = await fetch(`${SUPABASE_REST_URL}?token=eq.${token}`, {
+            method: 'PATCH',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            body: JSON.stringify({ status: nieuweStatus })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP fout! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Controleren of er daadwerkelijk een record is aangepast
+        if (data && data.length > 0) {
+            messageText.className = "message success";
+            messageText.innerText = succesTekst;
+        } else {
+            messageText.className = "message error";
+            messageText.innerText = "❌ Fout: Deze activatielink is ongeldig, al gebruikt of verlopen.";
+        }
+
+    } catch (err) {
+        console.error("Database Fout:", err);
+        messageText.className = "message error";
+        messageText.innerText = "❌ Fout: Er is een verbindingsfout opgetreden met de database.";
     }
 }
 
-// Start de logica zodra de pagina klaar is
+// Start zodra de pagina geladen is
 window.addEventListener('DOMContentLoaded', verwerkStatus);
 </script>
 
