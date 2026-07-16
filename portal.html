@@ -40,11 +40,11 @@ async function verwerkStatus() {
 
     if (!token || !action) {
         messageText.className = "message error";
-        messageText.innerText = "❌ Fout: Geen geldige portaal-token of actie gevonden in de link.";
+        messageText.innerText = "Fout: Geen geldige portaal-token of actie gevonden in de link.";
         return;
     }
 
-    messageText.innerText = action === 'confirm' ? "🚀 Je inschrijving verwerken..." : "Je uitschrijving verwerken...";
+    messageText.innerText = action === 'confirm' ? "Je inschrijving verwerken..." : "Je uitschrijving verwerken...";
 
     try {
         const response = await fetch(SUPABASE_RPC_URL, {
@@ -60,38 +60,35 @@ async function verwerkStatus() {
         if (!response.ok) throw new Error("Er is een databasefout opgetreden.");
         const data = await response.json();
 
-        // 1. Controleer op ongeldige tokens of acties
         if (data.status === 'invalid_token' || data.status === 'invalid_action') {
             messageText.className = "message error";
-            messageText.innerText = "❌ Fout: Deze activatielink is ongeldig of verlopen.";
+            messageText.innerText = "Fout: Deze activatielink is ongeldig of verlopen.";
             return;
         }
-
-        // 2. SITUATIE 1: De status is zojuist succesvol aangepast (Eerste klik)
+        
         if (data.status === 'success') {
             messageText.className = "message success";
             if (data.action === 'confirm') {
-                messageText.innerText = `🎉 Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd op ${data.db_date}.`;
+                messageText.innerText = `Dank je wel! Je inschrijving op de nieuwsbrief is succesvol geactiveerd.`;
             } else {
-                messageText.className = "message success"; // Je kunt dit eventueel ook oranje/rood stylen via css indien gewenst
-                messageText.innerText = `👋 Tot ziens! Je bent succesvol uitgeschreven op ${data.db_date}.`;
+                messageText.className = "message warning";
+                messageText.innerText = `Tot ziens! Je bent succesvol uitgeschreven.`;
             }
         }
 
-        // 3. SITUATIE 2: Er is niks gebeurd omdat de status al gelijk was (Volgende kliks)
         if (data.status === 'already_processed') {
             messageText.className = "message warning";
             if (data.action === 'confirm') {
-                messageText.innerText = `ℹ️ Je bent al actief aangemeld op ${data.db_date}. Prettige dag verder!`;
+                messageText.innerText = `Je bent al actief aangemeld op ${data.db_date}. Prettige dag verder!`;
             } else {
-                messageText.innerText = `ℹ️ Je bent al veilig afgemeld geweest op ${data.db_date}. Prettige dag verder!`;
+                messageText.innerText = `Je bent al veilig afgemeld geweest op ${data.db_date}. Prettige dag verder!`;
             }
         }
 
     } catch (err) {
         console.error("Verbindingsfout:", err);
         messageText.className = "message error";
-        messageText.innerText = "❌ Fout: Er is een verbindingsfout opgetreden met de database.";
+        messageText.innerText = "Fout: Er is een verbindingsfout opgetreden met de database.";
     }
 }
 
