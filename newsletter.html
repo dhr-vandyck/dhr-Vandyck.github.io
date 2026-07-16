@@ -53,7 +53,7 @@
     <!-- Pop-up venster (Modal) voor de Privacyvoorwaarden -->
     <div id="privacyModal" class="modal">
         <div class="modal-content">
-            <h4>Voorwaarden & Privacy 🔒</h4>
+            <h4>Voorwaarden & Privacy</h4>
             <div class="modal-body">
                 <p><strong>1. Doel van gegevensverwerking:</strong> Je e-mailadres wordt uitsluitend gebruikt om je updates te sturen over mijn nieuwste game-projecten en AI-ontwikkelingen via deze nieuwsbrief.</p>
                 <p><strong>2. Opslag & Beveiliging:</strong> Je gegevens worden veilig opgeslagen in een Supabase database en nooit gedeeld met derden of gebruikt voor commerciële doeleinden.</p>
@@ -88,7 +88,7 @@
             e.preventDefault(); 
             messageBox.style.display = "block";
             messageBox.className = "message warning"; 
-            messageBox.innerText = "⚠️ Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
+            messageBox.innerText = "Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
         }
     });
 
@@ -162,7 +162,7 @@
 
             // Succes!
             messageBox.className = "message success";
-            messageBox.innerText = "🚀 Gelukt! Je bent toegevoegd aan de database. Check je mailbox.";
+            messageBox.innerText = "Gelukt! Je bent toegevoegd aan de database. Check je mailbox.";
             
             // Formulier en checks resetten
             document.getElementById('newsletterForm').reset();
