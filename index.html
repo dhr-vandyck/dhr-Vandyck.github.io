@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ceddy.dev | Portfolio</title>
-    <!-- Koppeling naar het externe CSS-bestand -->
-<link rel="stylesheet" href="styleLayouts.css">
-<link rel="stylesheet" href="styleFunctions.css">
-
+    <!-- Koppeling naar de externe CSS-bestanden -->
+    <link rel="stylesheet" href="styleLayouts.css">
+    <link rel="stylesheet" href="styleFunctions.css">
 </head>
 <body>
 
@@ -22,10 +21,9 @@
     </header>
 
     <div class="container">
-        
-        <!-- Zijbalk met ALLE vaardigheden -->
+        <!-- Zijbalk met ALLE vaardigheden (Links) -->
         <aside class="sidebar" id="skills">
-            <h3>⚡ Skills</h3>
+            <h3>Skills</h3>
             <ul class="skills-list">
                 <li>Mendix</li>
                 <li>JavaScript</li>
@@ -48,12 +46,12 @@
         </aside>
 
         <!-- Hoofdinhoud -->
-<main class="main-content" id="home">
+        <main class="main-content" id="home">
             
             <!-- Introductie / Hero sectie -->
             <section class="hero-section">
                 <div class="hero-text">
-                    <h1>Welkom, ik ben Ceddy Vandyck 👋</h1>
+                    <h1>Welkom, ik ben Ceddy Vandyck</h1>
                     <h2>IT Developer | Mendix-Experience | Hybrid Mobile App Developer</h2>
                     <p style="margin-top: 15px; max-width: 700px;">
                         IT Developer with experience in Mendix, API integrations and the development of hybrid mobile applications. 
@@ -66,16 +64,14 @@
                     </p>
                 </div>
                 <div class="hero-image">
-                    <!-- Placeholder voor de laptop illustratie -->
                     <div class="mock-laptop">
                         <div class="code-lines"></div>
                     </div>
                 </div>
             </section>
-
             <!-- Werkervaring Sectie -->
             <section class="section-box" id="werkervaring">
-                <h2>💼 Werkervaring</h2>
+                <h2>Werkervaring</h2>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -96,10 +92,8 @@
                                     • Performed troubleshooting, optimization and performance improvements.<br>
                                     • Actively participated in the full development process (analysis, design, development, testing and implementation).
                                 </td>
-                                <td>
-                                    <span class="tag">Mendix</span>
-                                    <span class="tag">REST API</span>
-                                    <span class="tag">SOAP API</span>
+                                <td class="info-text">
+                                    Mendix, REST API, SOAP API
                                 </td>
                                 <td>2022 - 2025</td>
                             </tr>
@@ -109,9 +103,8 @@
                                     • Maintenance and repairs of industrial machinery.<br>
                                     • Experience with PLC systems.
                                 </td>
-                                <td>
-                                    <span class="tag">PLC Systems</span>
-                                    <span class="tag">Maintenance</span>
+                                <td class="info-text">
+                                    PLC Systems, Maintenance
                                 </td>
                                 <td>2021 - 2021</td>
                             </tr>
@@ -121,9 +114,8 @@
                                     • Support in EMC testing.<br>
                                     • Experience with Python.
                                 </td>
-                                <td>
-                                    <span class="tag">Python</span>
-                                    <span class="tag">EMC Testing</span>
+                                <td class="info-text">
+                                    Python, EMC Testing
                                 </td>
                                 <td>2021 - 2021</td>
                             </tr>
@@ -134,7 +126,7 @@
 
             <!-- Opleiding Sectie -->
             <section class="section-box" id="opleiding">
-                <h2>🎓 Opleidingen</h2>
+                <h2>Opleidingen</h2>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -181,32 +173,11 @@
                 </div>
             </section>
 
-            <!-- De Chatbox Container -->
-            <!-- 
-            <div class="chat-helper newsletter-ai">
-                <div class="chat-header-title">
-                    <span class="robot-avatar">🤖</span>
-                    <h4>Ceddy's AI Assistent</h4>
-                </div>
-
-                <div id="chatMessages" class="chat-messages-container" style="max-height: 300px; overflow-y: auto; margin-bottom: 10px;">
-
-                </div>
-
-                <div class="chat-input-box">
-
-                    <input type="text" placeholder="Vraag iets over mijn projecten of skills..." id="aiInput">
-
-                    <button class="send-btn" id="sendAiBtn">➔</button>
-                </div>
-            </div>
-            -->
-
             <!-- Zwevende AI Widget Structuur -->
             <div id="aiWidget" class="ai-widget-container">
                 <div id="aiChatBox" class="ai-chat-box">
                     <div class="ai-chat-header">
-                        <span>Ceddy's AI Assistent 🤖</span>
+                        <span>Ceddy's AI Assistent</span>
                         <button id="closeAiBtn" class="ai-close-btn">&times;</button>
                     </div>
                     <div class="ai-chat-body" id="chatbotVak">
@@ -214,21 +185,19 @@
                 </div>
                 
                 <button id="openAiBtn" class="ai-launcher-btn">
-                    <span class="ai-icon">🤖</span>
-                    <span class="ai-badge">AI</span>
+                    <span class="ai-icon">AI</span>
                 </button>
             </div>
 
-</main>
+        </main>
+    </div>
 
-    </div> <!-- Sluiting van de hoofd-container -->
     <script>
-        // --- 1. LOGICA VOOR DE ZWEVENDE AI WIDGET (IFRAME) ---
-        const linkDeel1 = "https://huggingface.co/"; 
+        // Logica voor de AI widget met de correcte embed link
+        const linkDeel1 = "https://huggingface.co"; 
         const linkDeel2 = "spaces/CeddyVandyck/ceddy-portfolio-ai";
-        const linkDeel3 = "/embed/?user=Ceddy";
+        const linkDeel3 = "/embed";
 
-        //https://huggingface.co/spaces/CeddyVandyck/ceddy-portfolio-ai/embed/?user=ceddy
         const completeUrl = linkDeel1 + linkDeel2 + linkDeel3;
 
         const chatBox = document.getElementById("aiChatBox");
@@ -238,7 +207,6 @@
 
         let isGeladen = false;
 
-        // Open de AI-widget en laad het iframe in
         if (openBtn) {
             openBtn.addEventListener("click", function() {
                 if (chatBox) chatBox.style.display = "flex";
@@ -258,129 +226,10 @@
             });
         }
 
-        // Sluit / Minimaliseer de AI-widget
         if (closeBtn) {
             closeBtn.addEventListener("click", function() {
                 if (chatBox) chatBox.style.display = "none";
                 if (openBtn) openBtn.style.display = "flex"; 
-            });
-        }
-
-
-
-
-
-
-
-        
-
-async function sendMessage() {
-    const userAiInput = document.getElementById('aiInput'); 
-    const chatMessagesBox = document.getElementById('chatMessages') || document.querySelector('.chat-helper'); 
-    
-    if (!userAiInput || !userAiInput.value.trim()) return;
-
-    // Toon het bericht van de gebruiker
-    const messageToSend = userAiInput.value;
-    appendMessage(messageToSend, 'user');
-    userAiInput.value = "";
-
-    // Laadstatus tonen
-    const loadingId = 'loading-' + Date.now();
-    const loadingDiv = document.createElement('div');
-    loadingDiv.id = loadingId;
-    loadingDiv.className = 'message-bubble bot loading';
-    loadingDiv.innerText = 'Typen...';
-    if (chatMessagesBox) {
-        chatMessagesBox.appendChild(loadingDiv);
-        chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
-    }
-
-    try {
-        const urlPart1 = "https://ceddyvandyck-ceddy-portfolio-backend.";
-        const urlPart2 = "hf.space";
-        
-        // 1. PAS DIT PAD AAN: Vul hier het exacte pad in van je C# Controller endpoint (bijv: "/api/chat" of "/chat")
-        const urlPart3 = "/api/chat"; 
-
-        const backendUrl = urlPart1 + urlPart2 + urlPart3;
-
-        // Verstuur het verzoek als een schone JSON string naar C#
-        const response = await fetch(backendUrl, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            // 2. CONTROLEER DE PROPERTIE: we sturen nu 'message'. Verwacht jouw C# DTO 'text' of 'prompt'? Pas het hier aan!
-            body: JSON.stringify({ message: messageToSend }) 
-        });
-
-        if (!response.ok) throw new Error(`Server reageerde met status: ${response.status}`);
-
-        const result = await response.json();
-        
-        // Verwijder laadstatus
-        const loadingEl = document.getElementById(loadingId);
-        if (loadingEl) loadingEl.remove();
-
-        // 3. PAS ANTWOORD-MAPPING AAN: afhankelijk van wat je C# API terugstuurt (bijv: result.reply of result.response)
-        let botReply = result.reply || result.response || result.message || JSON.stringify(result);
-        
-        appendMessage(botReply, 'bot');
-
-    } catch (error) {
-        console.error("C# Backend API Fout:", error);
-        const loadingEl = document.getElementById(loadingId);
-        if (loadingEl) {
-            loadingEl.innerText = "Er ging iets mis met de C# verbinding.";
-            loadingEl.classList.remove('loading');
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-        
-
-        // Helper functie om berichten toe te voegen en direct te scrollen
-        function appendMessage(text, sender) {
-            const chatMessagesBox = document.getElementById('chatMessages') || document.querySelector('.chat-helper');
-            if (!chatMessagesBox) return;
-
-            const msgId = 'msg-' + Date.now();
-            const msgDiv = document.createElement('div');
-            msgDiv.id = msgId;
-            msgDiv.className = `message-bubble ${sender}`;
-            msgDiv.innerText = text;
-            chatMessagesBox.appendChild(msgDiv);
-            
-            // Scroll direct naar beneden binnen het chatvenster
-            if (chatMessagesBox.scrollTop !== undefined) {
-                chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
-            }
-            
-            return msgId;
-        }
-
-        // Koppel unieke variabelen aan de knoppen van de assistent
-        const mainSendAiBtn = document.getElementById('sendAiBtn');
-        const mainAiInput = document.getElementById('aiInput');
-
-        // Event listeners voor het versturen van berichten
-        if (mainSendAiBtn) {
-            mainSendAiBtn.addEventListener('click', sendMessage);
-        }
-
-        if (mainAiInput) {
-            mainAiInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage();
             });
         }
     </script>
