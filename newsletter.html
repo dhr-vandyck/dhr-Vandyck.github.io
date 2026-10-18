@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceddy.dev | Portfolio</title>
+    <title>Ceddy.dev | Nieuwsbrief</title>
     <link rel="stylesheet" href="styleLayouts.css">
     <link rel="stylesheet" href="styleFunctions.css">
 </head>
@@ -12,15 +12,15 @@
     <header class="navbar">
         <div class="logo">Ceddy Vandyck</div>
         <nav>
-            <a href="#home" class="active">Home</a>
-            <a href="newsletter.html">Nieuwsbrief</a>
+            <a href="index.html">Home</a>
+            <a href="newsletter.html" class="active">Nieuwsbrief</a>
             <a href="Web-Pages/Bootstrap/index.html">Bootstrap Webpage Demo</a>
         </nav>
     </header>
 
     <div class="container">
         <div class="box">
-            <h3>Blijf op de hoogte</h3>
+            <h3 style="color: var(--accent-orange); font-size: 1.6rem; margin-bottom: 10px;">Blijf op de hoogte</h3>
             <p class="description">
                 Meld je aan voor mijn nieuwsbrief over nieuwe AI-updates en game-projecten.<br>
                 Je ontvangt direct een welkomstmail na je aanmelding!
@@ -36,16 +36,16 @@
 
                 <label class="checkbox-label">
                     <input type="checkbox" id="privacyCheck" required>
-                    <span>Gelezen en goedgekeurd: <a href="#" id="openPrivacyBtn">Lees de voorwaarden & privacy</a>.</span>
+                    <span>Gelezen en goedgekeurd: <a href="#" id="openPrivacyBtn" style="color: var(--accent-orange); font-weight: 600;">Lees de voorwaarden & privacy</a>.</span>
                 </label>
                 
-                <button type="submit" id="submitBtn">Inschrijven</button>
+                <button type="submit" id="submitBtn" class="btn" style="width: 100%; margin-top: 10px;">Inschrijven</button>
             </form>
             
-            <p id="responseMessage" class="message"></p>
+            <p id="responseMessage" class="message" style="margin-top: 15px; font-weight: 600; display: none;"></p>
         </div>
     </div>
-
+    <!-- Privacy Pop-up Modal -->
     <div id="privacyModal" class="modal">
         <div class="modal-content">
             <h4>Voorwaarden & Privacy</h4>
@@ -59,7 +59,6 @@
     </div>
 
     <script>
-
     let heeftVoorwaardenGelezen = false;
 
     const modal = document.getElementById('privacyModal');
@@ -69,7 +68,6 @@
     const consentCheck = document.getElementById('consentCheck'); 
     const messageBox = document.getElementById('responseMessage');
 
-    // Supabase Configuratie
     const SUPABASE_REST_URL = "https://ozcsksqiizlhgrskmada.supabase.co/rest/v1/nieuwsbrief_abonnees";
     const SUPABASE_ANON_KEY = "sb_publishable_gCVtKZlvXTKTEniylj3kOA_QlkmewlU";
 
@@ -77,7 +75,7 @@
         if (heeftVoorwaardenGelezen === false) {
             e.preventDefault(); 
             messageBox.style.display = "block";
-            messageBox.className = "message warning"; 
+            messageBox.style.color = "#ff9800"; 
             messageBox.innerText = "Lees de voorwaarden! Klik eerst op de link en sluit deze onderaan af.";
         }
     });
@@ -90,19 +88,16 @@
     closeBtn.addEventListener('click', function() {
         modal.style.display = 'none';
         heeftVoorwaardenGelezen = true;
-        
-        if (messageBox.innerText.includes("Lees de voorwaarden")) {
-            messageBox.style.display = "none";
-        }
+        privacyCheck.checked = true;
+        messageBox.style.display = "none";
     });
 
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.style.display = 'none';
             heeftVoorwaardenGelezen = true;
-            if (messageBox.innerText.includes("Lees de voorwaarden")) {
-                messageBox.style.display = "none";
-            }
+            privacyCheck.checked = true;
+            messageBox.style.display = "none";
         }
     });
 
@@ -114,14 +109,14 @@
 
         if (heeftVoorwaardenGelezen === false) {
             messageBox.style.display = "block";
-            messageBox.className = "message error";
+            messageBox.style.color = "#ef4444";
             messageBox.innerText = "Fout: Je moet de voorwaarden geopend hebben om je te kunnen inschrijven.";
             return;
         }
 
         submitBtn.disabled = true;
         messageBox.style.display = "block";
-        messageBox.className = "message processing";
+        messageBox.style.color = "var(--text-primary)";
         messageBox.innerText = "Bezig met inschrijven...";
 
         try {
@@ -147,15 +142,14 @@
                 throw new Error(data.message || `Foutcode: ${response.status}`);
             }
 
-            messageBox.className = "message success";
+            messageBox.style.color = "#10b981";
             messageBox.innerText = "Gelukt! Je bent toegevoegd aan de database. Check je mailbox.";
-            
             document.getElementById('newsletterForm').reset();
             heeftVoorwaardenGelezen = false;
 
         } catch (fout) {
             console.error("Inschrijffout:", fout);
-            messageBox.className = "message error";
+            messageBox.style.color = "#ef4444";
             messageBox.innerText = `Fout: ${fout.message}`;
         } finally {
             submitBtn.disabled = false;
