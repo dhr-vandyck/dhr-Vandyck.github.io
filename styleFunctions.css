@@ -214,3 +214,68 @@ td {
         height: 70vh;
     }
 }
+/* ==========================================================================
+   ALGEMENE MODAL FIX (Voor privacy pop-up)
+   ========================================================================== */
+.modal {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.4); 
+    backdrop-filter: blur(4px);         
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--card-color);
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-height: 85vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content h4 {
+    margin-bottom: 15px;
+    color: var(--accent-orange);
+    font-size: 1.3rem;
+}
+
+.modal-body {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.modal-body p {
+    margin-bottom: 12px;
+}
+
+.modal-close-btn {
+    background-color: var(--btn-dark);
+    width: 100%;
+    padding: 12px;
+    border-radius: 30px;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.modal-close-btn:hover {
+    background-color: #222222;
+}
