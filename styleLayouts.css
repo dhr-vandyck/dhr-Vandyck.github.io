@@ -135,3 +135,15 @@ body {
         grid-column: 1;
     }
 }
+/* Specifieke fix voor pagina's met één gecentreerde box (zoals nieuwsbrief) */
+.container:not(:has(.sidebar)):not(:has(.section-box)) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 600px; /* Mooie compacte breedte voor formulieren */
+    margin: 40px auto;
+}
+
+.container:not(:has(.sidebar)):not(:has(.section-box)) .box {
+    width: 100%;
+}
